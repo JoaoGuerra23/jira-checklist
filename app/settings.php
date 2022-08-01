@@ -20,6 +20,13 @@ return function (ContainerBuilder $containerBuilder) {
                     'path' => __DIR__ . '/../logs/app.log',
                     'level' => Logger::DEBUG,
                 ],
+                'database' => [
+                    'driver' => 'pdo_mysql',
+                    'host' => 'sql-master1',
+                    'user' => 'sandbox',
+                    'password' => 'sandbox',
+                    'dbname' => 'sandbox'
+                ],
             ]);
         }
     ]);

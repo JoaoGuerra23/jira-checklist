@@ -32,8 +32,7 @@ return function (ContainerBuilder $containerBuilder) {
         EntityManagerInterface::class => function(ContainerInterface $c) {
             $config = $c->get(SettingsInterface::class);
             $dbSettings = $config->get('database');
-
-
+            $paths = [__DIR__ . '/../src/Domain/Entities'];
             $config = ORMSetup::createAnnotationMetadataConfiguration($paths, true);
             return EntityManager::create($dbSettings, $config);
         },
