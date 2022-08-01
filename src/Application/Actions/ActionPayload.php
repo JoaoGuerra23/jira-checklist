@@ -7,14 +7,14 @@ use JsonSerializable;
 
 class ActionPayload implements JsonSerializable
 {
-    private int $statusCode;
+    private  $statusCode;
 
     /**
      * @var array|object|null
      */
     private $data;
 
-    private ?ActionError $error;
+    private $error;
 
     public function __construct(
         int $statusCode = 200,
