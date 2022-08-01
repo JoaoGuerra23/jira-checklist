@@ -7,9 +7,7 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class TicketRepository
 {
-
-    private $repository;
-
+    /** @var EntityManagerInterface */
     private $entityManager;
 
     /**
@@ -18,21 +16,23 @@ class TicketRepository
     public function __construct(EntityManagerInterface $entityManager)
     {
         $this->entityManager = $entityManager;
-        $this->repository = $entityManager->getRepository(Ticket::class);
     }
 
 
-    public function findAll()
+    /**
+     * Find All tickets
+     *
+     * @return Ticket[]
+     */
+    public function findAll(): array
     {
+        $builder = $this->entityManager
+            ->createQueryBuilder()
+            ->select('t.id', 't.code')
+            ->from(Ticket::class, 't')
+            ->setMaxResults(5)
+        ;
 
-        // $dql = "SELECT * FROM Ticket";
-
-        return $this->repository->findAll();
-
-        $query = $this->entityManager->createQuery($dql);
-        $query->setMaxResults(5);
-        return $query->getResult();
-
+        return $builder->getQuery()->execute();
     }
-
 }

@@ -17,14 +17,33 @@ class ActionError implements JsonSerializable
     public const VALIDATION_ERROR = 'VALIDATION_ERROR';
     public const VERIFICATION_ERROR = 'VERIFICATION_ERROR';
 
-    private  $type;
+    private $type;
 
-    private  $description;
+    private $description;
 
-    public function __construct(string $type, ?string $description)
+    private $trace;
+
+    /**
+     * @return array
+     */
+    public function getTrace(): array
+    {
+        return $this->trace;
+    }
+
+    /**
+     * @param array $trace
+     */
+    public function setTrace(array $trace): void
+    {
+        $this->trace = $trace;
+    }
+
+    public function __construct(string $type, ?string $description, array $trace = [])
     {
         $this->type = $type;
         $this->description = $description;
+        $this->trace = $trace;
     }
 
     public function getType(): string
@@ -53,8 +72,11 @@ class ActionError implements JsonSerializable
     public function jsonSerialize(): array
     {
         $payload = [
-            'type' => $this->type,
+            'type'        => $this->type,
             'description' => $this->description,
+            'trace'       => array_map(function ($t) {
+                return json_encode($t);
+            }, $this->trace)
         ];
 
         return $payload;
