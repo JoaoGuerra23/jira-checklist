@@ -1,16 +1,13 @@
 <?php
-declare(strict_types=1);
 
-namespace App\Application\Actions\User;
+namespace App\Application\Actions\Ticket;
 
 use App\Application\Actions\Action;
-use App\Domain\User\User;
-use App\Domain\User\UserRepository;
 use App\Infrastructure\Persistence\Repositories\TicketRepository;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Log\LoggerInterface;
 
-class ListTicketsAction extends Action
+class CreateTicketAction extends Action
 {
 
     private $ticketRepository;
@@ -26,11 +23,14 @@ class ListTicketsAction extends Action
      */
     protected function action(): Response
     {
-        $tickets = $this->ticketRepository->findAll();
 
-        $this->logger->info("Tickets list was viewed");
+        $id = (int)$this->resolveArg('id');
 
-        return $this->respondWithData($tickets);
+        $ticket = $this->ticketRepository->createTicket();
+
+        $this->logger->info("Ticket `${id}`Created");
+
+        return $this->respondWithData($ticket);
     }
 
 }

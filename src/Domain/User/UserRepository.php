@@ -10,12 +10,6 @@ interface UserRepository
      */
     public function findAll(): array;
 
-
-    /**
-     * @return Ticket[]
-     */
-    public function findAllTickets() : array;
-
     /**
      * @param int $id
      * @return User
@@ -23,10 +17,5 @@ interface UserRepository
      */
     public function findUserOfId(int $id): User;
 
-    /**
-     * @param int $id
-     * @return Ticket
-     */
-    public function findTicketById(int $id) : Ticket;
 
 }
