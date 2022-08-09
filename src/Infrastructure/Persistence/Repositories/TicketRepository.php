@@ -38,6 +38,7 @@ class TicketRepository
             ->createQueryBuilder()
             ->select('t.id', 't.code')
             ->from(Ticket::class, 't')
+            ->where('t.deleted_at IS NULL')
             ->orderBy('t.id', 'ASC');
 
         return $builder->getQuery()->execute();
@@ -56,6 +57,7 @@ class TicketRepository
             ->from(Ticket::class, 't')
             ->where('t.id = :id')
             ->setParameter(':id', $id)
+            ->andWhere('t.deleted_at IS NULL')
             ->getQuery()
             ->execute();
     }
@@ -70,9 +72,22 @@ class TicketRepository
      */
     public function deleteTicketOfId($id): void
     {
-        $this->entityManager
+        /*$this->entityManager
             ->createQueryBuilder()
             ->delete(Ticket::class, 't')
+            ->where('t.id = :id')
+            ->setParameter(':id', $id)
+            ->getQuery()
+            ->execute();*/
+
+        $column = 't.deleted_at';
+        $value = new \DateTime();
+
+        $this->entityManager
+            ->createQueryBuilder()
+            ->update(Ticket::class, 't')
+            ->set($column, ':value')
+            ->setParameter(':value', $value)
             ->where('t.id = :id')
             ->setParameter(':id', $id)
             ->getQuery()

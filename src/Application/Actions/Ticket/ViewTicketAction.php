@@ -5,6 +5,7 @@ namespace App\Application\Actions\Ticket;
 
 use App\Application\Actions\Action;
 use App\Infrastructure\Persistence\Repositories\TicketRepository;
+use OpenApi\Annotations as OA;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Log\LoggerInterface;
 
@@ -24,9 +25,6 @@ class ViewTicketAction extends Action
         $this->ticketRepository = $ticketRepository;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     /**
      * @OA\Get(
      *   tags={"ticket"},
