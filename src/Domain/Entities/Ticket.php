@@ -5,7 +5,6 @@ namespace App\Domain\Entities;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- *
  * @ORM\Table(name="tickets")
  * @ORM\Entity(repositoryClass="App\Infrastructure\Persistence\Repositories\TicketRepository")
  */
@@ -17,11 +16,13 @@ class Ticket
      * @ORM\GeneratedValue(strategy="AUTO")
      * @ORM\OneToMany(targetEntity="Item", mappedBy="tickets_id")
      */
+
     private $id;
 
     /**
      * @ORM\Column(type="string", name="code")
      */
+
     private $code;
 
     /**

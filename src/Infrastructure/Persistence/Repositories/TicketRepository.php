@@ -4,8 +4,7 @@ namespace App\Infrastructure\Persistence\Repositories;
 
 use App\Domain\Entities\Ticket;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\Query\ResultSetMapping;
-use function DI\string;
+use Slim\Psr7\Request;
 
 class TicketRepository
 {
@@ -38,7 +37,8 @@ class TicketRepository
         $builder = $this->entityManager
             ->createQueryBuilder()
             ->select('t.id', 't.code')
-            ->from(Ticket::class, 't');
+            ->from(Ticket::class, 't')
+            ->orderBy('t.id', 'ASC');
 
         return $builder->getQuery()->execute();
     }
@@ -50,14 +50,14 @@ class TicketRepository
      */
     public function findTicketOfId($id): array
     {
-        $builder = $this->entityManager
+        return $this->entityManager
             ->createQueryBuilder()
             ->select('t.id', 't.code')
             ->from(Ticket::class, 't')
-            ->where('t.id=:id')
-            ->setParameter('id', $id);
-
-        return $builder->getQuery()->execute();
+            ->where('t.id = :id')
+            ->setParameter(':id', $id)
+            ->getQuery()
+            ->execute();
     }
 
 
@@ -66,6 +66,7 @@ class TicketRepository
      *
      * @param $id
      * @return void
+     *
      */
     public function deleteTicketOfId($id): void
     {
@@ -81,25 +82,29 @@ class TicketRepository
 
 
     /**
-     * @param $id
+     * Update a value from table
+     *
+     * @param Request $request
+     * @param array $args
      * @return float|int|mixed|string
      */
-    public function editTicketColumn($id)
+    public function editTicketColumn(Request $request, array $args)
     {
+        $id = $args['id'];
+
         $column = 't.code';
 
-        $value = 'EX-PAT';
+        $value = $request->getParsedBody();
 
         return $this->entityManager
-                ->createQueryBuilder()
-                ->update(Ticket::class, 't')
-                ->set($column, ':value')
-                ->setParameter(':value', $value)
-                ->where('t.id = :id')
-                ->setParameter(':id', $id)
-                ->getQuery()
-                ->getResult();
-
+            ->createQueryBuilder()
+            ->update(Ticket::class, 't')
+            ->set($column, ':value')
+            ->setParameter(':value', $value)
+            ->where('t.id = :id')
+            ->setParameter(':id', $id)
+            ->getQuery()
+            ->getResult();
     }
 
 
@@ -107,12 +112,14 @@ class TicketRepository
      *
      * @return Ticket[]
      */
-    public function createTicket(): array
+    public function createTicket(Request $request): array
     {
-        $ticketCode = 'EX-007';
+        $body = $request->getParsedBody();
+
+        $ticketArray = array_values($body);
 
         $this->ticket = new Ticket();
-        $this->ticket->setCode($ticketCode);
+        $this->ticket->setCode($ticketArray[1]);
 
         $this->entityManager->persist($this->ticket);
         $this->entityManager->flush();

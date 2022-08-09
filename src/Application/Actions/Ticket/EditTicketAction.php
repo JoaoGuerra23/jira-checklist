@@ -4,6 +4,7 @@ namespace App\Application\Actions\Ticket;
 
 use App\Application\Actions\Action;
 use App\Infrastructure\Persistence\Repositories\TicketRepository;
+use http\Env\Request;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Log\LoggerInterface;
 
@@ -21,12 +22,13 @@ class EditTicketAction extends Action
     /**
      * {@inheritdoc}
      */
+
     protected function action(): Response
     {
 
         $id = (int)$this->resolveArg('id');
 
-        $tickets = $this->ticketRepository->editTicketColumn($id);
+        $tickets = $this->ticketRepository->editTicketColumn($this->request, $this->args);
 
         $this->logger->info("Ticket `${id}` Edited");
 

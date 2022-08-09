@@ -10,6 +10,27 @@ class ListUsersAction extends UserAction
     /**
      * {@inheritdoc}
      */
+    /**
+     * @OA\Get(
+     *   tags={"user"},
+     *   path="/users/{id}",
+     *   operationId="getUser",
+     *   @OA\Parameter(
+     *          name="id",
+     *          in="path",
+     *          required=true,
+     *          description="User id",
+     *          @OA\Schema(
+     *              type="integer"
+     *          )
+     *   ),
+     *   @OA\Response(
+     *     response=200,
+     *     description="A single user",
+     *     @OA\JsonContent(ref="#/components/schemas/User")
+     *   )
+     * )
+     */
     protected function action(): Response
     {
         $users = $this->userRepository->findAll();

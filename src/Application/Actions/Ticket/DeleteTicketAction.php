@@ -27,7 +27,7 @@ class DeleteTicketAction extends Action
 
         $tickets = $this->ticketRepository->deleteTicketOfId($id);
 
-        $this->logger->info("Ticket `${id}` Deleted");
+        $this->logger->info("Ticket $id Deleted");
 
         return $this->respondWithData($tickets);
     }

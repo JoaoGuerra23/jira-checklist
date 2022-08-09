@@ -8,6 +8,9 @@ use App\Infrastructure\Persistence\Repositories\TicketRepository;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Log\LoggerInterface;
 
+
+
+
 class ListTicketsAction extends Action
 {
 
@@ -22,7 +25,7 @@ class ListTicketsAction extends Action
     /**
      * {@inheritdoc}
      */
-    protected function action(): Response
+     protected function action(): Response
     {
         $tickets = $this->ticketRepository->findAll();
 
