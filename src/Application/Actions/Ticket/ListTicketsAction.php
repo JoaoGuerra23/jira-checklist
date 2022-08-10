@@ -15,6 +15,10 @@ use Psr\Log\LoggerInterface;
 class ListTicketsAction extends Action
 {
 
+
+    /**
+     * @var TicketRepository
+     */
     private $ticketRepository;
 
     public function __construct(LoggerInterface $logger, TicketRepository $ticketRepository)
@@ -41,7 +45,7 @@ class ListTicketsAction extends Action
      */
      protected function action(): Response
     {
-        $tickets = $this->ticketRepository->findAll();
+        $tickets = $this->ticketRepository->findAllTickets();
 
         $this->logger->info("Tickets list was viewed");
 

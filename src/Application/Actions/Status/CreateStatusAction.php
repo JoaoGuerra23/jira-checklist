@@ -1,31 +1,32 @@
 <?php
 
-namespace App\Application\Actions\Ticket;
+namespace App\Application\Actions\Status;
 
 use App\Application\Actions\Action;
-use App\Infrastructure\Persistence\Repositories\TicketRepository;
+use App\Infrastructure\Persistence\Repositories\StatusRepository;
 use OpenApi\Annotations as OA;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Log\LoggerInterface;
 
-class CreateTicketAction extends Action
+class CreateStatusAction extends Action
 {
 
-    private $ticketRepository;
+    private $statusRepository;
 
-    public function __construct(LoggerInterface $logger, TicketRepository $ticketRepository)
+    public function __construct(LoggerInterface $logger, StatusRepository $statusRepository)
     {
         parent::__construct($logger);
-        $this->ticketRepository = $ticketRepository;
+        $this->statusRepository = $statusRepository;
     }
+
 
     /**
      * @OA\Post(
-     *     tags={"ticket"},
-     *     path="/tickets",
-     *     operationId="createTicket",
-     *     description="Create new Ticket",
-     *     summary="Create a new Ticket",
+     *     tags={"status"},
+     *     path="/status",
+     *     operationId="createStatus",
+     *     description="Create new Status",
+     *     summary="Create a new Status",
      *      @OA\RequestBody(
      *         @OA\MediaType(
      *             mediaType="application/json",
@@ -35,10 +36,10 @@ class CreateTicketAction extends Action
      *                     type="int"
      *                 ),
      *                 @OA\Property(
-     *                     property="code",
+     *                     property="name",
      *                     type="string"
      *                 ),
-     *                 example={"id": 1, "code": "EX-1234"}
+     *                 example={"id": 1, "code": "TO DO"}
      *             )
      *         )
      *     ),
@@ -47,19 +48,17 @@ class CreateTicketAction extends Action
      *      description="OK",
      *      @OA\JsonContent(
      *          type="array",
-     *          @OA\Items(ref="#/components/schemas/Ticket")
+     *          @OA\Items(ref="#/components/schemas/Status")
      *      )
      *     )
      * )
      */
     protected function action(): Response
     {
+        $status = $this->statusRepository->createNewStatus($this->request, $this->response);
 
-        $ticket = $this->ticketRepository->createNewTicket($this->request, $this->response);
+        $this->logger->info("Status Created");
 
-        $this->logger->info("Ticket Created");
-
-        return $this->respondWithData($ticket, 201);
+        return $this->respondWithData($status, 201);
     }
-
 }

@@ -11,6 +11,9 @@ use Psr\Log\LoggerInterface;
 class DeleteTicketAction extends Action
 {
 
+    /**
+     * @var TicketRepository
+     */
     private $ticketRepository;
 
     public function __construct(LoggerInterface $logger, TicketRepository $ticketRepository)
@@ -44,7 +47,7 @@ class DeleteTicketAction extends Action
     protected function action(): Response
     {
 
-        $tickets = $this->ticketRepository->deleteTicketOfId($this->response, $this->args);
+        $tickets = $this->ticketRepository->deleteTicketById($this->response, $this->args);
 
         $this->logger->info("Ticket Deleted");
 

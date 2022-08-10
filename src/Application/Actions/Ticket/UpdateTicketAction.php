@@ -4,14 +4,16 @@ namespace App\Application\Actions\Ticket;
 
 use App\Application\Actions\Action;
 use App\Infrastructure\Persistence\Repositories\TicketRepository;
-use http\Env\Request;
 use OpenApi\Annotations as OA;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Log\LoggerInterface;
 
-class EditTicketAction extends Action
+class UpdateTicketAction extends Action
 {
 
+    /**
+     * @var TicketRepository
+     */
     private $ticketRepository;
 
     public function __construct(LoggerInterface $logger, TicketRepository $ticketRepository)
@@ -52,10 +54,9 @@ class EditTicketAction extends Action
      */
     protected function action(): Response
     {
+        $tickets = $this->ticketRepository->updateTicketCode($this->request, $this->response);
 
-        $tickets = $this->ticketRepository->editTicketColumn($this->request, $this->response);
-
-        $this->logger->info("Ticket Edited");
+        $this->logger->info("Ticket Code Edited");
 
         return $this->respondWithData($tickets);
     }

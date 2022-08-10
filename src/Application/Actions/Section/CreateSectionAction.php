@@ -1,31 +1,31 @@
 <?php
 
-namespace App\Application\Actions\Ticket;
+namespace App\Application\Actions\Section;
 
 use App\Application\Actions\Action;
-use App\Infrastructure\Persistence\Repositories\TicketRepository;
+use App\Infrastructure\Persistence\Repositories\SectionRepository;
 use OpenApi\Annotations as OA;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Log\LoggerInterface;
 
-class CreateTicketAction extends Action
+class CreateSectionAction extends Action
 {
 
-    private $ticketRepository;
+    private $sectionRepository;
 
-    public function __construct(LoggerInterface $logger, TicketRepository $ticketRepository)
+    public function __construct(LoggerInterface $logger, SectionRepository $sectionRepository)
     {
         parent::__construct($logger);
-        $this->ticketRepository = $ticketRepository;
+        $this->sectionRepository = $sectionRepository;
     }
 
     /**
      * @OA\Post(
-     *     tags={"ticket"},
-     *     path="/tickets",
-     *     operationId="createTicket",
-     *     description="Create new Ticket",
-     *     summary="Create a new Ticket",
+     *     tags={"section"},
+     *     path="/sections",
+     *     operationId="createSection",
+     *     description="Create new Section",
+     *     summary="Create a new Section",
      *      @OA\RequestBody(
      *         @OA\MediaType(
      *             mediaType="application/json",
@@ -35,10 +35,10 @@ class CreateTicketAction extends Action
      *                     type="int"
      *                 ),
      *                 @OA\Property(
-     *                     property="code",
+     *                     property="subject",
      *                     type="string"
      *                 ),
-     *                 example={"id": 1, "code": "EX-1234"}
+     *                 example={"id": 1, "subject": "Section subject goes here"}
      *             )
      *         )
      *     ),
@@ -47,7 +47,7 @@ class CreateTicketAction extends Action
      *      description="OK",
      *      @OA\JsonContent(
      *          type="array",
-     *          @OA\Items(ref="#/components/schemas/Ticket")
+     *          @OA\Items(ref="#/components/schemas/Section")
      *      )
      *     )
      * )
@@ -55,11 +55,11 @@ class CreateTicketAction extends Action
     protected function action(): Response
     {
 
-        $ticket = $this->ticketRepository->createNewTicket($this->request, $this->response);
+        $section = $this->sectionRepository->createNewSection($this->request, $this->response);
 
-        $this->logger->info("Ticket Created");
+        $this->logger->info("Section Created");
 
-        return $this->respondWithData($ticket, 201);
+        return $this->respondWithData($section, 201);
     }
 
 }

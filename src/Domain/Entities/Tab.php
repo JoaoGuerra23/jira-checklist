@@ -42,6 +42,11 @@ class Tab
     private $name;
 
     /**
+     * @ORM\Column(type="datetime", nullable=true, name="deleted_at")
+     */
+    private $deleted_at;
+
+    /**
      * @return int
      */
     public function getId(): int

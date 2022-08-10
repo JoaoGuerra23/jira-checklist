@@ -13,7 +13,6 @@ use Psr\Log\LoggerInterface;
 class ViewTicketAction extends Action
 {
 
-
     /**
      * @var TicketRepository
      */
@@ -50,6 +49,8 @@ class ViewTicketAction extends Action
     protected function action(): Response
     {
         $ticket = $this->ticketRepository->findTicketById($this->args);
+
+        $this->logger->info('Get single ticket');
 
         return $this->respondWithData($ticket);
     }

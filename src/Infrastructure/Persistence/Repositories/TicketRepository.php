@@ -3,13 +3,16 @@
 namespace App\Infrastructure\Persistence\Repositories;
 
 use App\Domain\Entities\Ticket;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Slim\Psr7\Request;
 use Slim\Psr7\Response;
 
 class TicketRepository
 {
-    /** @var EntityManagerInterface */
+    /**
+     * @var EntityManagerInterface
+     */
     private $entityManager;
 
     /**
@@ -33,7 +36,7 @@ class TicketRepository
      *
      * @return Ticket[]
      */
-    public function findAll(): array
+    public function findAllTickets(): array
     {
         $builder = $this->entityManager
             ->createQueryBuilder()
@@ -45,10 +48,13 @@ class TicketRepository
         return $builder->getQuery()->execute();
     }
 
+
     /**
-     * Find one ticket by id
      *
-     * @return Ticket[]
+     * Find Ticket by ID
+     *
+     * @param array $args
+     * @return array
      */
     public function findTicketById(array $args): array
     {
@@ -73,11 +79,11 @@ class TicketRepository
      * @param array $args
      * @return Response
      */
-    public function deleteTicketOfId(Response $response, array $args): Response
+    public function deleteTicketById(Response $response, array $args): Response
     {
         $id = $args['id'];
         $column = 't.deleted_at';
-        $value = new \DateTime();
+        $value = new DateTime();
 
         $this->entityManager
             ->createQueryBuilder()
@@ -94,13 +100,13 @@ class TicketRepository
 
 
     /**
-     * Update a value from table
+     * Update Ticket Code
      *
      * @param Request $request
      * @param Response $response
      * @return Response
      */
-    public function editTicketColumn(Request $request, Response $response): Response
+    public function updateTicketCode(Request $request, Response $response): Response
     {
         $data = $request->getParsedBody();
 
@@ -125,17 +131,17 @@ class TicketRepository
      * @param Response $response
      * @return Response
      */
-    public function createTicket(Request $request, Response $response): Response
+    public function createNewTicket(Request $request, Response $response): Response
     {
         $data = $request->getParsedBody();
 
-        $ticket = new Ticket();
-        $ticket->setCode($data['code']);
+        $this->ticket = new Ticket();
+        $this->ticket->setCode($data['code']);
 
-        $this->entityManager->persist($ticket);
+        $this->entityManager->persist($this->ticket);
         $this->entityManager->flush();
 
-        return $response->withStatus(200, 'OK - Ticket Created');
+        return $response->withStatus(201, 'OK - Ticket Created');
 
     }
 

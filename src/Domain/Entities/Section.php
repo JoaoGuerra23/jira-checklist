@@ -45,12 +45,17 @@ class Section
      * @ORM\ManyToOne(targetEntity="Tab", inversedBy="id")
      * @ORM\JoinColumn(name="tabs_id", referencedColumnName="id")
      *
-     * @OA\Property(type="integer", format="int64", description="Tabs ID", title="Tabs ID")
+     * @OA\Property(type="integer", format="int64", description="Tab ID", title="Tab ID")
      *
      * @var int
      *
      */
     private $tabs_id;
+
+    /**
+     * @ORM\Column(type="datetime", nullable=true, name="deleted_at")
+     */
+    private $deleted_at;
 
     /**
      * @return int

@@ -74,12 +74,11 @@ class Item
     private $tickets_id;
 
     /**
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="datetime", nullable=false, name="date")
      *
-     * @OA\Property(description="Created Date", title="Created Date")
+     * @OA\Property(type="datetime", description="Created Date", title="Created Date")
      *
      * @var DateTime
-     *
      */
     private $date;
 
@@ -93,5 +92,124 @@ class Item
      *
      */
     private $sections_id;
+
+    /**
+     * @ORM\Column(type="datetime", nullable=true, name="deleted_at")
+     */
+    private $deleted_at;
+
+    /**
+     * @return int
+     */
+    public function getId(): int
+    {
+        return $this->id;
+    }
+
+    /**
+     * @param int $id
+     */
+    public function setId(int $id): void
+    {
+        $this->id = $id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    /**
+     * @param string $name
+     */
+    public function setName(string $name): void
+    {
+        $this->name = $name;
+    }
+
+    /**
+     * @return int
+     */
+    public function getStatusId(): int
+    {
+        return $this->status_id;
+    }
+
+    /**
+     * @param int $status_id
+     */
+    public function setStatusId(int $status_id): void
+    {
+        $this->status_id = $status_id;
+    }
+
+    /**
+     * @return int
+     */
+    public function getOwnerId(): int
+    {
+        return $this->owner_id;
+    }
+
+    /**
+     * @param int $owner_id
+     */
+    public function setOwnerId(int $owner_id): void
+    {
+        $this->owner_id = $owner_id;
+    }
+
+    /**
+     * @return int
+     */
+    public function getTicketsId(): int
+    {
+        return $this->tickets_id;
+    }
+
+    /**
+     * @param int $tickets_id
+     */
+    public function setTicketsId(int $tickets_id): void
+    {
+        $this->tickets_id = $tickets_id;
+    }
+
+    /**
+     * @return DateTime
+     */
+    public function getDate(): DateTime
+    {
+        return $this->date;
+    }
+
+    /**
+     * @param DateTime $date
+     */
+    public function setDate(DateTime $date): void
+    {
+        $this->date = $date;
+    }
+
+    /**
+     * @return int
+     */
+    public function getSectionsId(): int
+    {
+        return $this->sections_id;
+    }
+
+    /**
+     * @param int $sections_id
+     */
+    public function setSectionsId(int $sections_id): void
+    {
+        $this->sections_id = $sections_id;
+    }
+
+
 
 }

@@ -1,31 +1,32 @@
 <?php
 
-namespace App\Application\Actions\Ticket;
+namespace App\Application\Actions\Tab;
 
 use App\Application\Actions\Action;
-use App\Infrastructure\Persistence\Repositories\TicketRepository;
+use App\Infrastructure\Persistence\Repositories\TabRepository;
 use OpenApi\Annotations as OA;
+use phpDocumentor\Reflection\Types\This;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Log\LoggerInterface;
 
-class CreateTicketAction extends Action
+class CreateTabAction extends Action
 {
 
-    private $ticketRepository;
+    private $tabRepository;
 
-    public function __construct(LoggerInterface $logger, TicketRepository $ticketRepository)
+    public function __construct(LoggerInterface $logger, TabRepository $tabRepository)
     {
         parent::__construct($logger);
-        $this->ticketRepository = $ticketRepository;
+        $this->tabRepository = $tabRepository;
     }
 
     /**
      * @OA\Post(
-     *     tags={"ticket"},
-     *     path="/tickets",
-     *     operationId="createTicket",
-     *     description="Create new Ticket",
-     *     summary="Create a new Ticket",
+     *     tags={"tab"},
+     *     path="/tabs",
+     *     operationId="createTab",
+     *     description="Create new Tab",
+     *     summary="Create a new Tab",
      *      @OA\RequestBody(
      *         @OA\MediaType(
      *             mediaType="application/json",
@@ -35,10 +36,10 @@ class CreateTicketAction extends Action
      *                     type="int"
      *                 ),
      *                 @OA\Property(
-     *                     property="code",
+     *                     property="name",
      *                     type="string"
      *                 ),
-     *                 example={"id": 1, "code": "EX-1234"}
+     *                 example={"id": 1, "code": "Tab1"}
      *             )
      *         )
      *     ),
@@ -47,19 +48,17 @@ class CreateTicketAction extends Action
      *      description="OK",
      *      @OA\JsonContent(
      *          type="array",
-     *          @OA\Items(ref="#/components/schemas/Ticket")
+     *          @OA\Items(ref="#/components/schemas/Tab")
      *      )
      *     )
      * )
      */
     protected function action(): Response
     {
+        $tab = $this->tabRepository->createNewTab($this->request, $this->response);
 
-        $ticket = $this->ticketRepository->createNewTicket($this->request, $this->response);
+        $this->logger->info('Tab Created');
 
-        $this->logger->info("Ticket Created");
-
-        return $this->respondWithData($ticket, 201);
+        return $this->respondWithData($tab, 201);
     }
-
 }
