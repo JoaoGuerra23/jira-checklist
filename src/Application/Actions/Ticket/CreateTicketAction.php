@@ -25,9 +25,27 @@ class CreateTicketAction extends Action
      *     tags={"ticket"},
      *     path="/tickets",
      *     operationId="createTicket",
+     *     description="Create new Ticket",
+     *     summary="Add a new Ticket",
+     *      @OA\RequestBody(
+     *         @OA\MediaType(
+     *             mediaType="application/json",
+     *             @OA\Schema(
+     *                 @OA\Property(
+     *                     property="id",
+     *                     type="int"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="code",
+     *                     type="string"
+     *                 ),
+     *                 example={"id": 1, "code": "EX-1234"}
+     *             )
+     *         )
+     *     ),
      *     @OA\Response(
      *      response="200",
-     *      description="New ticket created",
+     *      description="OK",
      *      @OA\JsonContent(
      *          type="array",
      *          @OA\Items(ref="#/components/schemas/Ticket")
@@ -38,7 +56,7 @@ class CreateTicketAction extends Action
     protected function action(): Response
     {
 
-        $ticket = $this->ticketRepository->createTicket($this->request);
+        $ticket = $this->ticketRepository->createTicket($this->request, $this->response);
 
         $this->logger->info("Ticket Created");
 

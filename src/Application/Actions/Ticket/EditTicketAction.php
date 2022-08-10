@@ -22,16 +22,18 @@ class EditTicketAction extends Action
 
     /**
      * @OA\Patch(
+     *   path="/tickets/{id}",
      *   tags={"ticket"},
      *   path="/tickets/{id}",
      *   operationId="editTicket",
+     *   summary="Edit Ticket by ID",
      *   @OA\Parameter(
-     *          name="id",
+     *          name="code",
      *          in="path",
      *          required=true,
-     *          description="Ticket id",
+     *          description="New Ticket Code",
      *          @OA\Schema(
-     *              type="integer"
+     *              type="string"
      *          )
      *   ),
      *   @OA\Response(
@@ -44,11 +46,9 @@ class EditTicketAction extends Action
     protected function action(): Response
     {
 
-        $id = (int)$this->resolveArg('id');
+        $tickets = $this->ticketRepository->editTicketColumn($this->request, $this->response);
 
-        $tickets = $this->ticketRepository->editTicketColumn($this->request, $this->args);
-
-        $this->logger->info("Ticket `${id}` Edited");
+        $this->logger->info("Ticket Edited");
 
         return $this->respondWithData($tickets);
     }

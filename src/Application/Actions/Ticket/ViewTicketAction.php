@@ -30,6 +30,7 @@ class ViewTicketAction extends Action
      *   tags={"ticket"},
      *   path="/tickets/{id}",
      *   operationId="getTicket",
+     *   summary="List a single Ticket by ID",
      *   @OA\Parameter(
      *          name="id",
      *          in="path",
@@ -37,8 +38,8 @@ class ViewTicketAction extends Action
      *          description="Ticket id",
      *          @OA\Schema(
      *              type="integer"
-     *          )
-     *   ),
+     *   )
+     * ),
      *   @OA\Response(
      *     response=200,
      *     description="A single ticket",
@@ -48,9 +49,7 @@ class ViewTicketAction extends Action
      */
     protected function action(): Response
     {
-        $userId = (int)$this->resolveArg('id');
-
-        $ticket = $this->ticketRepository->findTicketOfId($userId);
+        $ticket = $this->ticketRepository->findTicketById($this->args);
 
         return $this->respondWithData($ticket);
     }

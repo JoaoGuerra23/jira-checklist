@@ -28,6 +28,7 @@ class ListTicketsAction extends Action
      *     tags={"ticket"},
      *     path="/tickets",
      *     operationId="getTickets",
+     *     summary="List all tickets",
      *     @OA\Response(
      *      response="200",
      *      description="List all tickets",

@@ -24,6 +24,7 @@ class DeleteTicketAction extends Action
      *   tags={"ticket"},
      *   path="/tickets/{id}",
      *   operationId="deleteTicket",
+     *   summary="Delete Ticket by ID",
      *   @OA\Parameter(
      *          name="id",
      *          in="path",
@@ -35,18 +36,17 @@ class DeleteTicketAction extends Action
      *   ),
      *   @OA\Response(
      *     response=200,
-     *     description="Ticket deleted",
+     *     description="OK",
      *     @OA\JsonContent(ref="#/components/schemas/Ticket")
      *   )
      * )
      */
     protected function action(): Response
     {
-        $id = (int)$this->resolveArg('id');
 
-        $tickets = $this->ticketRepository->deleteTicketOfId($id);
+        $tickets = $this->ticketRepository->deleteTicketOfId($this->response, $this->args);
 
-        $this->logger->info("Ticket $id Deleted");
+        $this->logger->info("Ticket Deleted");
 
         return $this->respondWithData($tickets);
     }

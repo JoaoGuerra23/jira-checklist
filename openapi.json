@@ -15,6 +15,7 @@
                 "tags": [
                     "ticket"
                 ],
+                "summary": "List all tickets",
                 "operationId": "getTickets",
                 "responses": {
                     "200": {
@@ -36,10 +37,33 @@
                 "tags": [
                     "ticket"
                 ],
+                "summary": "Add a new Ticket",
+                "description": "Create new Ticket",
                 "operationId": "createTicket",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "id": {
+                                        "type": "integer"
+                                    },
+                                    "code": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object",
+                                "example": {
+                                    "id": 1,
+                                    "code": "EX-1234"
+                                }
+                            }
+                        }
+                    }
+                },
                 "responses": {
                     "200": {
-                        "description": "New ticket created",
+                        "description": "OK",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -59,6 +83,7 @@
                 "tags": [
                     "ticket"
                 ],
+                "summary": "List a single Ticket by ID",
                 "operationId": "getTicket",
                 "parameters": [
                     {
@@ -88,6 +113,7 @@
                 "tags": [
                     "ticket"
                 ],
+                "summary": "Delete Ticket by ID",
                 "operationId": "deleteTicket",
                 "parameters": [
                     {
@@ -102,7 +128,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Ticket deleted",
+                        "description": "OK",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -117,15 +143,16 @@
                 "tags": [
                     "ticket"
                 ],
+                "summary": "Edit Ticket by ID",
                 "operationId": "editTicket",
                 "parameters": [
                     {
-                        "name": "id",
+                        "name": "code",
                         "in": "path",
-                        "description": "Ticket id",
+                        "description": "New Ticket Code",
                         "required": true,
                         "schema": {
-                            "type": "integer"
+                            "type": "string"
                         }
                     }
                 ],
@@ -142,102 +169,24 @@
                     }
                 }
             }
-        },
-        "/users/{id}": {
-            "get": {
-                "tags": [
-                    "user"
-                ],
-                "operationId": "getUser",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "User id",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "A single user",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/User"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/users": {
-            "get": {
-                "tags": [
-                    "user"
-                ],
-                "operationId": "getUsers",
-                "responses": {
-                    "200": {
-                        "description": "List all users",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/User"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
         }
     },
     "components": {
         "schemas": {
             "Ticket": {
                 "title": "Ticket",
-                "description": "A simple ticket model.",
+                "description": "Ticket Model",
                 "properties": {
                     "id": {
+                        "title": "ID",
+                        "description": "ID",
                         "type": "integer",
-                        "format": "int64",
-                        "readOnly": true,
-                        "example": 1
+                        "format": "int64"
                     },
                     "code": {
-                        "type": "string",
-                        "example": "EX-1234"
-                    }
-                },
-                "type": "object"
-            },
-            "User": {
-                "title": "User",
-                "description": "A simple user model.",
-                "properties": {
-                    "id": {
-                        "type": "integer",
-                        "format": "int64",
-                        "readOnly": true,
-                        "example": 1
-                    },
-                    "username": {
-                        "type": "string",
-                        "example": "johndoe"
-                    },
-                    "firstName": {
-                        "type": "string",
-                        "example": "John"
-                    },
-                    "lastName": {
-                        "type": "string",
-                        "example": "Doe"
+                        "title": "Ticket Code",
+                        "description": "Ticket Code",
+                        "type": "string"
                     }
                 },
                 "type": "object"

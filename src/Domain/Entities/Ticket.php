@@ -10,8 +10,8 @@ use OpenApi\Annotations as OA;
  * @ORM\Entity(repositoryClass="App\Infrastructure\Persistence\Repositories\TicketRepository")
  *
  * @OA\Schema(
- *     title="Ticket",
- *     description="A simple ticket model."
+ *     description="Ticket Model",
+ *     title="Ticket"
  * )
  */
 class Ticket
@@ -22,21 +22,24 @@ class Ticket
      * @ORM\GeneratedValue(strategy="AUTO")
      * @ORM\OneToMany(targetEntity="Item", mappedBy="tickets_id")
      *
-     * @OA\Property(type="integer", format="int64", readOnly=true, example=1)
+     * @OA\Property(type="integer", format="int64", description="ID", title="ID")
+     *
+     * @var int
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", name="code")
      *
-     * @OA\Property(type="string", example="EX-1234")
+     * @OA\Property(type="string", description="Ticket Code", title="Ticket Code")
+     *
+     * @var string
      */
     private $code;
 
+
     /**
      * @ORM\Column(type="datetime", nullable=true, name="deleted_at")
-     *
-     * @OA\Property(type="string", example="2022-01-01 00:00:00")
      */
     private $deleted_at;
 

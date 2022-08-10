@@ -6,32 +6,19 @@ namespace App\Domain\User;
 use JsonSerializable;
 use OpenApi\Annotations as OA;
 
-/**
- * @OA\Schema(
- *     title="User",
- *     description="A simple user model."
- * )
- */
+
 class User implements JsonSerializable
 {
-    /**
-     * @OA\Property(type="integer", format="int64", readOnly=true, example=1)
-     */
+
     private $id;
 
-    /**
-     * @OA\Property(type="string", example="johndoe")
-     */
+
     private $username;
 
-    /**
-     * @OA\Property(type="string", example="John")
-     */
+
     private $firstName;
 
-    /**
-     * @OA\Property(type="string", example="Doe")
-     */
+
     private $lastName;
 
     public function __construct(?int $id, string $username, string $firstName, string $lastName)

@@ -5,6 +5,7 @@ namespace App\Infrastructure\Persistence\Repositories;
 use App\Domain\Entities\Ticket;
 use Doctrine\ORM\EntityManagerInterface;
 use Slim\Psr7\Request;
+use Slim\Psr7\Response;
 
 class TicketRepository
 {
@@ -49,8 +50,10 @@ class TicketRepository
      *
      * @return Ticket[]
      */
-    public function findTicketOfId($id): array
+    public function findTicketById(array $args): array
     {
+        $id = $args['id'];
+
         return $this->entityManager
             ->createQueryBuilder()
             ->select('t.id', 't.code')
@@ -66,20 +69,13 @@ class TicketRepository
     /**
      * Delete ticket by id
      *
-     * @param $id
-     * @return void
-     *
+     * @param Response $response
+     * @param array $args
+     * @return Response
      */
-    public function deleteTicketOfId($id): void
+    public function deleteTicketOfId(Response $response, array $args): Response
     {
-        /*$this->entityManager
-            ->createQueryBuilder()
-            ->delete(Ticket::class, 't')
-            ->where('t.id = :id')
-            ->setParameter(':id', $id)
-            ->getQuery()
-            ->execute();*/
-
+        $id = $args['id'];
         $column = 't.deleted_at';
         $value = new \DateTime();
 
@@ -93,6 +89,7 @@ class TicketRepository
             ->getQuery()
             ->execute();
 
+        return $response->withStatus(200, 'Ticket deleted');
     }
 
 
@@ -100,46 +97,45 @@ class TicketRepository
      * Update a value from table
      *
      * @param Request $request
-     * @param array $args
-     * @return float|int|mixed|string
+     * @param Response $response
+     * @return Response
      */
-    public function editTicketColumn(Request $request, array $args)
+    public function editTicketColumn(Request $request, Response $response): Response
     {
-        $id = $args['id'];
+        $data = $request->getParsedBody();
 
-        $column = 't.code';
-
-        $value = $request->getParsedBody();
-
-        return $this->entityManager
+        $this->entityManager
             ->createQueryBuilder()
             ->update(Ticket::class, 't')
-            ->set($column, ':value')
-            ->setParameter(':value', $value)
+            ->set('t.code', ':value')
+            ->setParameter(':value', $data['code'])
             ->where('t.id = :id')
-            ->setParameter(':id', $id)
+            ->setParameter(':id', $data['id'])
             ->getQuery()
             ->getResult();
+
+        return $response->withStatus(200, 'OK - Ticket Edited');
+
     }
 
 
     /**
      *
-     * @return Ticket[]
+     * @param Request $request
+     * @param Response $response
+     * @return Response
      */
-    public function createTicket(Request $request): array
+    public function createTicket(Request $request, Response $response): Response
     {
-        $body = $request->getParsedBody();
+        $data = $request->getParsedBody();
 
-        $ticketArray = array_values($body);
+        $ticket = new Ticket();
+        $ticket->setCode($data['code']);
 
-        $this->ticket = new Ticket();
-        $this->ticket->setCode($ticketArray[1]);
-
-        $this->entityManager->persist($this->ticket);
+        $this->entityManager->persist($ticket);
         $this->entityManager->flush();
 
-        return json_decode(json_encode($this->ticket), true);
+        return $response->withStatus(200, 'OK - Ticket Created');
 
     }
 
