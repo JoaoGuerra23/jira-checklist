@@ -44,17 +44,17 @@ class Ticket
     private $deleted_at;
 
     /**
-     * @return mixed
+     * @return int
      */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
 
     /**
-     * @return mixed
+     * @return string
      */
-    public function getCode()
+    public function getCode(): string
     {
         return $this->code;
     }
@@ -74,23 +74,5 @@ class Ticket
     {
         $this->code = $code;
     }
-
-    /**
-     * @return mixed
-     */
-    public function getDeletedAt()
-    {
-        return $this->deleted_at;
-    }
-
-    /**
-     * @param mixed $deleted_at
-     */
-    public function setDeletedAt($deleted_at): void
-    {
-        $this->deleted_at = $deleted_at;
-    }
-
-
 
 }

@@ -30,7 +30,7 @@ class ViewTicketAction extends Action
      *   tags={"ticket"},
      *   path="/tickets/{id}",
      *   operationId="getTicket",
-     *   summary="List a single Ticket by ID",
+     *   summary="Get Ticket by ID",
      *   @OA\Parameter(
      *          name="id",
      *          in="path",

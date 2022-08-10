@@ -26,16 +26,23 @@ class EditTicketAction extends Action
      *   tags={"ticket"},
      *   path="/tickets/{id}",
      *   operationId="editTicket",
-     *   summary="Edit Ticket by ID",
-     *   @OA\Parameter(
-     *          name="code",
-     *          in="path",
-     *          required=true,
-     *          description="New Ticket Code",
-     *          @OA\Schema(
-     *              type="string"
-     *          )
-     *   ),
+     *   summary="Edit Ticket Code",
+     *         @OA\RequestBody(
+     *         @OA\MediaType(
+     *             mediaType="application/json",
+     *             @OA\Schema(
+     *                 @OA\Property(
+     *                     property="id",
+     *                     type="int"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="code",
+     *                     type="string"
+     *                 ),
+     *                 example={"id": 1, "code": "EX-1234"}
+     *             )
+     *         )
+     *     ),
      *   @OA\Response(
      *     response=200,
      *     description="Edited Ticket",

@@ -26,7 +26,7 @@ class CreateTicketAction extends Action
      *     path="/tickets",
      *     operationId="createTicket",
      *     description="Create new Ticket",
-     *     summary="Add a new Ticket",
+     *     summary="Create a new Ticket",
      *      @OA\RequestBody(
      *         @OA\MediaType(
      *             mediaType="application/json",

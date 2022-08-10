@@ -37,7 +37,7 @@
                 "tags": [
                     "ticket"
                 ],
-                "summary": "Add a new Ticket",
+                "summary": "Create a new Ticket",
                 "description": "Create new Ticket",
                 "operationId": "createTicket",
                 "requestBody": {
@@ -83,7 +83,7 @@
                 "tags": [
                     "ticket"
                 ],
-                "summary": "List a single Ticket by ID",
+                "summary": "Get Ticket by ID",
                 "operationId": "getTicket",
                 "parameters": [
                     {
@@ -143,19 +143,29 @@
                 "tags": [
                     "ticket"
                 ],
-                "summary": "Edit Ticket by ID",
+                "summary": "Edit Ticket Code",
                 "operationId": "editTicket",
-                "parameters": [
-                    {
-                        "name": "code",
-                        "in": "path",
-                        "description": "New Ticket Code",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "id": {
+                                        "type": "integer"
+                                    },
+                                    "code": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object",
+                                "example": {
+                                    "id": 1,
+                                    "code": "EX-1234"
+                                }
+                            }
                         }
                     }
-                ],
+                },
                 "responses": {
                     "200": {
                         "description": "Edited Ticket",
@@ -173,6 +183,114 @@
     },
     "components": {
         "schemas": {
+            "Item": {
+                "title": "Item",
+                "description": "Item Model",
+                "properties": {
+                    "id": {
+                        "title": "ID",
+                        "description": "ID",
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "name": {
+                        "title": "Item Name",
+                        "description": "Item Name",
+                        "type": "string"
+                    },
+                    "status_id": {
+                        "title": "Status ID",
+                        "description": "Status ID",
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "owner_id": {
+                        "title": "Owner ID",
+                        "description": "Owner ID",
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "tickets_id": {
+                        "title": "Tickets ID",
+                        "description": "Tickets ID",
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "date": {
+                        "title": "Created Date",
+                        "description": "Created Date",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "sections_id": {
+                        "title": "Sections ID",
+                        "description": "Sections ID",
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                },
+                "type": "object"
+            },
+            "Section": {
+                "title": "Section",
+                "description": "Section Model",
+                "properties": {
+                    "id": {
+                        "title": "ID",
+                        "description": "ID",
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "subject": {
+                        "title": "Section Subject",
+                        "description": "Section Subject",
+                        "type": "string"
+                    },
+                    "tabs_id": {
+                        "title": "Tabs ID",
+                        "description": "Tabs ID",
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                },
+                "type": "object"
+            },
+            "Status": {
+                "title": "Status",
+                "description": "Status Model",
+                "properties": {
+                    "id": {
+                        "title": "ID",
+                        "description": "ID",
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "name": {
+                        "title": "Status Name",
+                        "description": "Status Name",
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "Tab": {
+                "title": "Tab",
+                "description": "Tab Model",
+                "properties": {
+                    "id": {
+                        "title": "ID",
+                        "description": "ID",
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "name": {
+                        "title": "Tab Name",
+                        "description": "Tab Name",
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
             "Ticket": {
                 "title": "Ticket",
                 "description": "Ticket Model",
