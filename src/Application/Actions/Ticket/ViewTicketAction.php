@@ -4,10 +4,8 @@ declare(strict_types=1);
 namespace App\Application\Actions\Ticket;
 
 use App\Application\Actions\Action;
-use App\Domain\DTOs\TicketDTO;
 use App\Infrastructure\Persistence\Repositories\TicketRepository;
 use OpenApi\Annotations as OA;
-use phpDocumentor\Reflection\Types\This;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Log\LoggerInterface;
 
@@ -29,9 +27,9 @@ class ViewTicketAction extends Action
     /**
      * @OA\Get(
      *   tags={"ticket"},
-     *   path="/tickets/{id}",
+     *   path="/tickets/{code}",
      *   operationId="getTicket",
-     *   summary="Get Ticket by ID",
+     *   summary="Get Ticket by Code",
      *   @OA\Parameter(
      *          name="id",
      *          in="path",
@@ -53,19 +51,18 @@ class ViewTicketAction extends Action
     protected function action(): Response
     {
 
-        $code = $this->args['code'];
+        $ticketArray = $this->args;
 
-        $ticketDTO = new TicketDTO($code);
+        //$ticketDTO = new TicketDTO($ticketArray);
 
-        //TODO Find ticket by code
-        $ticket = $this->ticketRepository->findTicketById($code);
-
-        $this->logger->info('Ticket ' . $this->args['id'] . ' was viewed.');
+        $ticket = $this->ticketRepository->findTicketByCode($ticketArray);
 
         if (empty($ticket)){
 
-           return $this->respondNotFound('Not Found');
+            return $this->respondNotFound($ticketArray['code']);
         }
+
+        $this->logger->info('Ticket ' . $ticketArray['code'] . ' was viewed.');
 
         return $this->respondWithData($ticket);
     }

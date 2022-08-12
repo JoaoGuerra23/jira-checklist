@@ -878,13 +878,13 @@
                         "description": "Item Name",
                         "type": "string"
                     },
-                    "status_id": {
+                    "status": {
                         "title": "Status ID",
                         "description": "Status ID",
                         "type": "integer",
                         "format": "int64"
                     },
-                    "owner_id": {
+                    "owner": {
                         "title": "Owner ID",
                         "description": "Owner ID",
                         "type": "integer",

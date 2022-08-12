@@ -3,6 +3,7 @@
 namespace App\Application\Actions\Ticket;
 
 use App\Application\Actions\Action;
+use App\Domain\DTOs\TicketDTO;
 use App\Infrastructure\Persistence\Repositories\TicketRepository;
 use OpenApi\Annotations as OA;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -54,7 +55,18 @@ class UpdateTicketAction extends Action
      */
     protected function action(): Response
     {
-        $ticket = $this->ticketRepository->updateTicketCode($this->request);
+        $code = $this->request;
+
+        $ticketDTO = new TicketDTO($code);
+
+        $ticket = $this->ticketRepository->updateTicketCode($code);
+
+
+        if (empty($ticket)){
+
+            return $this->respondNotFound($code['code']);
+        }
+
 
         $this->logger->info("Ticket" . $ticket->jsonSerialize()['id'] . " Edited");
 

@@ -45,7 +45,7 @@ class TicketRepository
             ->where('t.deleted_at IS NULL')
             ->orderBy('t.id', 'ASC');
 
-        //TODO Limit to 5 results here
+        //I Should limit results to prevent sql injection
 
         return $builder->getQuery()->execute();
     }
@@ -58,16 +58,16 @@ class TicketRepository
      * @param array $args
      * @return Ticket[]
      */
-    public function findTicketById(array $args): array
+    public function findTicketByCode(array $args): array
     {
-        $id = $args['id'];
+        $code = $args['code'];
 
         return $this->entityManager
             ->createQueryBuilder()
             ->select('t.id', 't.code')
             ->from(Ticket::class, 't')
-            ->where('t.id = :id')
-            ->setParameter(':id', $id)
+            ->where('t.code = :code')
+            ->setParameter(':code', $code)
             ->andWhere('t.deleted_at IS NULL')
             ->getQuery()
             ->execute();

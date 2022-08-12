@@ -2,9 +2,10 @@
 
 namespace App\Domain\DTOs;
 
-class TicketDTO
-{
+use App\Domain\Entities\Ticket;
 
+class TicketDTO extends Ticket
+{
     /**
      * @var string
      */
@@ -25,5 +26,4 @@ class TicketDTO
     {
         return $this->code;
     }
-
 }

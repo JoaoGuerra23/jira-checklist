@@ -60,7 +60,7 @@ class Item
      * @var int
      *
      */
-    private $owner_id;
+    private $owner;
 
     /**
      * @ORM\ManyToOne(targetEntity="Ticket", inversedBy="id")
@@ -156,17 +156,17 @@ class Item
     /**
      * @return int
      */
-    public function getOwnerId(): int
+    public function getOwner(): int
     {
-        return $this->owner_id;
+        return $this->owner;
     }
 
     /**
-     * @param int $owner_id
+     * @param int $owner
      */
-    public function setOwnerId(int $owner_id): void
+    public function setOwner(int $owner): void
     {
-        $this->owner_id = $owner_id;
+        $this->owner = $owner;
     }
 
     /**

@@ -52,9 +52,9 @@ return function (App $app) {
     $app->group('/tickets', function (Group $group) {
         $group->post('', CreateTicketAction::class);
         $group->get('', ListTicketsAction::class);
-        $group->get('/{id}', ViewTicketAction::class);
-        $group->patch('/{id}', UpdateTicketAction::class);
-        $group->delete('/{id}', DeleteTicketAction::class);
+        $group->get('/{code}', ViewTicketAction::class);
+        $group->patch('/{code}', UpdateTicketAction::class);
+        $group->delete('/{code}', DeleteTicketAction::class);
     });
 
     $app->group('/tabs', function (Group $group) {
