@@ -3,6 +3,7 @@
 namespace App\Domain\Entities;
 
 use Doctrine\ORM\Mapping as ORM;
+use JsonSerializable;
 use OpenApi\Annotations as OA;
 
 /**
@@ -14,7 +15,7 @@ use OpenApi\Annotations as OA;
  *     title="Ticket"
  * )
  */
-class Ticket
+class Ticket implements JsonSerializable
 {
     /**
      * @ORM\Id
@@ -75,4 +76,15 @@ class Ticket
         $this->code = $code;
     }
 
+
+    /**
+     * @return array
+     */
+    public function jsonSerialize(): array
+    {
+        return [
+            'id' => $this->id,
+            'code' => $this->code
+        ];
+    }
 }

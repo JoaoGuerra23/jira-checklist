@@ -141,6 +141,7 @@ class ItemRepository
         $this->item = new Item();
         $this->item->setName($data['name']);
         $this->item->setDate($date);
+        $this->item->setStatus($data['status_id']);
 
         $this->entityManager->persist($this->item);
         $this->entityManager->flush();

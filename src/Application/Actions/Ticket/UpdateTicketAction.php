@@ -54,11 +54,11 @@ class UpdateTicketAction extends Action
      */
     protected function action(): Response
     {
-        $tickets = $this->ticketRepository->updateTicketCode($this->request, $this->response);
+        $ticket = $this->ticketRepository->updateTicketCode($this->request);
 
-        $this->logger->info("Ticket Code Edited");
+        $this->logger->info("Ticket" . $ticket->jsonSerialize()['id'] . " Edited");
 
-        return $this->respondWithData($tickets);
+        return $this->respondWithData($ticket->jsonSerialize());
     }
 
 }

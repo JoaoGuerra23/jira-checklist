@@ -55,11 +55,11 @@ class CreateTicketAction extends Action
     protected function action(): Response
     {
 
-        $ticket = $this->ticketRepository->createNewTicket($this->request, $this->response);
+        $ticket = $this->ticketRepository->createNewTicket($this->request);
 
-        $this->logger->info("Ticket Created");
+        $this->logger->info("Ticket " . $ticket->jsonSerialize()['id'] . "Created with code " . $ticket->jsonSerialize()['code']);
 
-        return $this->respondWithData($ticket, 201);
+        return $this->respondWithData($ticket->jsonSerialize(), 201);
     }
 
 }

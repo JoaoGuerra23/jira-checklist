@@ -47,11 +47,11 @@ class DeleteTicketAction extends Action
     protected function action(): Response
     {
 
-        $tickets = $this->ticketRepository->deleteTicketById($this->response, $this->args);
+        $ticket = $this->ticketRepository->deleteTicketById($this->args);
 
-        $this->logger->info("Ticket Deleted");
+        $this->logger->info("Ticket" . $this->args['id'] . "Deleted");
 
-        return $this->respondWithData($tickets);
+        return $this->respondWithData($ticket);
     }
 
 }

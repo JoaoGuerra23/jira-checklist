@@ -16,13 +16,7 @@ class InMemoryUserRepository implements UserRepository
     private $users;
 
     /**
-     * @var Ticket []
-     */
-    private $tickets;
-
-    /**
      * @param User[]|null $users
-     * @param Ticket[]|null $tickets
      */
     public function __construct(array $users = null, array $tickets = null)
     {

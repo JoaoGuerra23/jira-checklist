@@ -70,7 +70,6 @@ class TabRepository
             ->andWhere('t.deleted_at IS NULL')
             ->getQuery()
             ->execute();
-
     }
 
 
@@ -148,7 +147,6 @@ class TabRepository
         $this->entityManager->flush();
 
         return $response->withStatus(200, 'OK - Tab Created');
-
 
     }
 

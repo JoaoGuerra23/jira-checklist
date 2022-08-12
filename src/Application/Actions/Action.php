@@ -18,7 +18,7 @@ use Slim\Exception\HttpNotFoundException;
  */
 abstract class Action
 {
-    protected  $logger;
+    protected $logger;
 
     protected $request;
 
@@ -83,6 +83,11 @@ abstract class Action
         $payload = new ActionPayload($statusCode, $data);
 
         return $this->respond($payload);
+    }
+
+    protected function respondNotFound($id): Response
+    {
+        return $this->respondWithData("Resource `{$id}` Not Found", 404);
     }
 
     protected function respond(ActionPayload $payload): Response

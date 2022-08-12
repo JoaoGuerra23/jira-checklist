@@ -50,7 +50,7 @@ class Item
      * @var int
      *
      */
-    private $status_id;
+    private $status;
 
     /**
      * @ORM\Column(type="integer")
@@ -98,6 +98,13 @@ class Item
      */
     private $deleted_at;
 
+    public function __construct()
+    {
+
+
+
+    }
+
     /**
      * @return int
      */
@@ -133,17 +140,17 @@ class Item
     /**
      * @return int
      */
-    public function getStatusId(): int
+    public function getStatus(): int
     {
-        return $this->status_id;
+        return $this->status;
     }
 
     /**
-     * @param int $status_id
+     * @param int $status
      */
-    public function setStatusId(int $status_id): void
+    public function setStatus(int $status): void
     {
-        $this->status_id = $status_id;
+        $this->status = $status;
     }
 
     /**

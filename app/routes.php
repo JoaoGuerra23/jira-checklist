@@ -40,7 +40,7 @@ return function (App $app) {
     });
 
     $app->get('/', function (Request $request, Response $response) {
-        $response->getBody()->write('Hello world!');
+        $response->getBody()->write(json_encode(['hello' => 'world']));
         return $response;
     });
 

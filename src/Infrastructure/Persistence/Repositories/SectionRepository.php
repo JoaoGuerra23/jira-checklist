@@ -137,8 +137,11 @@ class SectionRepository
     {
         $data = $request->getParsedBody();
 
+
+
         $this->section = new Section();
         $this->section->setSubject($data['subject']);
+        $this->section->setTabsId($data['tabs_id']);
 
         $this->entityManager->persist($this->section);
         $this->entityManager->flush();

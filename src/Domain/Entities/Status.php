@@ -23,7 +23,7 @@ class Status
      * @ORM\Id
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue
-     * @ORM\OneToMany(targetEntity="Item", mappedBy="status_id")
+     *
      *
      * @OA\Property(type="integer", format="int64", description="ID", title="ID")
      *
