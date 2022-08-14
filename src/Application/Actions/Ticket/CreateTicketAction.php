@@ -57,7 +57,8 @@ class CreateTicketAction extends Action
 
         $ticket = $this->ticketRepository->createNewTicket($this->request);
 
-        $this->logger->info("Ticket " . $ticket->jsonSerialize()['id'] . "Created with code " . $ticket->jsonSerialize()['code']);
+        $this->logger->info("Ticket " . $ticket->jsonSerialize()['id'] .
+            "Created with code " . $ticket->jsonSerialize()['code']);
 
         return $this->respondWithData($ticket->jsonSerialize(), 201);
     }
