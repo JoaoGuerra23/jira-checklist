@@ -3,8 +3,9 @@
 namespace App\Domain\DTOs;
 
 use App\Domain\Entities\Ticket;
+use JsonSerializable;
 
-class TicketDTO extends Ticket
+class TicketDTO implements JsonSerializable
 {
     /**
      * @var string
@@ -25,5 +26,12 @@ class TicketDTO extends Ticket
     public function getCode(): string
     {
         return $this->code;
+    }
+
+    public function jsonSerialize(): array
+    {
+        return [
+            'code' => $this->code
+        ];
     }
 }

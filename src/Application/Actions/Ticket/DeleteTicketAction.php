@@ -3,10 +3,12 @@
 namespace App\Application\Actions\Ticket;
 
 use App\Application\Actions\Action;
+use App\Domain\DTOs\TicketDTO;
 use App\Infrastructure\Persistence\Repositories\TicketRepository;
 use OpenApi\Annotations as OA;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Log\LoggerInterface;
+use Slim\Exception\HttpBadRequestException;
 
 class DeleteTicketAction extends Action
 {
@@ -25,16 +27,16 @@ class DeleteTicketAction extends Action
     /**
      * @OA\Delete(
      *   tags={"ticket"},
-     *   path="/tickets/{id}",
+     *   path="/tickets/{code}",
      *   operationId="deleteTicket",
-     *   summary="Delete Ticket by ID",
+     *   summary="Delete Ticket by Code",
      *   @OA\Parameter(
-     *          name="id",
+     *          name="code",
      *          in="path",
      *          required=true,
-     *          description="Ticket id",
+     *          description="Ticket Code",
      *          @OA\Schema(
-     *              type="integer"
+     *              type="string"
      *          )
      *   ),
      *   @OA\Response(
@@ -43,15 +45,22 @@ class DeleteTicketAction extends Action
      *     @OA\JsonContent(ref="#/components/schemas/Ticket")
      *   )
      * )
+     * @throws HttpBadRequestException
      */
     protected function action(): Response
     {
 
-        $ticket = $this->ticketRepository->deleteTicketById($this->args);
+        $code = $this->resolveArg('code');
 
-        $this->logger->info("Ticket" . $this->args['id'] . "Deleted");
+        $ticketDTO = new TicketDTO($code);
 
-        return $this->respondWithData($ticket);
+        $ticket = $this->ticketRepository->deleteTicketByCode($ticketDTO);
+
+        $message = "Ticket " . $ticket->jsonSerialize()['code'] . " Deleted";
+
+        $this->logger->info($message);
+
+        return $this->respondWithData($message);
     }
 
 }

@@ -143,6 +143,8 @@ class ItemRepository
         $this->item->setDate($date);
         $this->item->setStatus($data['status_id']);
         $this->item->setOwner($data['owner_id']);
+        $this->item->setSectionsId($data['sections_id']);
+        $this->item->setTicketsId($data['tickets_id']);
 
         $this->entityManager->persist($this->item);
         $this->entityManager->flush();

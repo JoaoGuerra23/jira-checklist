@@ -759,36 +759,6 @@
             }
         },
         "/tickets/{id}": {
-            "get": {
-                "tags": [
-                    "ticket"
-                ],
-                "summary": "Get Ticket by ID",
-                "operationId": "getTicket",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "Ticket id",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "A single ticket",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/Ticket"
-                                }
-                            }
-                        }
-                    }
-                }
-            },
             "delete": {
                 "tags": [
                     "ticket"
@@ -849,6 +819,38 @@
                 "responses": {
                     "200": {
                         "description": "Edited Ticket",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Ticket"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/tickets/{code}": {
+            "get": {
+                "tags": [
+                    "ticket"
+                ],
+                "summary": "Get Ticket by Code",
+                "operationId": "getTicket",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Ticket id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A single ticket",
                         "content": {
                             "application/json": {
                                 "schema": {

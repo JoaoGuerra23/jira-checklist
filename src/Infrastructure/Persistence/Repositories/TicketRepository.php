@@ -2,6 +2,8 @@
 
 namespace App\Infrastructure\Persistence\Repositories;
 
+use App\Application\Actions\Action;
+use App\Domain\DTOs\TicketDTO;
 use App\Domain\Entities\Ticket;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
@@ -77,26 +79,24 @@ class TicketRepository
     /**
      * Delete ticket by id
      *
-     * @param array $args
+     * @param TicketDTO $ticketDTO
      * @return Ticket
      */
-    public function deleteTicketById(array $args): Ticket
+    public function deleteTicketByCode(TicketDTO $ticketDTO): Ticket
     {
-        $id = $args['id'];
-        $column = 't.deleted_at';
-        $value = new DateTime();
+        $DTOCode = $ticketDTO->getCode();
 
         $this->entityManager
             ->createQueryBuilder()
             ->update(Ticket::class, 't')
-            ->set($column, ':value')
-            ->setParameter(':value', $value)
-            ->where('t.id = :id')
-            ->setParameter(':id', $id)
+            ->set('t.deleted_at', ':value')
+            ->setParameter(':value', new DateTime())
+            ->where('t.code = :code')
+            ->setParameter(':code', $DTOCode)
             ->getQuery()
             ->execute();
 
-        $this->ticket->setId($args['id']);
+        $this->ticket->setCode($DTOCode);
 
         return $this->ticket;
 
@@ -111,20 +111,22 @@ class TicketRepository
      */
     public function updateTicketCode(Request $request): Ticket
     {
-        $data = $request->getParsedBody();
+
+        $body = $request->getParsedBody();
+
+        $code = $request->getAttribute('code');
 
         $builder = $this->entityManager
             ->createQueryBuilder()
             ->update(Ticket::class, 't')
             ->set('t.code', ':value')
-            ->setParameter(':value', $data['code'])
-            ->where('t.id = :id')
-            ->setParameter(':id', $data['id']);
+            ->setParameter(':value', $body['code'])
+            ->where('t.code = :code')
+            ->setParameter(':code', $code);
 
         $builder->getQuery()->getResult();
 
-        $this->ticket->setId($data['id']);
-        $this->ticket->setCode($data['code']);
+        $this->ticket->setCode($body['code']);
 
         return $this->ticket;
     }
