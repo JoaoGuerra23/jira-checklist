@@ -123,7 +123,6 @@ class ItemRepository
             ->getResult();
 
         return $response->withStatus(200, 'OK - Item Edited');
-
     }
 
 
@@ -150,7 +149,5 @@ class ItemRepository
         $this->entityManager->flush();
 
         return $response->withStatus(201, 'OK - Item Created');
-
     }
-
 }

@@ -25,7 +25,4 @@ class SectionDTO
     {
         return $this->subject;
     }
-
-
-
 }

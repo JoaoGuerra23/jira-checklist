@@ -53,5 +53,4 @@ class ViewSectionAction extends Action
 
         return $this->respondWithData($section);
     }
-
 }

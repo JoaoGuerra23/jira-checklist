@@ -100,9 +100,6 @@ class Item
 
     public function __construct()
     {
-
-
-
     }
 
     /**
@@ -216,7 +213,4 @@ class Item
     {
         $this->sections_id = $sections_id;
     }
-
-
-
 }

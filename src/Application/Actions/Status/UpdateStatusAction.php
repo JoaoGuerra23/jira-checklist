@@ -60,5 +60,4 @@ class UpdateStatusAction extends Action
 
         return $this->respondWithData($status);
     }
-
 }

@@ -57,7 +57,4 @@ class ItemDTO
     {
         return $this->owner;
     }
-
-
-
 }

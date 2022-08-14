@@ -53,5 +53,4 @@ class DeleteSectionAction extends Action
 
         return $this->respondWithData($section);
     }
-
 }

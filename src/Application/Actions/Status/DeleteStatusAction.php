@@ -53,5 +53,4 @@ class DeleteStatusAction extends Action
 
         return $this->respondWithData($status);
     }
-
 }

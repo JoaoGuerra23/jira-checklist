@@ -77,7 +77,4 @@ class Tab
     {
         $this->name = $name;
     }
-
-
-
 }

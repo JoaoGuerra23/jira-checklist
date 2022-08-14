@@ -54,5 +54,4 @@ class ViewItemAction extends Action
 
         return $this->respondWithData($item);
     }
-
 }

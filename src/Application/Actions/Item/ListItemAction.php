@@ -47,5 +47,4 @@ class ListItemAction extends Action
 
         return $this->respondWithData($items);
     }
-
 }

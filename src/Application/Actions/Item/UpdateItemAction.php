@@ -61,5 +61,4 @@ class UpdateItemAction extends Action
 
         return $this->respondWithData($items);
     }
-
 }

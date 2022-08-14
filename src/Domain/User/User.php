@@ -6,7 +6,6 @@ namespace App\Domain\User;
 use JsonSerializable;
 use OpenApi\Annotations as OA;
 
-
 class User implements JsonSerializable
 {
 

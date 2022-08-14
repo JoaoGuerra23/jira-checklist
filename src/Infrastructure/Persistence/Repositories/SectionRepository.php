@@ -123,7 +123,6 @@ class SectionRepository
             ->getResult();
 
         return $response->withStatus(200, 'OK - Section Edited');
-
     }
 
 
@@ -147,8 +146,5 @@ class SectionRepository
         $this->entityManager->flush();
 
         return $response->withStatus(201, 'OK - Section Created');
-
     }
-
-
 }

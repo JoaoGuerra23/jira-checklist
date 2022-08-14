@@ -53,5 +53,4 @@ class ViewStatusAction extends Action
 
         return $this->respondWithData($status);
     }
-
 }

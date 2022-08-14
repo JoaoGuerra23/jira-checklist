@@ -60,5 +60,4 @@ class UpdateSectionAction extends Action
 
         return $this->respondWithData($subject);
     }
-
 }

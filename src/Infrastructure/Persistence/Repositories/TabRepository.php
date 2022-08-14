@@ -47,7 +47,6 @@ class TabRepository
             ->orderBy('t.id', 'ASC');
 
         return $builder->getQuery()->execute();
-
     }
 
 
@@ -123,8 +122,6 @@ class TabRepository
             ->getResult();
 
         return $response->withStatus(200, 'OK - Tab Edited');
-
-
     }
 
 
@@ -147,7 +144,5 @@ class TabRepository
         $this->entityManager->flush();
 
         return $response->withStatus(200, 'OK - Tab Created');
-
     }
-
 }

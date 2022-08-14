@@ -59,8 +59,7 @@ class UpdateTicketAction extends Action
         $ticket = $this->ticketRepository->updateTicketCode($this->request);
 
 
-        if (empty($ticket)){
-
+        if (empty($ticket)) {
             return $this->respondNotFound($ticket->jsonSerialize()['code']);
         }
 
@@ -68,5 +67,4 @@ class UpdateTicketAction extends Action
 
         return $this->respondWithData($ticket->jsonSerialize()['code']);
     }
-
 }

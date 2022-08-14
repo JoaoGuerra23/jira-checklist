@@ -52,5 +52,4 @@ class DeleteItemAction extends Action
 
         return $this->respondWithData($item);
     }
-
 }

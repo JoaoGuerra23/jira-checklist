@@ -9,9 +9,6 @@ use OpenApi\Annotations as OA;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Log\LoggerInterface;
 
-
-
-
 class ListTicketsAction extends Action
 {
 
@@ -43,7 +40,7 @@ class ListTicketsAction extends Action
      *     )
      * )
      */
-     protected function action(): Response
+    protected function action(): Response
     {
         $tickets = $this->ticketRepository->findAllTickets();
 
@@ -51,5 +48,4 @@ class ListTicketsAction extends Action
 
         return $this->respondWithData($tickets);
     }
-
 }

@@ -121,7 +121,6 @@ class StatusRepository
             ->getResult();
 
         return $response->withStatus(200, 'OK - Status Updated');
-
     }
 
 
@@ -142,8 +141,5 @@ class StatusRepository
         $this->entityManager->flush();
 
         return $response->withStatus(201, 'OK - Status Created');
-
     }
-
-
 }

@@ -104,8 +104,4 @@ class Section
     {
         $this->tabs_id = $tabs_id;
     }
-
-
-
-
 }

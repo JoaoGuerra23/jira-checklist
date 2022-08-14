@@ -62,5 +62,4 @@ class DeleteTicketAction extends Action
 
         return $this->respondWithData($message);
     }
-
 }

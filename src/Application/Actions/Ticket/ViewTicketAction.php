@@ -10,7 +10,6 @@ use OpenApi\Annotations as OA;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Log\LoggerInterface;
 
-
 class ViewTicketAction extends Action
 {
 
@@ -58,8 +57,7 @@ class ViewTicketAction extends Action
 
         $ticket = $this->ticketRepository->findTicketByCode($ticketArray);
 
-        if (empty($ticket)){
-
+        if (empty($ticket)) {
             return $this->respondNotFound($ticketArray['code']);
         }
 
@@ -67,5 +65,4 @@ class ViewTicketAction extends Action
 
         return $this->respondWithData($ticket);
     }
-
 }

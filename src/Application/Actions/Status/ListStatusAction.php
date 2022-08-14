@@ -46,6 +46,4 @@ class ListStatusAction extends Action
 
         return $this->respondWithData($status);
     }
-
-
 }

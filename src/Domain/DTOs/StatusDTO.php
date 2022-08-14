@@ -25,6 +25,4 @@ class StatusDTO
     {
         return $this->name;
     }
-
-
 }

@@ -27,7 +27,6 @@ class InMemoryUserRepository implements UserRepository
             4 => new User(4, 'evan.spiegel', 'Evan', 'Spiegel'),
             5 => new User(5, 'jack.dorsey', 'Jack', 'Dorsey'),
         ];
-
     }
 
     /**
@@ -50,6 +49,4 @@ class InMemoryUserRepository implements UserRepository
 
         return $this->users[$id];
     }
-
-
 }

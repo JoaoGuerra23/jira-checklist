@@ -61,5 +61,4 @@ class CreateSectionAction extends Action
 
         return $this->respondWithData($section, 201);
     }
-
 }

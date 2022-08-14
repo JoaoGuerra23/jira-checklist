@@ -46,5 +46,4 @@ class ListSectionAction extends Action
 
         return $this->respondWithData($sections);
     }
-
 }

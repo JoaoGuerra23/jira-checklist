@@ -61,5 +61,4 @@ class CreateTicketAction extends Action
 
         return $this->respondWithData($ticket->jsonSerialize(), 201);
     }
-
 }

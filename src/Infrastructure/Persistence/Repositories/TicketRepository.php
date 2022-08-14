@@ -9,7 +9,6 @@ use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Slim\Psr7\Request;
 
-
 class TicketRepository
 {
     /**
@@ -99,9 +98,7 @@ class TicketRepository
         $this->ticket->setCode($DTOCode);
 
         return $this->ticket;
-
     }
-
 
     /**
      * Update Ticket Code
@@ -131,7 +128,6 @@ class TicketRepository
         return $this->ticket;
     }
 
-
     /**
      *
      * @param Request $request
@@ -148,8 +144,5 @@ class TicketRepository
         $this->entityManager->flush();
 
         return $this->ticket;
-
     }
-
-
 }
