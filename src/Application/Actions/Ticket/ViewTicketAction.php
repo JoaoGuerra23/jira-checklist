@@ -51,17 +51,17 @@ class ViewTicketAction extends Action
     protected function action(): Response
     {
 
-        $ticketArray = $this->args;
+        $ticketCode = $this->args['code'];
 
-        $ticketDTO = new TicketDTO($ticketArray['code']);
+        $ticketDTO = new TicketDTO($ticketCode);
 
-        $ticket = $this->ticketRepository->findTicketByCode($ticketArray);
+        $ticket = $this->ticketRepository->findTicketByCode($ticketDTO);
 
         if (empty($ticket)) {
-            return $this->respondNotFound($ticketArray['code']);
+            return $this->respondWithNotFound($ticketCode);
         }
 
-        $this->logger->info('Ticket ' . $ticketArray['code'] . ' was viewed.');
+        $this->logger->info('Ticket ' . $ticketCode . ' was viewed.');
 
         return $this->respondWithData($ticket);
     }

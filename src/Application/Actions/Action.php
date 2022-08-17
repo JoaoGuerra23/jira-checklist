@@ -84,7 +84,7 @@ abstract class Action
         return $this->respond($payload);
     }
 
-    protected function respondNotFound($id): Response
+    protected function respondWithNotFound($id): Response
     {
         return $this->respondWithData("Resource `{$id}` Not Found", 404);
     }

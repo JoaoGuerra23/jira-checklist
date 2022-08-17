@@ -54,9 +54,13 @@ class DeleteTicketAction extends Action
 
         $ticketDTO = new TicketDTO($code);
 
-        $ticket = $this->ticketRepository->deleteTicketByCode($ticketDTO);
+        if (empty($this->ticketRepository->findTicketByCode($ticketDTO->jsonSerialize()))){
+           return $this->respondWithNotFound($code);
+        }
 
-        $message = "Ticket " . $ticket->jsonSerialize()['code'] . " Deleted";
+        $this->ticketRepository->deleteTicketByCode($ticketDTO);
+
+        $message = "Ticket " . $code . " Deleted";
 
         $this->logger->info($message);
 

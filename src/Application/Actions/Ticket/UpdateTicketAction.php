@@ -4,10 +4,13 @@ namespace App\Application\Actions\Ticket;
 
 use App\Application\Actions\Action;
 use App\Domain\DTOs\DTOFactory;
+use App\Domain\DTOs\TicketDTO;
 use App\Infrastructure\Persistence\Repositories\TicketRepository;
 use OpenApi\Annotations as OA;
+use phpDocumentor\Reflection\Types\This;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Log\LoggerInterface;
+use Slim\Exception\HttpBadRequestException;
 
 class UpdateTicketAction extends Action
 {
@@ -52,19 +55,26 @@ class UpdateTicketAction extends Action
      *     @OA\JsonContent(ref="#/components/schemas/Ticket")
      *   )
      * )
+     * @throws HttpBadRequestException
      */
     protected function action(): Response
     {
+        $currentCode = $this->resolveArg('code');
 
-        $ticket = $this->ticketRepository->updateTicketCode($this->request);
+        $ticketDTO = new TicketDTO($currentCode);
 
+        $ticket = $this->ticketRepository->updateTicketCode($this->request, $ticketDTO);
 
-        if (empty($ticket)) {
-            return $this->respondNotFound($ticket->jsonSerialize()['code']);
+        $updatedCode = $ticket->jsonSerialize()['code'];
+
+        $message = "Ticket code " . $currentCode . " updated to " . $updatedCode;
+
+        if ($currentCode == $updatedCode) {
+            return $this->respondWithData("Please choose a code different from the current one");
         }
 
-        $this->logger->info("Ticket" . $ticket->jsonSerialize()['code'] . " Edited");
+        $this->logger->info($message);
 
-        return $this->respondWithData($ticket->jsonSerialize()['code']);
+        return $this->respondWithData($message);
     }
 }

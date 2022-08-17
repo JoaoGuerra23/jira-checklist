@@ -46,7 +46,7 @@ class TicketRepository
             ->where('t.deleted_at IS NULL')
             ->orderBy('t.id', 'ASC');
 
-        //I Should limit results to prevent sql injection
+        //Good practice to limit the result
 
         return $builder->getQuery()->execute();
     }
@@ -54,21 +54,21 @@ class TicketRepository
 
     /**
      *
-     * Find Ticket by ID
+     * Find Ticket by Code
      *
-     * @param array $args
+     * @param TicketDTO $ticketDTO
      * @return Ticket[]
      */
-    public function findTicketByCode(array $args): array
+    public function findTicketByCode(TicketDTO $ticketDTO): array
     {
-        $code = $args['code'];
+        $ticketDTOCode = $ticketDTO->getCode();
 
         return $this->entityManager
             ->createQueryBuilder()
             ->select('t.id', 't.code')
             ->from(Ticket::class, 't')
             ->where('t.code = :code')
-            ->setParameter(':code', $code)
+            ->setParameter(':code', $ticketDTOCode)
             ->andWhere('t.deleted_at IS NULL')
             ->getQuery()
             ->execute();
@@ -76,14 +76,13 @@ class TicketRepository
 
 
     /**
-     * Delete ticket by id
+     * Delete ticket by Code
      *
      * @param TicketDTO $ticketDTO
-     * @return Ticket
      */
-    public function deleteTicketByCode(TicketDTO $ticketDTO): Ticket
+    public function deleteTicketByCode(TicketDTO $ticketDTO): void
     {
-        $DTOCode = $ticketDTO->getCode();
+        $ticketDTOCode = $ticketDTO->getCode();
 
         $this->entityManager
             ->createQueryBuilder()
@@ -91,37 +90,33 @@ class TicketRepository
             ->set('t.deleted_at', ':value')
             ->setParameter(':value', new DateTime())
             ->where('t.code = :code')
-            ->setParameter(':code', $DTOCode)
+            ->setParameter(':code', $ticketDTOCode)
             ->getQuery()
             ->execute();
-
-        $this->ticket->setCode($DTOCode);
-
-        return $this->ticket;
     }
 
     /**
      * Update Ticket Code
      *
      * @param Request $request
+     * @param TicketDTO $ticketDTO
      * @return Ticket
      */
-    public function updateTicketCode(Request $request): Ticket
+    public function updateTicketCode(Request $request, TicketDTO $ticketDTO): Ticket
     {
+        $ticketDTOCode = $ticketDTO->getCode();
 
         $body = $request->getParsedBody();
 
-        $code = $request->getAttribute('code');
-
-        $builder = $this->entityManager
+        $this->entityManager
             ->createQueryBuilder()
             ->update(Ticket::class, 't')
             ->set('t.code', ':value')
             ->setParameter(':value', $body['code'])
             ->where('t.code = :code')
-            ->setParameter(':code', $code);
-
-        $builder->getQuery()->getResult();
+            ->setParameter(':code', $ticketDTOCode)
+            ->getQuery()
+            ->getResult();
 
         $this->ticket->setCode($body['code']);
 
