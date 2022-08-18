@@ -3,11 +3,9 @@
 namespace App\Application\Actions\Ticket;
 
 use App\Application\Actions\Action;
-use App\Domain\DTOs\DTOFactory;
 use App\Domain\DTOs\TicketDTO;
 use App\Infrastructure\Persistence\Repositories\TicketRepository;
 use OpenApi\Annotations as OA;
-use phpDocumentor\Reflection\Types\This;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Log\LoggerInterface;
 use Slim\Exception\HttpBadRequestException;
@@ -28,9 +26,9 @@ class UpdateTicketAction extends Action
 
     /**
      * @OA\Patch(
-     *   path="/tickets/{id}",
+     *   path="/tickets/{code}",
      *   tags={"ticket"},
-     *   path="/tickets/{id}",
+     *   path="/tickets/{code}",
      *   operationId="editTicket",
      *   summary="Edit Ticket Code",
      *         @OA\RequestBody(
@@ -38,20 +36,16 @@ class UpdateTicketAction extends Action
      *             mediaType="application/json",
      *             @OA\Schema(
      *                 @OA\Property(
-     *                     property="id",
-     *                     type="int"
-     *                 ),
-     *                 @OA\Property(
      *                     property="code",
      *                     type="string"
      *                 ),
-     *                 example={"id": 1, "code": "EX-1234"}
+     *                 example={"code": "EX-1234"}
      *             )
      *         )
      *     ),
      *   @OA\Response(
      *     response=200,
-     *     description="Edited Ticket",
+     *     description="OK",
      *     @OA\JsonContent(ref="#/components/schemas/Ticket")
      *   )
      * )
@@ -63,6 +57,10 @@ class UpdateTicketAction extends Action
 
         $ticketDTO = new TicketDTO($currentCode);
 
+        if (empty($this->ticketRepository->findTicketByCode($ticketDTO))){
+            return $this->respondWithNotFound($ticketDTO->getCode());
+        }
+
         $ticket = $this->ticketRepository->updateTicketCode($this->request, $ticketDTO);
 
         $updatedCode = $ticket->jsonSerialize()['code'];
@@ -70,7 +68,7 @@ class UpdateTicketAction extends Action
         $message = "Ticket code " . $currentCode . " updated to " . $updatedCode;
 
         if ($currentCode == $updatedCode) {
-            return $this->respondWithData("Please choose a code different from the current one");
+            return $this->respondWithSameResources();
         }
 
         $this->logger->info($message);

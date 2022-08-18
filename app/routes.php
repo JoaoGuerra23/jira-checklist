@@ -60,9 +60,9 @@ return function (App $app) {
     $app->group('/tabs', function (Group $group) {
         $group->post('', CreateTabAction::class);
         $group->get('', ListTabAction::class);
-        $group->get('/{id}', ViewTabAction::class);
-        $group->patch('/{id}', UpdateTabAction::class);
-        $group->delete('/{id}', DeleteTabAction::class);
+        $group->get('/{name}', ViewTabAction::class);
+        $group->patch('/{name}', UpdateTabAction::class);
+        $group->delete('/{name}', DeleteTabAction::class);
     });
 
     $app->group('/status', function (Group $group) {

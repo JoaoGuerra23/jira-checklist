@@ -2,8 +2,11 @@
 
 namespace App\Infrastructure\Persistence\Repositories;
 
+use App\Domain\DTOs\TabDTO;
 use App\Domain\Entities\Tab;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
+use http\Message;
 use Slim\Psr7\Request;
 use Slim\Psr7\Response;
 
@@ -51,21 +54,21 @@ class TabRepository
 
 
     /**
-     * Find Tab by ID
+     * Find Tab by Name
      *
-     * @param array $args
+     * @param TabDTO $tabDTO
      * @return array
      */
-    public function findTabById(array $args): array
+    public function findTabByName(TabDTO $tabDTO): array
     {
-        $id = $args['id'];
+        $tabDTOName = $tabDTO->getName();
 
         return $this->entityManager
             ->createQueryBuilder()
             ->select('t.id', 't.name')
             ->from(Tab::class, 't')
-            ->where('t.id = :id')
-            ->setParameter(':id', $id)
+            ->where('t.name = :name')
+            ->setParameter(':name', $tabDTOName)
             ->andWhere('t.deleted_at IS NULL')
             ->getQuery()
             ->execute();
@@ -75,27 +78,22 @@ class TabRepository
     /**
      * Delete Tab by ID
      *
-     * @param Response $response
-     * @param array $args
-     * @return Response
+     * @param TabDTO $tabDTO
+     * @return void
      */
-    public function deleteTabById(Response $response, array $args): Response
+    public function deleteTabByName(TabDTO $tabDTO): void
     {
-        $id = $args['id'];
-        $column = 't.deleted_at';
-        $value = new \DateTime();
+        $tabDTOName = $tabDTO->getName();
 
         $this->entityManager
             ->createQueryBuilder()
             ->update(Tab::class, 't')
-            ->set($column, ':value')
-            ->setParameter(':value', $value)
-            ->where('t.id = :id')
-            ->setParameter(':id', $id)
+            ->set('t.deleted_at', ':value')
+            ->setParameter(':value', new DateTime())
+            ->where('t.name = :name')
+            ->setParameter(':name', $tabDTOName)
             ->getQuery()
             ->execute();
-
-        return $response->withStatus(200, 'Ticket deleted');
     }
 
 
@@ -103,25 +101,28 @@ class TabRepository
      * Update Tab Name
      *
      * @param Request $request
-     * @param Response $response
-     * @return Response
+     * @param TabDTO $tabDTO
+     * @return Tab
      */
-    public function updateTabName(Request $request, Response $response): Response
+    public function updateTabName(Request $request, TabDTO $tabDTO): Tab
     {
+        $tabDTOName = $tabDTO->getName();
 
-        $data = $request->getParsedBody();
+        $body = $request->getParsedBody();
 
         $this->entityManager
             ->createQueryBuilder()
             ->update(Tab::class, 't')
             ->set('t.name', ':value')
-            ->setParameter(':value', $data['name'])
-            ->where('t.id = :id')
-            ->setParameter(':id', $data['id'])
+            ->setParameter(':value', $body['name'])
+            ->where('t.name = :name')
+            ->setParameter(':name', $tabDTOName)
             ->getQuery()
             ->getResult();
 
-        return $response->withStatus(200, 'OK - Tab Edited');
+        $this->tab->setName($body['name']);
+
+        return $this->tab;
     }
 
 
@@ -130,10 +131,9 @@ class TabRepository
      * Create new Tab
      *
      * @param Request $request
-     * @param Response $response
-     * @return Response
+     * @return Tab
      */
-    public function createNewTab(Request $request, Response $response): Response
+    public function createNewTab(Request $request): Tab
     {
         $data = $request->getParsedBody();
 
@@ -143,6 +143,6 @@ class TabRepository
         $this->entityManager->persist($this->tab);
         $this->entityManager->flush();
 
-        return $response->withStatus(200, 'OK - Tab Created');
+        return $this->tab;
     }
 }

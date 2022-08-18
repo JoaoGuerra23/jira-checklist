@@ -32,14 +32,10 @@ class CreateTabAction extends Action
      *             mediaType="application/json",
      *             @OA\Schema(
      *                 @OA\Property(
-     *                     property="id",
-     *                     type="int"
-     *                 ),
-     *                 @OA\Property(
      *                     property="name",
      *                     type="string"
      *                 ),
-     *                 example={"id": 1, "code": "Tab1"}
+     *                 example={"name": "Tab1"}
      *             )
      *         )
      *     ),
@@ -55,10 +51,12 @@ class CreateTabAction extends Action
      */
     protected function action(): Response
     {
-        $tab = $this->tabRepository->createNewTab($this->request, $this->response);
+        $tab = $this->tabRepository->createNewTab($this->request);
 
-        $this->logger->info('Tab Created');
+        $message = 'Tab ' . $tab->getName() . ' Created';
 
-        return $this->respondWithData($tab, 201);
+        $this->logger->info($message);
+
+        return $this->respondWithData($message, 201);
     }
 }

@@ -31,14 +31,10 @@ class CreateTicketAction extends Action
      *             mediaType="application/json",
      *             @OA\Schema(
      *                 @OA\Property(
-     *                     property="id",
-     *                     type="int"
-     *                 ),
-     *                 @OA\Property(
      *                     property="code",
      *                     type="string"
      *                 ),
-     *                 example={"id": 1, "code": "EX-1234"}
+     *                 example={"code": "EX-1234"}
      *             )
      *         )
      *     ),
@@ -57,9 +53,10 @@ class CreateTicketAction extends Action
 
         $ticket = $this->ticketRepository->createNewTicket($this->request);
 
-        $this->logger->info("Ticket " . $ticket->jsonSerialize()['id'] .
-            "Created with code " . $ticket->jsonSerialize()['code']);
+        $message = 'Ticket ' . $ticket->getCode() . ' Created';
 
-        return $this->respondWithData($ticket->jsonSerialize(), 201);
+        $this->logger->info($message);
+
+        return $this->respondWithData($message, 201);
     }
 }

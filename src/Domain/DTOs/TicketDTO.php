@@ -2,9 +2,7 @@
 
 namespace App\Domain\DTOs;
 
-use App\Domain\Entities\Ticket;
 use JsonSerializable;
-use Slim\Psr7\Request;
 
 class TicketDTO implements JsonSerializable
 {

@@ -3,6 +3,7 @@
 namespace App\Domain\Entities;
 
 use Doctrine\ORM\Mapping as ORM;
+use JsonSerializable;
 use OpenApi\Annotations as OA;
 
 /**
@@ -16,7 +17,7 @@ use OpenApi\Annotations as OA;
  * )
  *
  */
-class Tab
+class Tab implements JsonSerializable
 {
 
     /**
@@ -76,5 +77,16 @@ class Tab
     public function setName(string $name): void
     {
         $this->name = $name;
+    }
+
+    /**
+     * @return array
+     */
+    public function jsonSerialize(): array
+    {
+        return [
+            'id' => $this->id,
+            'name' => $this->name
+        ];
     }
 }

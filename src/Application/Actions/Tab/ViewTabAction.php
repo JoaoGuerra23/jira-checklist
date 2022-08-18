@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Application\Actions\Tab;
 
 use App\Application\Actions\Action;
+use App\Domain\DTOs\TabDTO;
 use App\Infrastructure\Persistence\Repositories\TabRepository;
 use App\Infrastructure\Persistence\Repositories\TicketRepository;
 use OpenApi\Annotations as OA;
@@ -48,9 +49,17 @@ class ViewTabAction extends Action
      */
     protected function action(): Response
     {
-        $tab = $this->tabRepository->findTabById($this->args);
+        $tabName = $this->args['name'];
 
-        $this->logger->info('Get single tab');
+        $tabDTO = new TabDTO($tabName);
+
+        $tab = $this->tabRepository->findTabByName($tabDTO);
+
+        if (empty($tab)) {
+            return $this->respondWithNotFound($tabName);
+        }
+
+        $this->logger->info('Tab ' . $tabName . ' was viewed');
 
         return $this->respondWithData($tab);
     }

@@ -5,6 +5,7 @@ namespace App\Application\Actions;
 
 use App\Domain\DomainException\DomainRecordNotFoundException;
 use OpenApi\Annotations as OA;
+use phpDocumentor\Reflection\Types\This;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Log\LoggerInterface;
@@ -87,6 +88,11 @@ abstract class Action
     protected function respondWithNotFound($id): Response
     {
         return $this->respondWithData("Resource `{$id}` Not Found", 404);
+    }
+
+    protected function respondWithSameResources(): Response
+    {
+        return $this->respondWithData("Http body supposed to be different from the attribute", 401);
     }
 
     protected function respond(ActionPayload $payload): Response
