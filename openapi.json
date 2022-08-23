@@ -419,36 +419,6 @@
             }
         },
         "/status/{id}": {
-            "get": {
-                "tags": [
-                    "status"
-                ],
-                "summary": "Get Status by ID",
-                "operationId": "getStatus",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "Status id",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/Status"
-                                }
-                            }
-                        }
-                    }
-                }
-            },
             "delete": {
                 "tags": [
                     "status"
@@ -520,6 +490,38 @@
                 }
             }
         },
+        "/status/{name}": {
+            "get": {
+                "tags": [
+                    "status"
+                ],
+                "summary": "Get Status by Name",
+                "operationId": "getStatus",
+                "parameters": [
+                    {
+                        "name": "name",
+                        "in": "path",
+                        "description": "Status name",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Status"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/tabs": {
             "get": {
                 "tags": [
@@ -555,17 +557,13 @@
                         "application/json": {
                             "schema": {
                                 "properties": {
-                                    "id": {
-                                        "type": "integer"
-                                    },
                                     "name": {
                                         "type": "string"
                                     }
                                 },
                                 "type": "object",
                                 "example": {
-                                    "id": 1,
-                                    "code": "Tab1"
+                                    "name": "Tab1"
                                 }
                             }
                         }
@@ -581,6 +579,74 @@
                                     "items": {
                                         "$ref": "#/components/schemas/Tab"
                                     }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/tabs/{name}": {
+            "delete": {
+                "tags": [
+                    "tab"
+                ],
+                "summary": "Delete Tab by Name",
+                "operationId": "deleteTab",
+                "parameters": [
+                    {
+                        "name": "name",
+                        "in": "path",
+                        "description": "Tab name",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Tab"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "tags": [
+                    "tab"
+                ],
+                "summary": "Edit Tab Name",
+                "operationId": "editTab",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object",
+                                "example": {
+                                    "name": "Tab-1"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Tab"
                                 }
                             }
                         }
@@ -609,76 +675,6 @@
                 "responses": {
                     "200": {
                         "description": "A single tab",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/Tab"
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            "delete": {
-                "tags": [
-                    "tab"
-                ],
-                "summary": "Delete Tab by ID",
-                "operationId": "deleteTab",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "Tab id",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/Tab"
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            "patch": {
-                "tags": [
-                    "tab"
-                ],
-                "summary": "Edit Tab Name",
-                "operationId": "editTab",
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "properties": {
-                                    "id": {
-                                        "type": "integer"
-                                    },
-                                    "name": {
-                                        "type": "string"
-                                    }
-                                },
-                                "type": "object",
-                                "example": {
-                                    "id": 1,
-                                    "code": "Tab1"
-                                }
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Edited Ticket",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -725,16 +721,12 @@
                         "application/json": {
                             "schema": {
                                 "properties": {
-                                    "id": {
-                                        "type": "integer"
-                                    },
                                     "code": {
                                         "type": "string"
                                     }
                                 },
                                 "type": "object",
                                 "example": {
-                                    "id": 1,
                                     "code": "EX-1234"
                                 }
                             }
@@ -767,18 +759,18 @@
                 "operationId": "getTicket",
                 "parameters": [
                     {
-                        "name": "id",
+                        "name": "code",
                         "in": "path",
-                        "description": "Ticket id",
+                        "description": "Ticket Code",
                         "required": true,
                         "schema": {
-                            "type": "integer"
+                            "type": "string"
                         }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "A single ticket",
+                        "description": "OK",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -818,9 +810,7 @@
                         }
                     }
                 }
-            }
-        },
-        "/tickets/{id}": {
+            },
             "patch": {
                 "tags": [
                     "ticket"
@@ -832,16 +822,12 @@
                         "application/json": {
                             "schema": {
                                 "properties": {
-                                    "id": {
-                                        "type": "integer"
-                                    },
                                     "code": {
                                         "type": "string"
                                     }
                                 },
                                 "type": "object",
                                 "example": {
-                                    "id": 1,
                                     "code": "EX-1234"
                                 }
                             }
@@ -850,7 +836,7 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Edited Ticket",
+                        "description": "OK",
                         "content": {
                             "application/json": {
                                 "schema": {

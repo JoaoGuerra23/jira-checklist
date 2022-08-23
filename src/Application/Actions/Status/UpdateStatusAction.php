@@ -3,10 +3,12 @@
 namespace App\Application\Actions\Status;
 
 use App\Application\Actions\Action;
+use App\Domain\DTOs\StatusDTO;
 use App\Infrastructure\Persistence\Repositories\StatusRepository;
 use OpenApi\Annotations as OA;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Log\LoggerInterface;
+use Slim\Exception\HttpBadRequestException;
 
 class UpdateStatusAction extends Action
 {
@@ -24,9 +26,9 @@ class UpdateStatusAction extends Action
 
     /**
      * @OA\Patch(
-     *   path="/status/{id}",
+     *   path="/status/{name}",
      *   tags={"status"},
-     *   path="/status/{id}",
+     *   path="/status/{name}",
      *   operationId="editStatus",
      *   summary="Edit Status Name",
      *         @OA\RequestBody(
@@ -34,30 +36,43 @@ class UpdateStatusAction extends Action
      *             mediaType="application/json",
      *             @OA\Schema(
      *                 @OA\Property(
-     *                     property="id",
-     *                     type="int"
-     *                 ),
-     *                 @OA\Property(
      *                     property="name",
      *                     type="string"
      *                 ),
-     *                 example={"id": 1, "code": "TO DO"}
+     *                 example={"code": "COMPLETED"}
      *             )
      *         )
      *     ),
      *   @OA\Response(
      *     response=200,
-     *     description="Edited Status",
+     *     description="OK",
      *     @OA\JsonContent(ref="#/components/schemas/Status")
      *   )
      * )
+     * @throws HttpBadRequestException
      */
     protected function action(): Response
     {
-        $status = $this->statusRepository->updateStatusName($this->request, $this->response);
+        $currentName = $this->resolveArg('name');
 
-        $this->logger->info("Status Name Edited");
+        $statusDTO = new StatusDTO($currentName);
 
-        return $this->respondWithData($status);
+        if (empty($this->statusRepository->findStatusByName($statusDTO))) {
+            return $this->respondWithNotFound($statusDTO->getName());
+        }
+
+        $status = $this->statusRepository->updateStatusName($this->request, $statusDTO);
+
+        $updatedName = $status->jsonSerialize()['name'];
+
+        $message = "Status " . $currentName . " updated to " . $updatedName;
+
+        if ($currentName == $updatedName) {
+            return $this->respondWithSameResources();
+        }
+
+        $this->logger->info($message);
+
+        return $this->respondWithData($message);
     }
 }

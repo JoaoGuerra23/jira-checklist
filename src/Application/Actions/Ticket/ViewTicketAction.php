@@ -31,17 +31,17 @@ class ViewTicketAction extends Action
      *   operationId="getTicket",
      *   summary="Get Ticket by Code",
      *   @OA\Parameter(
-     *          name="id",
+     *          name="code",
      *          in="path",
      *          required=true,
-     *          description="Ticket id",
+     *          description="Ticket Code",
      *          @OA\Schema(
-     *              type="integer"
+     *              type="string"
      *   )
      * ),
      *   @OA\Response(
      *     response=200,
-     *     description="A single ticket",
+     *     description="OK",
      *     @OA\JsonContent(ref="#/components/schemas/Ticket")
      *   )
      * )

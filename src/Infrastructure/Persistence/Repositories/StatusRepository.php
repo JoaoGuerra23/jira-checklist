@@ -2,8 +2,10 @@
 
 namespace App\Infrastructure\Persistence\Repositories;
 
+use App\Domain\DTOs\StatusDTO;
 use App\Domain\Entities\Status;
 use App\Domain\Entities\Ticket;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Slim\Psr7\Request;
 use Slim\Psr7\Response;
@@ -53,19 +55,19 @@ class StatusRepository
      *
      * Find Status by ID
      *
-     * @param array $args
+     * @param StatusDTO $statusDTO
      * @return array
      */
-    public function findStatusById(array $args): array
+    public function findStatusByName(StatusDTO $statusDTO): array
     {
-        $id = $args['id'];
+        $statusDTOName = $statusDTO->getName();
 
         return $this->entityManager
             ->createQueryBuilder()
             ->select('s.id', 's.name')
             ->from(Status::class, 's')
-            ->where('s.id = :id')
-            ->setParameter(':id', $id)
+            ->where('s.name = :name')
+            ->setParameter(':name', $statusDTOName)
             ->andWhere('s.deleted_at IS NULL')
             ->getQuery()
             ->execute();
@@ -75,27 +77,23 @@ class StatusRepository
     /**
      * Delete Status by id
      *
-     * @param Response $response
-     * @param array $args
-     * @return Response
+     * @param StatusDTO $statusDTO
+     * @return void
      */
-    public function deleteStatusById(Response $response, array $args): Response
+    public function deleteStatusByName(StatusDTO  $statusDTO): void
     {
-        $id = $args['id'];
-        $column = 's.deleted_at';
-        $value = new \DateTime();
+        $statusDTOName = $statusDTO->getName();
 
         $this->entityManager
             ->createQueryBuilder()
             ->update(Status::class, 's')
-            ->set($column, ':value')
-            ->setParameter(':value', $value)
-            ->where('s.id = :id')
-            ->setParameter(':id', $id)
+            ->set('s.deleted_at', ':value')
+            ->setParameter(':value', new DateTime())
+            ->where('s.name = :name')
+            ->setParameter(':name', $statusDTOName)
             ->getQuery()
             ->execute();
 
-        return $response->withStatus(200, 'Status deleted');
     }
 
 
@@ -103,34 +101,37 @@ class StatusRepository
      * Update Status Name
      *
      * @param Request $request
-     * @param Response $response
-     * @return Response
+     * @param StatusDTO $statusDTO
+     * @return Status
      */
-    public function updateStatusName(Request $request, Response $response): Response
+    public function updateStatusName(Request $request, StatusDTO $statusDTO): Status
     {
-        $data = $request->getParsedBody();
+        $statusDTOName = $statusDTO->getName();
+
+        $body = $request->getParsedBody();
 
         $this->entityManager
             ->createQueryBuilder()
             ->update(Status::class, 's')
             ->set('s.name', ':value')
-            ->setParameter(':value', $data['name'])
-            ->where('s.id = :id')
-            ->setParameter(':id', $data['id'])
+            ->setParameter(':value', $body['name'])
+            ->where('s.name = :name')
+            ->setParameter(':name', $statusDTOName)
             ->getQuery()
             ->getResult();
 
-        return $response->withStatus(200, 'OK - Status Updated');
+        $this->status->setName($body['name']);
+
+        return $this->status;
     }
 
 
     /**
      *
      * @param Request $request
-     * @param Response $response
-     * @return Response
+     * @return Status
      */
-    public function createNewStatus(Request $request, Response $response): Response
+    public function createNewStatus(Request $request): Status
     {
         $data = $request->getParsedBody();
 
@@ -140,6 +141,6 @@ class StatusRepository
         $this->entityManager->persist($this->status);
         $this->entityManager->flush();
 
-        return $response->withStatus(201, 'OK - Status Created');
+        return $this->status;
     }
 }

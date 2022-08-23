@@ -32,14 +32,10 @@ class CreateStatusAction extends Action
      *             mediaType="application/json",
      *             @OA\Schema(
      *                 @OA\Property(
-     *                     property="id",
-     *                     type="int"
-     *                 ),
-     *                 @OA\Property(
      *                     property="name",
      *                     type="string"
      *                 ),
-     *                 example={"id": 1, "code": "TO DO"}
+     *                 example={"name": "COMPLETED"}
      *             )
      *         )
      *     ),
@@ -55,10 +51,12 @@ class CreateStatusAction extends Action
      */
     protected function action(): Response
     {
-        $status = $this->statusRepository->createNewStatus($this->request, $this->response);
+        $status = $this->statusRepository->createNewStatus($this->request);
 
-        $this->logger->info("Status Created");
+        $message = "Status " . $status->getName() . " Created";
 
-        return $this->respondWithData($status, 201);
+        $this->logger->info($message);
+
+        return $this->respondWithData($message, 201);
     }
 }

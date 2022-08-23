@@ -3,6 +3,7 @@
 namespace App\Application\Actions\Status;
 
 use App\Application\Actions\Action;
+use App\Domain\DTOs\StatusDTO;
 use App\Infrastructure\Persistence\Repositories\StatusRepository;
 use App\Infrastructure\Persistence\Repositories\TicketRepository;
 use OpenApi\Annotations as OA;
@@ -26,16 +27,16 @@ class ViewStatusAction extends Action
     /**
      * @OA\Get(
      *   tags={"status"},
-     *   path="/status/{id}",
+     *   path="/status/{name}",
      *   operationId="getStatus",
-     *   summary="Get Status by ID",
+     *   summary="Get Status by Name",
      *   @OA\Parameter(
-     *          name="id",
+     *          name="name",
      *          in="path",
      *          required=true,
-     *          description="Status id",
+     *          description="Status name",
      *          @OA\Schema(
-     *              type="integer"
+     *              type="string"
      *   )
      * ),
      *   @OA\Response(
@@ -47,9 +48,17 @@ class ViewStatusAction extends Action
      */
     protected function action(): Response
     {
-        $status = $this->statusRepository->findStatusById($this->args);
+        $statusName = $this->args['name'];
 
-        $this->logger->info('Get Status by ID');
+        $statusDTO = new StatusDTO($statusName);
+
+        $status = $this->statusRepository->findStatusByName($statusDTO);
+
+        if(empty($status)){
+            return $this->respondWithNotFound($statusName);
+        }
+
+        $this->logger->info('Status ' . $statusName . ' was viewed');
 
         return $this->respondWithData($status);
     }

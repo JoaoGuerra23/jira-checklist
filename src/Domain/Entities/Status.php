@@ -77,4 +77,15 @@ class Status
     {
         $this->name = $name;
     }
+
+    /**
+     * @return array
+     */
+    public function jsonSerialize(): array
+    {
+        return [
+            'id' => $this->id,
+            'name' => $this->name
+        ];
+    }
 }

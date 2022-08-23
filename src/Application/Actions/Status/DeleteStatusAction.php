@@ -3,10 +3,13 @@
 namespace App\Application\Actions\Status;
 
 use App\Application\Actions\Action;
+use App\Domain\DTOs\StatusDTO;
 use App\Infrastructure\Persistence\Repositories\StatusRepository;
 use OpenApi\Annotations as OA;
+use phpDocumentor\Reflection\Types\This;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Log\LoggerInterface;
+use Slim\Exception\HttpBadRequestException;
 
 class DeleteStatusAction extends Action
 {
@@ -25,16 +28,16 @@ class DeleteStatusAction extends Action
     /**
      * @OA\Delete(
      *   tags={"status"},
-     *   path="/status/{id}",
+     *   path="/status/{name}",
      *   operationId="deleteStatus",
-     *   summary="Delete Status by ID",
+     *   summary="Delete Status by Name",
      *   @OA\Parameter(
-     *          name="id",
+     *          name="name",
      *          in="path",
      *          required=true,
-     *          description="Status id",
+     *          description="Status Name",
      *          @OA\Schema(
-     *              type="integer"
+     *              type="string"
      *          )
      *   ),
      *   @OA\Response(
@@ -43,14 +46,24 @@ class DeleteStatusAction extends Action
      *     @OA\JsonContent(ref="#/components/schemas/Status")
      *   )
      * )
+     * @throws HttpBadRequestException
      */
     protected function action(): Response
     {
+        $name = $this->resolveArg('name');
 
-        $status = $this->statusRepository->deleteStatusById($this->response, $this->args);
+        $statusDTO = new StatusDTO($name);
 
-        $this->logger->info("Status Deleted");
+        if(empty($this->statusRepository->findStatusByName($statusDTO))){
+            return $this->respondWithNotFound($name);
+        }
 
-        return $this->respondWithData($status);
+        $this->statusRepository->deleteStatusByName($statusDTO);
+
+        $message = "Status " . $name . " Deleted";
+
+        $this->logger->info($message);
+
+        return $this->respondWithData($message);
     }
 }

@@ -68,9 +68,9 @@ return function (App $app) {
     $app->group('/status', function (Group $group) {
         $group->post('', CreateStatusAction::class);
         $group->get('', ListStatusAction::class);
-        $group->get('/{id}', ViewStatusAction::class);
-        $group->patch('/{id}', UpdateStatusAction::class);
-        $group->delete('/{id}', DeleteStatusAction::class);
+        $group->get('/{name}', ViewStatusAction::class);
+        $group->patch('/{name}', UpdateStatusAction::class);
+        $group->delete('/{name}', DeleteStatusAction::class);
     });
 
     $app->group('/sections', function (Group $group) {
