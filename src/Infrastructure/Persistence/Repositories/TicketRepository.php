@@ -17,7 +17,7 @@ class TicketRepository
     private $entityManager;
 
     /**
-     * @var Ticket[]
+     * @var Ticket
      */
     private $ticket;
 
