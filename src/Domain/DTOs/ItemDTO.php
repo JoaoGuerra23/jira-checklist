@@ -25,5 +25,4 @@ class ItemDTO
     {
         return $this->name;
     }
-
 }

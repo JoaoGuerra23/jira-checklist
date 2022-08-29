@@ -50,7 +50,8 @@ class Tab implements JsonSerializable
      */
     private $deleted_at;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->id = new ArrayCollection();
     }
 

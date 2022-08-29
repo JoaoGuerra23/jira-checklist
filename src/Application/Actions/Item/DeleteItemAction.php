@@ -52,7 +52,7 @@ class DeleteItemAction extends Action
 
         $itemDTO = new ItemDTO($itemName);
 
-        if (empty($this->itemRepository->findItemByName($itemDTO))){
+        if (empty($this->itemRepository->findItemByName($itemDTO))) {
             return $this->respondWithNotFound($itemName);
         }
 

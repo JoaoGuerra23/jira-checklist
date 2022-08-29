@@ -91,7 +91,6 @@ class StatusRepository
             ->setParameter(':name', $statusDTOName)
             ->getQuery()
             ->execute();
-
     }
 
 

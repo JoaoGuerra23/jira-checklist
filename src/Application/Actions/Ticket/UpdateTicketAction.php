@@ -57,7 +57,7 @@ class UpdateTicketAction extends Action
 
         $ticketDTO = new TicketDTO($currentCode);
 
-        if (empty($this->ticketRepository->findTicketByCode($ticketDTO))){
+        if (empty($this->ticketRepository->findTicketByCode($ticketDTO))) {
             return $this->respondWithNotFound($ticketDTO->getCode());
         }
 

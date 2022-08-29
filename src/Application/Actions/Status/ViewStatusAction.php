@@ -56,7 +56,7 @@ class ViewStatusAction extends Action
 
         $status = $this->statusRepository->findStatusByName($statusDTO);
 
-        if(empty($status)){
+        if (empty($status)) {
             return $this->respondWithNotFound($statusName);
         }
 

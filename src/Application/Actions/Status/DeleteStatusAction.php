@@ -54,7 +54,7 @@ class DeleteStatusAction extends Action
 
         $statusDTO = new StatusDTO($name);
 
-        if(empty($this->statusRepository->findStatusByName($statusDTO))){
+        if (empty($this->statusRepository->findStatusByName($statusDTO))) {
             return $this->respondWithNotFound($name);
         }
 

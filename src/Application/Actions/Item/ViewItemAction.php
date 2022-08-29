@@ -57,7 +57,7 @@ class ViewItemAction extends Action
 
         $item = $this->itemRepository->findItemByName($itemDTO);
 
-        if (empty($item)){
+        if (empty($item)) {
             return $this->respondWithNotFound($itemName);
         }
 

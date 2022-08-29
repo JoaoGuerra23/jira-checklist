@@ -59,7 +59,7 @@ class UpdateItemAction extends Action
 
         $itemDTO = new ItemDTO($currentName);
 
-        if (empty($this->itemRepository->findItemByName($itemDTO))){
+        if (empty($this->itemRepository->findItemByName($itemDTO))) {
             return $this->respondWithNotFound($itemDTO->getName());
         }
 

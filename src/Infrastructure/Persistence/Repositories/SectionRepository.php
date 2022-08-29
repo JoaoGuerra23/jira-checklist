@@ -92,7 +92,6 @@ class SectionRepository
             ->setParameter(':subject', $sectionDTOSubject)
             ->getQuery()
             ->execute();
-
     }
 
 

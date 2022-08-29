@@ -53,7 +53,7 @@ class DeleteSectionAction extends Action
 
         $sectionDTO = new SectionDTO($sectionSubject);
 
-        if (empty($this->sectionRepository->findSectionBySubject($sectionDTO))){
+        if (empty($this->sectionRepository->findSectionBySubject($sectionDTO))) {
             return $this->respondWithNotFound($sectionSubject);
         }
 

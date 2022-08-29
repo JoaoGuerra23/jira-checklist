@@ -24,5 +24,4 @@ class TicketDTO
     {
         return $this->code;
     }
-
 }

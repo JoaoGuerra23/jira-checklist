@@ -58,7 +58,7 @@ class UpdateTabAction extends Action
 
         $tabDTO = new TabDTO($currentName);
 
-        if (empty($this->tabRepository->findTabByName($tabDTO))){
+        if (empty($this->tabRepository->findTabByName($tabDTO))) {
             return $this->respondWithNotFound($tabDTO->getName());
         }
 
@@ -68,7 +68,7 @@ class UpdateTabAction extends Action
 
         $message = "Tab name " . $currentName . " updated to " . $updatedName;
 
-        if($currentName == $updatedName){
+        if ($currentName == $updatedName) {
             return $this->respondWithSameResources();
         }
 

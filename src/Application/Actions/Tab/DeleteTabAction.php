@@ -54,7 +54,7 @@ class DeleteTabAction extends Action
 
         $tabDTO = new TabDTO($name);
 
-        if (empty($this->tabRepository->findTabByName($tabDTO))){
+        if (empty($this->tabRepository->findTabByName($tabDTO))) {
             return $this->respondWithNotFound($name);
         }
 

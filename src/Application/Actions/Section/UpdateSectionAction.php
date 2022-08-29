@@ -57,7 +57,7 @@ class UpdateSectionAction extends Action
 
         $sectionDTO = new SectionDTO($currentSubject);
 
-        if (empty($this->sectionRepository->findSectionBySubject($sectionDTO))){
+        if (empty($this->sectionRepository->findSectionBySubject($sectionDTO))) {
             return $this->respondWithNotFound($sectionDTO->getSubject());
         }
 

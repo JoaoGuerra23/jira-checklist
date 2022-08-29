@@ -56,7 +56,7 @@ class ViewSectionAction extends Action
 
         $section = $this->sectionRepository->findSectionBySubject($sectionDTO);
 
-        if (empty($section)){
+        if (empty($section)) {
             return $this->respondWithNotFound($sectionSubject);
         }
 
