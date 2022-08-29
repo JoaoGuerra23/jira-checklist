@@ -3,7 +3,6 @@
 namespace App\Domain\Entities;
 
 use DateTime;
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use JsonSerializable;
 use OpenApi\Annotations as OA;
