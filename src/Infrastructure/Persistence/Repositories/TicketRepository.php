@@ -106,19 +106,19 @@ class TicketRepository
     {
         $ticketDTOCode = $ticketDTO->getCode();
 
-        $body = $request->getParsedBody();
+        $code = $request->getParsedBody()['code'];
 
         $this->entityManager
             ->createQueryBuilder()
             ->update(Ticket::class, 't')
             ->set('t.code', ':value')
-            ->setParameter(':value', $body['code'])
+            ->setParameter(':value', $code)
             ->where('t.code = :code')
             ->setParameter(':code', $ticketDTOCode)
             ->getQuery()
             ->getResult();
 
-        $this->ticket->setCode($body['code']);
+        $this->ticket->setCode($code);
 
         return $this->ticket;
     }
@@ -130,10 +130,10 @@ class TicketRepository
      */
     public function createNewTicket(Request $request): Ticket
     {
-        $body = $request->getParsedBody();
+        $code = $request->getParsedBody()['code'];
 
         $this->ticket = new Ticket();
-        $this->ticket->setCode($body['code']);
+        $this->ticket->setCode($code);
 
         $this->entityManager->persist($this->ticket);
         $this->entityManager->flush();

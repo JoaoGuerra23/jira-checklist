@@ -53,7 +53,7 @@ class CreateTabAction extends Action
     {
         $tab = $this->tabRepository->createNewTab($this->request);
 
-        $message = 'Tab ' . $tab->getName() . ' Created';
+        $message = 'Tab ' . $tab->getName() . ' Created.';
 
         $this->logger->info($message);
 

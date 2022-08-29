@@ -3,11 +3,14 @@
 namespace App\Application\Actions\Item;
 
 use App\Application\Actions\Action;
+use App\Domain\DTOs\ItemDTO;
 use App\Infrastructure\Persistence\Repositories\ItemRepository;
 use App\Infrastructure\Persistence\Repositories\TicketRepository;
 use OpenApi\Annotations as OA;
+use phpDocumentor\Reflection\Types\This;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Log\LoggerInterface;
+use Slim\Exception\HttpBadRequestException;
 
 class UpdateItemAction extends Action
 {
@@ -25,9 +28,9 @@ class UpdateItemAction extends Action
 
     /**
      * @OA\Patch(
-     *   path="/items/{id}",
+     *   path="/items/{name}",
      *   tags={"item"},
-     *   path="/items/{id}",
+     *   path="/items/{name}",
      *   operationId="editItem",
      *   summary="Edit Item Name",
      *         @OA\RequestBody(
@@ -35,14 +38,10 @@ class UpdateItemAction extends Action
      *             mediaType="application/json",
      *             @OA\Schema(
      *                 @OA\Property(
-     *                     property="id",
-     *                     type="int"
-     *                 ),
-     *                 @OA\Property(
      *                     property="name",
      *                     type="string"
      *                 ),
-     *                 example={"id": 1, "code": "Item Name goes Here"}
+     *                 example={"name": "ItemName"}
      *             )
      *         )
      *     ),
@@ -52,13 +51,26 @@ class UpdateItemAction extends Action
      *     @OA\JsonContent(ref="#/components/schemas/Item")
      *   )
      * )
+     * @throws HttpBadRequestException
      */
     protected function action(): Response
     {
-        $items = $this->itemRepository->updateItemSubject($this->request, $this->response);
+        $currentName = $this->resolveArg('name');
 
-        $this->logger->info("Item Name Edited");
+        $itemDTO = new ItemDTO($currentName);
 
-        return $this->respondWithData($items);
+        if (empty($this->itemRepository->findItemByName($itemDTO))){
+            return $this->respondWithNotFound($itemDTO->getName());
+        }
+
+        $item = $this->itemRepository->updateItemName($this->request, $itemDTO);
+
+        $updatedName =$item->jsonSerialize()['name'];
+
+        $message = "Item Name " . $currentName . " updated to " . $updatedName;
+
+        $this->logger->info($message);
+
+        return $this->respondWithData($message);
     }
 }

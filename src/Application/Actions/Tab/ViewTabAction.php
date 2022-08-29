@@ -10,6 +10,7 @@ use App\Infrastructure\Persistence\Repositories\TicketRepository;
 use OpenApi\Annotations as OA;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Log\LoggerInterface;
+use Slim\Exception\HttpBadRequestException;
 
 class ViewTabAction extends Action
 {
@@ -46,10 +47,11 @@ class ViewTabAction extends Action
      *     @OA\JsonContent(ref="#/components/schemas/Tab")
      *   )
      * )
+     * @throws HttpBadRequestException
      */
     protected function action(): Response
     {
-        $tabName = $this->args['name'];
+        $tabName = $this->resolveArg('name');
 
         $tabDTO = new TabDTO($tabName);
 

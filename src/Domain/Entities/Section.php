@@ -5,8 +5,8 @@ namespace App\Domain\Entities;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\JoinColumn;
-use Doctrine\ORM\Mapping\JoinTable;
 use Doctrine\ORM\Mapping\ManyToOne;
+use JsonSerializable;
 use OpenApi\Annotations as OA;
 
 /**
@@ -20,7 +20,7 @@ use OpenApi\Annotations as OA;
  * )
  *
  */
-class Section
+class Section implements JsonSerializable
 {
 
     /**
@@ -28,8 +28,8 @@ class Section
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue
      *
-     * @ManyToOne(targetEntity="Tab", inversedBy="id")
-     * @JoinColumn(name="tabs_id", referencedColumnName="id")
+     * @ORM\ManyToOne(targetEntity="Tab", inversedBy="id")
+     * @ORM\JoinColumn(name="tabs_id", referencedColumnName="id")
      *
      * @OA\Property(type="integer", format="int64", description="ID", title="ID")
      *

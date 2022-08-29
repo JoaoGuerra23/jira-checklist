@@ -3,7 +3,9 @@
 namespace App\Domain\Entities;
 
 use DateTime;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use JsonSerializable;
 use OpenApi\Annotations as OA;
 
 /**
@@ -17,12 +19,17 @@ use OpenApi\Annotations as OA;
  * )
  *
  */
-class Item
+class Item implements JsonSerializable
 {
     /**
      * @ORM\Id
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue
+     *
+     * @ORM\ManyToOne(targetEntity="Status", inversedBy="id")
+     * @ORM\JoinColumn(name="status_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="tickets_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="sections_id", referencedColumnName="id")
      *
      * @OA\Property(type="integer", format="int64", description="ID", title="ID")
      *
@@ -42,39 +49,38 @@ class Item
     private $name;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Status", inversedBy="id")
-     * @ORM\JoinColumn(name="status_id", referencedColumnName="id")
+     * @ORM\Column(name="status_id", type="integer")
      *
      * @OA\Property(type="integer", format="int64", description="Status ID", title="Status ID")
      *
      * @var int
      *
      */
-    private $status;
+    private $statusId;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(name="owner_id", type="integer")
      *
      * @OA\Property(type="integer", format="int64", description="Owner ID", title="Owner ID")
      *
      * @var int
      *
      */
-    private $owner;
+    private $ownerId;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Ticket", inversedBy="id")
-     * @ORM\JoinColumn(name="tickets_id", referencedColumnName="id")
+     * @ORM\Column(name="tickets_id", type="integer")
+     *
      *
      * @OA\Property(type="integer", format="int64", description="Tickets ID", title="Tickets ID")
      *
      * @var int
      *
      */
-    private $tickets_id;
+    private $ticketId;
 
     /**
-     * @ORM\Column(type="datetime", nullable=false, name="date")
+     * @ORM\Column(nullable=false, name="date", type="datetime")
      *
      * @OA\Property(type="datetime", description="Created Date", title="Created Date")
      *
@@ -83,15 +89,14 @@ class Item
     private $date;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Section", inversedBy="id")
-     * @ORM\JoinColumn(name="sections_id", referencedColumnName="id")
+     * @ORM\Column(name="sections_id", type="integer")
      *
      * @OA\Property(type="integer", format="int64", description="Sections ID", title="Sections ID")
      *
      * @var int
      *
      */
-    private $sections_id;
+    private $sectionId;
 
     /**
      * @ORM\Column(type="datetime", nullable=true, name="deleted_at")
@@ -100,6 +105,7 @@ class Item
 
     public function __construct()
     {
+        $this->id = new ArrayCollection();
     }
 
     /**
@@ -137,49 +143,49 @@ class Item
     /**
      * @return int
      */
-    public function getStatus(): int
+    public function getStatusId(): int
     {
-        return $this->status;
+        return $this->statusId;
     }
 
     /**
-     * @param int $status
+     * @param int $statusId
      */
-    public function setStatus(int $status): void
+    public function setStatusId(int $statusId): void
     {
-        $this->status = $status;
-    }
-
-    /**
-     * @return int
-     */
-    public function getOwner(): int
-    {
-        return $this->owner;
-    }
-
-    /**
-     * @param int $owner
-     */
-    public function setOwner(int $owner): void
-    {
-        $this->owner = $owner;
+        $this->statusId = $statusId;
     }
 
     /**
      * @return int
      */
-    public function getTicketsId(): int
+    public function getOwnerId(): int
     {
-        return $this->tickets_id;
+        return $this->ownerId;
     }
 
     /**
-     * @param int $tickets_id
+     * @param int $ownerId
      */
-    public function setTicketsId(int $tickets_id): void
+    public function setOwnerId(int $ownerId): void
     {
-        $this->tickets_id = $tickets_id;
+        $this->ownerId = $ownerId;
+    }
+
+    /**
+     * @return int
+     */
+    public function getTicketId(): int
+    {
+        return $this->ticketId;
+    }
+
+    /**
+     * @param int $ticketId
+     */
+    public function setTicketId(int $ticketId): void
+    {
+        $this->ticketId = $ticketId;
     }
 
     /**
@@ -201,16 +207,28 @@ class Item
     /**
      * @return int
      */
-    public function getSectionsId(): int
+    public function getSectionId(): int
     {
-        return $this->sections_id;
+        return $this->sectionId;
     }
 
     /**
-     * @param int $sections_id
+     * @param int $sectionId
      */
-    public function setSectionsId(int $sections_id): void
+    public function setSectionId(int $sectionId): void
     {
-        $this->sections_id = $sections_id;
+        $this->sectionId = $sectionId;
+    }
+
+
+    /**
+     * @return array
+     */
+    public function jsonSerialize(): array
+    {
+        return [
+            'id' => $this->id,
+            'name' => $this->name
+        ];
     }
 }

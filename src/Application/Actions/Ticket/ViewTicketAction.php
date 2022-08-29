@@ -9,6 +9,7 @@ use App\Infrastructure\Persistence\Repositories\TicketRepository;
 use OpenApi\Annotations as OA;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Log\LoggerInterface;
+use Slim\Exception\HttpBadRequestException;
 
 class ViewTicketAction extends Action
 {
@@ -47,11 +48,12 @@ class ViewTicketAction extends Action
      * )
      *
      *
+     * @throws HttpBadRequestException
      */
     protected function action(): Response
     {
 
-        $ticketCode = $this->args['code'];
+        $ticketCode = $this->resolveArg('code');
 
         $ticketDTO = new TicketDTO($ticketCode);
 

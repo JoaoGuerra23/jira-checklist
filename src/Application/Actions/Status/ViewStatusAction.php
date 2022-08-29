@@ -9,6 +9,7 @@ use App\Infrastructure\Persistence\Repositories\TicketRepository;
 use OpenApi\Annotations as OA;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Log\LoggerInterface;
+use Slim\Exception\HttpBadRequestException;
 use function Symfony\Component\String\s;
 
 class ViewStatusAction extends Action
@@ -45,10 +46,11 @@ class ViewStatusAction extends Action
      *     @OA\JsonContent(ref="#/components/schemas/Status")
      *   )
      * )
+     * @throws HttpBadRequestException
      */
     protected function action(): Response
     {
-        $statusName = $this->args['name'];
+        $statusName = $this->resolveArg('name');
 
         $statusDTO = new StatusDTO($statusName);
 

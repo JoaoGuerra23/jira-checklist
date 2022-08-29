@@ -3,6 +3,7 @@
 namespace App\Domain\Entities;
 
 use Doctrine\ORM\Mapping as ORM;
+use JsonSerializable;
 use OpenApi\Annotations as OA;
 
 /**
@@ -16,14 +17,14 @@ use OpenApi\Annotations as OA;
  * )
  *
  */
-class Status
+class Status implements JsonSerializable
 {
 
     /**
      * @ORM\Id
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue
-     * @ORM\OneToMany(targetEntity="Item", mappedBy="status_id")
+     * @ORM\OneToMany(targetEntity="Item", mappedBy="id")
      *
      * @OA\Property(type="integer", format="int64", description="ID", title="ID")
      *

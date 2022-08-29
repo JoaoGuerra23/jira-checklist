@@ -45,17 +45,33 @@
                         "application/json": {
                             "schema": {
                                 "properties": {
-                                    "id": {
-                                        "type": "integer"
-                                    },
                                     "name": {
                                         "type": "string"
+                                    },
+                                    "statusId": {
+                                        "type": "integer"
+                                    },
+                                    "ownerId": {
+                                        "type": "integer"
+                                    },
+                                    "ticketId": {
+                                        "type": "integer"
+                                    },
+                                    "date": {
+                                        "type": "string",
+                                        "format": "date"
+                                    },
+                                    "sectionId": {
+                                        "type": "integer"
                                     }
                                 },
                                 "type": "object",
                                 "example": {
-                                    "id": 1,
-                                    "code": "Item name here"
+                                    "name": "ItemName",
+                                    "statusId": 1,
+                                    "ticketId": 1,
+                                    "date": "0000-00-00 00:00:00",
+                                    "sectionId": 1
                                 }
                             }
                         }
@@ -79,36 +95,6 @@
             }
         },
         "/items/{id}": {
-            "get": {
-                "tags": [
-                    "item"
-                ],
-                "summary": "Get Item by ID",
-                "operationId": "getItem",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "Item id",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "A single Item",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/Item"
-                                }
-                            }
-                        }
-                    }
-                }
-            },
             "delete": {
                 "tags": [
                     "item"
@@ -138,6 +124,38 @@
                         }
                     }
                 }
+            }
+        },
+        "/items/{name}": {
+            "get": {
+                "tags": [
+                    "item"
+                ],
+                "summary": "Get Item by Name",
+                "operationId": "getItem",
+                "parameters": [
+                    {
+                        "name": "name",
+                        "in": "path",
+                        "description": "Item Name",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Item"
+                                }
+                            }
+                        }
+                    }
+                }
             },
             "patch": {
                 "tags": [
@@ -150,17 +168,13 @@
                         "application/json": {
                             "schema": {
                                 "properties": {
-                                    "id": {
-                                        "type": "integer"
-                                    },
                                     "name": {
                                         "type": "string"
                                     }
                                 },
                                 "type": "object",
                                 "example": {
-                                    "id": 1,
-                                    "code": "Item Name goes Here"
+                                    "name": "ItemName"
                                 }
                             }
                         }
@@ -215,17 +229,17 @@
                         "application/json": {
                             "schema": {
                                 "properties": {
-                                    "id": {
-                                        "type": "integer"
-                                    },
                                     "subject": {
                                         "type": "string"
+                                    },
+                                    "tabsId": {
+                                        "type": "integer"
                                     }
                                 },
                                 "type": "object",
                                 "example": {
-                                    "id": 1,
-                                    "subject": "Section subject goes here"
+                                    "subject": "Subject",
+                                    "tabsId": 1
                                 }
                             }
                         }
@@ -852,19 +866,19 @@
                         "description": "Item Name",
                         "type": "string"
                     },
-                    "status": {
+                    "statusId": {
                         "title": "Status ID",
                         "description": "Status ID",
                         "type": "integer",
                         "format": "int64"
                     },
-                    "owner": {
+                    "ownerId": {
                         "title": "Owner ID",
                         "description": "Owner ID",
                         "type": "integer",
                         "format": "int64"
                     },
-                    "tickets_id": {
+                    "ticketId": {
                         "title": "Tickets ID",
                         "description": "Tickets ID",
                         "type": "integer",
@@ -876,7 +890,7 @@
                         "type": "string",
                         "format": "date-time"
                     },
-                    "sections_id": {
+                    "sectionId": {
                         "title": "Sections ID",
                         "description": "Sections ID",
                         "type": "integer",

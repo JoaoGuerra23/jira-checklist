@@ -3,10 +3,12 @@
 namespace App\Application\Actions\Item;
 
 use App\Application\Actions\Action;
+use App\Domain\DTOs\ItemDTO;
 use App\Infrastructure\Persistence\Repositories\ItemRepository;
 use OpenApi\Annotations as OA;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Log\LoggerInterface;
+use Slim\Exception\HttpBadRequestException;
 
 class DeleteItemAction extends Action
 {
@@ -42,14 +44,24 @@ class DeleteItemAction extends Action
      *     @OA\JsonContent(ref="#/components/schemas/Item")
      *   )
      * )
+     * @throws HttpBadRequestException
      */
     protected function action(): Response
     {
+        $itemName = $this->resolveArg('name');
 
-        $item = $this->itemRepository->deleteItemById($this->response, $this->args);
+        $itemDTO = new ItemDTO($itemName);
 
-        $this->logger->info("Ticket Deleted");
+        if (empty($this->itemRepository->findItemByName($itemDTO))){
+            return $this->respondWithNotFound($itemName);
+        }
 
-        return $this->respondWithData($item);
+        $this->itemRepository->deleteItemByName($itemDTO);
+
+        $message = "Item " . $itemName . " Deleted.";
+
+        $this->logger->info($message);
+
+        return $this->respondWithData($message);
     }
 }

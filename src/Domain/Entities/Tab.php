@@ -27,7 +27,7 @@ class Tab implements JsonSerializable
      * @ORM\Id
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue
-     * @OneToMany(targetEntity="Section", mappedBy="id")
+     * @ORM\OneToMany(targetEntity="Section", mappedBy="id")
      *
      * @OA\Property(type="integer", format="int64", description="ID", title="ID")
      *

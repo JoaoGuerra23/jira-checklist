@@ -49,17 +49,17 @@ class DeleteSectionAction extends Action
     protected function action(): Response
     {
 
-        $subject = $this->resolveArg('subject');
+        $sectionSubject = $this->resolveArg('subject');
 
-        $sectionDTO = new SectionDTO($subject);
+        $sectionDTO = new SectionDTO($sectionSubject);
 
         if (empty($this->sectionRepository->findSectionBySubject($sectionDTO))){
-            return $this->respondWithNotFound($subject);
+            return $this->respondWithNotFound($sectionSubject);
         }
 
         $this->sectionRepository->deleteSectionBySubject($sectionDTO);
 
-        $message = "Subject " . $subject . " Deleted";
+        $message = "Subject " . $sectionSubject . " Deleted.";
 
         $this->logger->info($message);
 

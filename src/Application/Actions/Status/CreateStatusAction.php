@@ -53,7 +53,7 @@ class CreateStatusAction extends Action
     {
         $status = $this->statusRepository->createNewStatus($this->request);
 
-        $message = "Status " . $status->getName() . " Created";
+        $message = 'Status ' . $status->getName() . ' Created';
 
         $this->logger->info($message);
 

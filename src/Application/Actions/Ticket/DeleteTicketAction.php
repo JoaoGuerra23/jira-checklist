@@ -60,7 +60,7 @@ class DeleteTicketAction extends Action
 
         $this->ticketRepository->deleteTicketByCode($ticketDTO);
 
-        $message = "Ticket " . $code . " Deleted";
+        $message = "Ticket " . $code . " Deleted.";
 
         $this->logger->info($message);
 

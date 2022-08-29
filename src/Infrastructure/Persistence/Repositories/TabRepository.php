@@ -6,9 +6,7 @@ use App\Domain\DTOs\TabDTO;
 use App\Domain\Entities\Tab;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
-use http\Message;
 use Slim\Psr7\Request;
-use Slim\Psr7\Response;
 
 class TabRepository
 {
@@ -108,19 +106,19 @@ class TabRepository
     {
         $tabDTOName = $tabDTO->getName();
 
-        $body = $request->getParsedBody();
+        $name = $request->getParsedBody()['name'];
 
         $this->entityManager
             ->createQueryBuilder()
             ->update(Tab::class, 't')
             ->set('t.name', ':value')
-            ->setParameter(':value', $body['name'])
+            ->setParameter(':value', $name)
             ->where('t.name = :name')
             ->setParameter(':name', $tabDTOName)
             ->getQuery()
             ->getResult();
 
-        $this->tab->setName($body['name']);
+        $this->tab->setName($name);
 
         return $this->tab;
     }
@@ -135,10 +133,10 @@ class TabRepository
      */
     public function createNewTab(Request $request): Tab
     {
-        $body = $request->getParsedBody();
+        $name = $request->getParsedBody()['name'];
 
         $this->tab = new Tab();
-        $this->tab->setName($body['name']);
+        $this->tab->setName($name);
 
         $this->entityManager->persist($this->tab);
         $this->entityManager->flush();

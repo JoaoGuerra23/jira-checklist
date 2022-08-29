@@ -4,11 +4,9 @@ namespace App\Infrastructure\Persistence\Repositories;
 
 use App\Domain\DTOs\SectionDTO;
 use App\Domain\Entities\Section;
-use App\Domain\Entities\Tab;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Slim\Psr7\Request;
-use Slim\Psr7\Response;
 
 class SectionRepository
 {
@@ -48,7 +46,7 @@ class SectionRepository
             ->where('s.deleted_at IS NULL')
             ->orderBy('s.id', 'ASC');
 
-        return $builder->getQuery()->getArrayResult();
+        return $builder->getQuery()->execute();
     }
 
 
@@ -65,7 +63,7 @@ class SectionRepository
 
         return $this->entityManager
             ->createQueryBuilder()
-            ->select('s.id', 's.subject')
+            ->select('s.id', 's.subject, s.tabsId')
             ->from(Section::class, 's')
             ->where('s.subject = :subject')
             ->setParameter(':subject', $sectionDTOSubject)
@@ -109,19 +107,19 @@ class SectionRepository
     {
         $sectionDTOSubject = $sectionDTO->getSubject();
 
-        $body = $request->getParsedBody();
+        $subject = $request->getParsedBody()['subject'];
 
         $this->entityManager
             ->createQueryBuilder()
             ->update(Section::class, 's')
             ->set('s.subject', ':value')
-            ->setParameter(':value', $body['subject'])
+            ->setParameter(':value', $subject)
             ->where('s.subject = :subject')
             ->setParameter(':subject', $sectionDTOSubject)
             ->getQuery()
             ->getResult();
 
-        $this->section->setSubject($body['subject']);
+        $this->section->setSubject($subject);
 
         return $this->section;
     }

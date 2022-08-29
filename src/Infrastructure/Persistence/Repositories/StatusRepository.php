@@ -4,11 +4,9 @@ namespace App\Infrastructure\Persistence\Repositories;
 
 use App\Domain\DTOs\StatusDTO;
 use App\Domain\Entities\Status;
-use App\Domain\Entities\Ticket;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Slim\Psr7\Request;
-use Slim\Psr7\Response;
 
 class StatusRepository
 {
@@ -108,19 +106,19 @@ class StatusRepository
     {
         $statusDTOName = $statusDTO->getName();
 
-        $body = $request->getParsedBody();
+        $name = $request->getParsedBody()['name'];
 
         $this->entityManager
             ->createQueryBuilder()
             ->update(Status::class, 's')
             ->set('s.name', ':value')
-            ->setParameter(':value', $body['name'])
+            ->setParameter(':value', $name)
             ->where('s.name = :name')
             ->setParameter(':name', $statusDTOName)
             ->getQuery()
             ->getResult();
 
-        $this->status->setName($body['name']);
+        $this->status->setName($name);
 
         return $this->status;
     }
@@ -133,10 +131,10 @@ class StatusRepository
      */
     public function createNewStatus(Request $request): Status
     {
-        $body = $request->getParsedBody();
+        $name = $request->getParsedBody()['name'];
 
         $this->status = new Status();
-        $this->status->setName($body['name']);
+        $this->status->setName($name);
 
         $this->entityManager->persist($this->status);
         $this->entityManager->flush();

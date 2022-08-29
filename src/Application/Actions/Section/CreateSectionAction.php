@@ -31,14 +31,14 @@ class CreateSectionAction extends Action
      *             mediaType="application/json",
      *             @OA\Schema(
      *                 @OA\Property(
-     *                     property="id",
-     *                     type="int"
-     *                 ),
-     *                 @OA\Property(
      *                     property="subject",
      *                     type="string"
      *                 ),
-     *                 example={"id": 1, "subject": "Section subject goes here"}
+     *                 @OA\Property(
+     *                     property="tabsId",
+     *                     type="int"
+     *                 ),
+     *                 example={"subject": "Subject", "tabsId": 1}
      *             )
      *         )
      *     ),

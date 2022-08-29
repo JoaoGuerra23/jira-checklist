@@ -53,7 +53,7 @@ class CreateTicketAction extends Action
 
         $ticket = $this->ticketRepository->createNewTicket($this->request);
 
-        $message = 'Ticket ' . $ticket->getCode() . ' Created';
+        $message = 'Ticket ' . $ticket->getCode() . ' Created.';
 
         $this->logger->info($message);
 

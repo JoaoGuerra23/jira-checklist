@@ -60,7 +60,7 @@ class DeleteTabAction extends Action
 
         $this->tabRepository->deleteTabByName($tabDTO);
 
-        $message = "Tab " . $name . " Deleted";
+        $message = "Tab " . $name . " Deleted.";
 
         $this->logger->info($message);
 

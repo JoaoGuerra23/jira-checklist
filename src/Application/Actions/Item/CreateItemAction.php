@@ -35,14 +35,30 @@ class CreateItemAction extends Action
      *             mediaType="application/json",
      *             @OA\Schema(
      *                 @OA\Property(
-     *                     property="id",
-     *                     type="int"
-     *                 ),
-     *                 @OA\Property(
      *                     property="name",
      *                     type="string"
      *                 ),
-     *                 example={"id": 1, "code": "Item name here"}
+     *                 @OA\Property(
+     *                     property="statusId",
+     *                     type="int"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="ownerId",
+     *                     type="int"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="ticketId",
+     *                     type="int"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="date",
+     *                     type="date"
+     *                 ),@OA\Property(
+     *                     property="sectionId",
+     *                     type="int"
+     *                 ),
+     *                 example={"name": "ItemName", "statusId": 1, "ticketId" : 1,
+     *                 "date": "0000-00-00 00:00:00", "sectionId": 1}
      *             )
      *         )
      *     ),
@@ -55,13 +71,16 @@ class CreateItemAction extends Action
      *      )
      *     )
      * )
+     *
      */
     protected function action(): Response
     {
-        $item = $this->itemRepository->createNewItem($this->request, $this->response);
+        $item = $this->itemRepository->createNewItem($this->request);
 
-        $this->logger->info('Item Created');
+        $message = "Item " . $item->getName() . " Created.";
 
-        return $this->respondWithData($item, 201);
+        $this->logger->info($message);
+
+        return $this->respondWithData($message, 201);
     }
 }

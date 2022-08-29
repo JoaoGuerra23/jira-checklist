@@ -9,6 +9,7 @@ use App\Infrastructure\Persistence\Repositories\TicketRepository;
 use OpenApi\Annotations as OA;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Log\LoggerInterface;
+use Slim\Exception\HttpBadRequestException;
 
 class ViewSectionAction extends Action
 {
@@ -45,10 +46,11 @@ class ViewSectionAction extends Action
      *     @OA\JsonContent(ref="#/components/schemas/Section")
      *   )
      * )
+     * @throws HttpBadRequestException
      */
     protected function action(): Response
     {
-        $sectionSubject = $this->args['subject'];
+        $sectionSubject = $this->resolveArg('subject');
 
         $sectionDTO = new SectionDTO($sectionSubject);
 
