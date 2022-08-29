@@ -3,6 +3,7 @@
 namespace App\Application\Actions\Section;
 
 use App\Application\Actions\Action;
+use App\Domain\DTOs\SectionDTO;
 use App\Infrastructure\Persistence\Repositories\SectionRepository;
 use App\Infrastructure\Persistence\Repositories\TicketRepository;
 use OpenApi\Annotations as OA;
@@ -26,16 +27,16 @@ class ViewSectionAction extends Action
     /**
      * @OA\Get(
      *   tags={"section"},
-     *   path="/sections/{id}",
+     *   path="/sections/{subject}",
      *   operationId="getSection",
-     *   summary="Get Section by ID",
+     *   summary="Get Section by Subject",
      *   @OA\Parameter(
-     *          name="id",
+     *          name="subject",
      *          in="path",
      *          required=true,
-     *          description="Section id",
+     *          description="Section subject",
      *          @OA\Schema(
-     *              type="integer"
+     *              type="string"
      *   )
      * ),
      *   @OA\Response(
@@ -47,9 +48,17 @@ class ViewSectionAction extends Action
      */
     protected function action(): Response
     {
-        $section = $this->sectionRepository->findSectionById($this->args);
+        $sectionSubject = $this->args['subject'];
 
-        $this->logger->info('Get single Section');
+        $sectionDTO = new SectionDTO($sectionSubject);
+
+        $section = $this->sectionRepository->findSectionBySubject($sectionDTO);
+
+        if (empty($section)){
+            return $this->respondWithNotFound($sectionSubject);
+        }
+
+        $this->logger->info("Section " . $sectionSubject . " was viewed.");
 
         return $this->respondWithData($section);
     }

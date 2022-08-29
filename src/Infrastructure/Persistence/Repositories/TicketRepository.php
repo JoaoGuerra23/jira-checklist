@@ -130,10 +130,10 @@ class TicketRepository
      */
     public function createNewTicket(Request $request): Ticket
     {
-        $data = $request->getParsedBody();
+        $body = $request->getParsedBody();
 
         $this->ticket = new Ticket();
-        $this->ticket->setCode($data['code']);
+        $this->ticket->setCode($body['code']);
 
         $this->entityManager->persist($this->ticket);
         $this->entityManager->flush();

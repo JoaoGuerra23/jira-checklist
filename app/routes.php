@@ -76,9 +76,9 @@ return function (App $app) {
     $app->group('/sections', function (Group $group) {
         $group->post('', CreateSectionAction::class);
         $group->get('', ListSectionAction::class);
-        $group->get('/{id}', ViewSectionAction::class);
-        $group->patch('/{id}', UpdateSectionAction::class);
-        $group->delete('/{id}', DeleteSectionAction::class);
+        $group->get('/{subject}', ViewSectionAction::class);
+        $group->patch('/{subject}', UpdateSectionAction::class);
+        $group->delete('/{subject}', DeleteSectionAction::class);
     });
 
     $app->group('/items', function (Group $group) {

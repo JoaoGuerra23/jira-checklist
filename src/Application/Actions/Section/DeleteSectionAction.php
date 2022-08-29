@@ -3,11 +3,12 @@
 namespace App\Application\Actions\Section;
 
 use App\Application\Actions\Action;
+use App\Domain\DTOs\SectionDTO;
 use App\Infrastructure\Persistence\Repositories\SectionRepository;
-use App\Infrastructure\Persistence\Repositories\TicketRepository;
 use OpenApi\Annotations as OA;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Log\LoggerInterface;
+use Slim\Exception\HttpBadRequestException;
 
 class DeleteSectionAction extends Action
 {
@@ -25,16 +26,16 @@ class DeleteSectionAction extends Action
     /**
      * @OA\Delete(
      *   tags={"section"},
-     *   path="/sections/{id}",
+     *   path="/sections/{subject}",
      *   operationId="deleteSection",
-     *   summary="Delete Section by ID",
+     *   summary="Delete Section by Subject",
      *   @OA\Parameter(
-     *          name="id",
+     *          name="subject",
      *          in="path",
      *          required=true,
-     *          description="Section id",
+     *          description="Section Subject",
      *          @OA\Schema(
-     *              type="integer"
+     *              type="string"
      *          )
      *   ),
      *   @OA\Response(
@@ -43,14 +44,25 @@ class DeleteSectionAction extends Action
      *     @OA\JsonContent(ref="#/components/schemas/Section")
      *   )
      * )
+     * @throws HttpBadRequestException
      */
     protected function action(): Response
     {
 
-        $section = $this->sectionRepository->deleteSectionById($this->response, $this->args);
+        $subject = $this->resolveArg('subject');
 
-        $this->logger->info("Ticket Deleted");
+        $sectionDTO = new SectionDTO($subject);
 
-        return $this->respondWithData($section);
+        if (empty($this->sectionRepository->findSectionBySubject($sectionDTO))){
+            return $this->respondWithNotFound($subject);
+        }
+
+        $this->sectionRepository->deleteSectionBySubject($sectionDTO);
+
+        $message = "Subject " . $subject . " Deleted";
+
+        $this->logger->info($message);
+
+        return $this->respondWithData($message);
     }
 }

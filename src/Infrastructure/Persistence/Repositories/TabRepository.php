@@ -135,10 +135,10 @@ class TabRepository
      */
     public function createNewTab(Request $request): Tab
     {
-        $data = $request->getParsedBody();
+        $body = $request->getParsedBody();
 
         $this->tab = new Tab();
-        $this->tab->setName($data['name']);
+        $this->tab->setName($body['name']);
 
         $this->entityManager->persist($this->tab);
         $this->entityManager->flush();

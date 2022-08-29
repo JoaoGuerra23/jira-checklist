@@ -133,10 +133,10 @@ class StatusRepository
      */
     public function createNewStatus(Request $request): Status
     {
-        $data = $request->getParsedBody();
+        $body = $request->getParsedBody();
 
         $this->status = new Status();
-        $this->status->setName($data['name']);
+        $this->status->setName($body['name']);
 
         $this->entityManager->persist($this->status);
         $this->entityManager->flush();

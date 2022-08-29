@@ -46,7 +46,7 @@ class ViewTicketAction extends Action
      *   )
      * )
      *
-     * {@inheritDoc}
+     *
      */
     protected function action(): Response
     {

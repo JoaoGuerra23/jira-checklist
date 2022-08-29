@@ -2,7 +2,10 @@
 
 namespace App\Domain\Entities;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\JoinTable;
+use Doctrine\ORM\Mapping\OneToMany;
 use JsonSerializable;
 use OpenApi\Annotations as OA;
 
@@ -24,7 +27,7 @@ class Tab implements JsonSerializable
      * @ORM\Id
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue
-     * @ORM\OneToMany(targetEntity="Section", mappedBy="tabs_id")
+     * @OneToMany(targetEntity="Section", mappedBy="id")
      *
      * @OA\Property(type="integer", format="int64", description="ID", title="ID")
      *
@@ -46,6 +49,10 @@ class Tab implements JsonSerializable
      * @ORM\Column(type="datetime", nullable=true, name="deleted_at")
      */
     private $deleted_at;
+
+    public function __construct() {
+        $this->id = new ArrayCollection();
+    }
 
     /**
      * @return int

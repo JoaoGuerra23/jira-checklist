@@ -55,10 +55,12 @@ class CreateSectionAction extends Action
     protected function action(): Response
     {
 
-        $section = $this->sectionRepository->createNewSection($this->request, $this->response);
+        $section = $this->sectionRepository->createNewSection($this->request);
 
-        $this->logger->info("Section Created");
+        $message = "Section " . $section->getSubject() . " Created.";
 
-        return $this->respondWithData($section, 201);
+        $this->logger->info($message);
+
+        return $this->respondWithData($message, 201);
     }
 }

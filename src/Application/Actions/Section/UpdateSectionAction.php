@@ -3,10 +3,12 @@
 namespace App\Application\Actions\Section;
 
 use App\Application\Actions\Action;
+use App\Domain\DTOs\SectionDTO;
 use App\Infrastructure\Persistence\Repositories\SectionRepository;
 use OpenApi\Annotations as OA;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Log\LoggerInterface;
+use Slim\Exception\HttpBadRequestException;
 
 class UpdateSectionAction extends Action
 {
@@ -24,9 +26,9 @@ class UpdateSectionAction extends Action
 
     /**
      * @OA\Patch(
-     *   path="/sections/{id}",
+     *   path="/sections/{subject}",
      *   tags={"section"},
-     *   path="/sections/{id}",
+     *   path="/sections/{subject}",
      *   operationId="editSection",
      *   summary="Edit Section Subject",
      *         @OA\RequestBody(
@@ -34,14 +36,10 @@ class UpdateSectionAction extends Action
      *             mediaType="application/json",
      *             @OA\Schema(
      *                 @OA\Property(
-     *                     property="id",
-     *                     type="int"
-     *                 ),
-     *                 @OA\Property(
      *                     property="subject",
      *                     type="string"
      *                 ),
-     *                 example={"id": 1, "code": "Section subject goes here"}
+     *                 example={"subject": "Subject1"}
      *             )
      *         )
      *     ),
@@ -51,13 +49,30 @@ class UpdateSectionAction extends Action
      *     @OA\JsonContent(ref="#/components/schemas/Section")
      *   )
      * )
+     * @throws HttpBadRequestException
      */
     protected function action(): Response
     {
-        $subject = $this->sectionRepository->updateSectionSubject($this->request, $this->response);
+        $currentSubject = $this->resolveArg('subject');
 
-        $this->logger->info("Section Subject Edited");
+        $sectionDTO = new SectionDTO($currentSubject);
 
-        return $this->respondWithData($subject);
+        if (empty($this->sectionRepository->findSectionBySubject($sectionDTO))){
+            return $this->respondWithNotFound($sectionDTO->getSubject());
+        }
+
+        $section = $this->sectionRepository->updateSectionSubject($this->request, $sectionDTO);
+
+        $updatedSubject = $section->jsonSerialize()['subject'];
+
+        $message = "Section Subject " . $currentSubject . " updated to " . $updatedSubject;
+
+        if ($currentSubject == $updatedSubject) {
+            return $this->respondWithSameResources();
+        }
+
+        $this->logger->info($message);
+
+        return $this->respondWithData($message);
     }
 }

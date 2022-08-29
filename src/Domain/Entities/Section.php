@@ -2,7 +2,11 @@
 
 namespace App\Domain\Entities;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\JoinColumn;
+use Doctrine\ORM\Mapping\JoinTable;
+use Doctrine\ORM\Mapping\ManyToOne;
 use OpenApi\Annotations as OA;
 
 /**
@@ -24,6 +28,9 @@ class Section
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue
      *
+     * @ManyToOne(targetEntity="Tab", inversedBy="id")
+     * @JoinColumn(name="tabs_id", referencedColumnName="id")
+     *
      * @OA\Property(type="integer", format="int64", description="ID", title="ID")
      *
      * @var int
@@ -42,20 +49,24 @@ class Section
     private $subject;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Tab", inversedBy="id")
-     * @ORM\JoinColumn(name="tabs_id", referencedColumnName="id")
+     * @ORM\Column(name="tabs_id", type="integer")
      *
      * @OA\Property(type="integer", format="int64", description="Tab ID", title="Tab ID")
      *
      * @var int
      *
      */
-    private $tabs_id;
+    private $tabsId;
 
     /**
      * @ORM\Column(type="datetime", nullable=true, name="deleted_at")
      */
     private $deleted_at;
+
+    public function __construct()
+    {
+        $this->id = new ArrayCollection();
+    }
 
     /**
      * @return int
@@ -94,14 +105,26 @@ class Section
      */
     public function getTabsId(): int
     {
-        return $this->tabs_id;
+        return $this->tabsId;
     }
 
     /**
-     * @param int $tabs_id
+     * @param int $tabsId
      */
-    public function setTabsId(int $tabs_id): void
+    public function setTabsId(int $tabsId): void
     {
-        $this->tabs_id = $tabs_id;
+        $this->tabsId = $tabsId;
+    }
+
+    /**
+     * @return array
+     */
+    public function jsonSerialize(): array
+    {
+        return [
+            'id' => $this->id,
+            'subject' => $this->subject,
+            'tabs_id' => $this->tabsId
+        ];
     }
 }

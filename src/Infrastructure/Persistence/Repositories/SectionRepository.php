@@ -2,7 +2,9 @@
 
 namespace App\Infrastructure\Persistence\Repositories;
 
+use App\Domain\DTOs\SectionDTO;
 use App\Domain\Entities\Section;
+use App\Domain\Entities\Tab;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Slim\Psr7\Request;
@@ -39,15 +41,14 @@ class SectionRepository
     public function findAllSections(): array
     {
 
-        //Should I show tab_id?
         $builder = $this->entityManager
             ->createQueryBuilder()
-            ->select('s.id', 's.subject')
+            ->select('s.id, s.subject, s.tabsId')
             ->from(Section::class, 's')
             ->where('s.deleted_at IS NULL')
             ->orderBy('s.id', 'ASC');
 
-        return $builder->getQuery()->execute();
+        return $builder->getQuery()->getArrayResult();
     }
 
 
@@ -55,49 +56,45 @@ class SectionRepository
      *
      * Find Section by ID
      *
-     * @param array $args
+     * @param SectionDTO $sectionDTO
      * @return array
      */
-    public function findSectionById(array $args): array
+    public function findSectionBySubject(SectionDTO $sectionDTO): array
     {
-        $id = $args['id'];
+        $sectionDTOSubject = $sectionDTO->getSubject();
 
-        $builder = $this->entityManager
+        return $this->entityManager
             ->createQueryBuilder()
             ->select('s.id', 's.subject')
             ->from(Section::class, 's')
-            ->where('s.id = :id')
-            ->setParameter(':id', $id)
-            ->andWhere('s.deleted_at IS NULL');
-
-        return $builder->getQuery()->execute();
+            ->where('s.subject = :subject')
+            ->setParameter(':subject', $sectionDTOSubject)
+            ->andWhere('s.deleted_at IS NULL')
+            ->getQuery()
+            ->execute();
     }
 
 
     /**
      * Delete Section by ID
      *
-     * @param Response $response
-     * @param array $args
-     * @return Response
+     * @param SectionDTO $sectionDTO
+     * @return void
      */
-    public function deleteSectionById(Response $response, array $args): Response
+    public function deleteSectionBySubject(SectionDTO $sectionDTO): void
     {
-        $id = $args['id'];
-        $column = 's.deleted_at';
-        $value = new DateTime();
+        $sectionDTOSubject = $sectionDTO->getSubject();
 
         $this->entityManager
             ->createQueryBuilder()
             ->update(Section::class, 's')
-            ->set($column, ':value')
-            ->setParameter(':value', $value)
-            ->where('s.id = :id')
-            ->setParameter(':id', $id)
+            ->set('s.deleted_at', ':value')
+            ->setParameter(':value', new DateTime())
+            ->where('s.subject = :subject')
+            ->setParameter(':subject', $sectionDTOSubject)
             ->getQuery()
             ->execute();
 
-        return $response->withStatus(200, 'Ticket deleted');
     }
 
 
@@ -105,46 +102,48 @@ class SectionRepository
      * Update Section Subject
      *
      * @param Request $request
-     * @param Response $response
-     * @return Response
+     * @param SectionDTO $sectionDTO
+     * @return Section
      */
-    public function updateSectionSubject(Request $request, Response $response): Response
+    public function updateSectionSubject(Request $request, SectionDTO $sectionDTO): Section
     {
-        $data = $request->getParsedBody();
+        $sectionDTOSubject = $sectionDTO->getSubject();
+
+        $body = $request->getParsedBody();
 
         $this->entityManager
             ->createQueryBuilder()
             ->update(Section::class, 's')
             ->set('s.subject', ':value')
-            ->setParameter(':value', $data['subject'])
-            ->where('s.id = :id')
-            ->setParameter(':id', $data['id'])
+            ->setParameter(':value', $body['subject'])
+            ->where('s.subject = :subject')
+            ->setParameter(':subject', $sectionDTOSubject)
             ->getQuery()
             ->getResult();
 
-        return $response->withStatus(200, 'OK - Section Edited');
+        $this->section->setSubject($body['subject']);
+
+        return $this->section;
     }
 
 
     /**
      *
      * @param Request $request
-     * @param Response $response
-     * @return Response
+     * @return Section
      */
-    public function createNewSection(Request $request, Response $response): Response
+    public function createNewSection(Request $request): Section
     {
-        $data = $request->getParsedBody();
-
-
+        $body = $request->getParsedBody();
 
         $this->section = new Section();
-        $this->section->setSubject($data['subject']);
-        $this->section->setTabsId($data['tabs_id']);
+
+        $this->section->setSubject($body['subject']);
+        $this->section->setTabsId($body['tabs_id']);
 
         $this->entityManager->persist($this->section);
         $this->entityManager->flush();
 
-        return $response->withStatus(201, 'OK - Section Created');
+        return $this->section;
     }
 }
