@@ -47,6 +47,8 @@ class Tab implements JsonSerializable
 
     /**
      * @ORM\Column(type="datetime", nullable=true, name="deleted_at")
+     *
+     * @phpstan-ignore-next-line
      */
     private $deleted_at;
 
