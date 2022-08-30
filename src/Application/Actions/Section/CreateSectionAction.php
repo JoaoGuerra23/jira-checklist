@@ -38,7 +38,7 @@ class CreateSectionAction extends Action
      *                     property="tabsId",
      *                     type="int"
      *                 ),
-     *                 example={"subject": "Subject", "tabsId": 1}
+     *                 example={"subject": "Subject", "tabs_id": 1}
      *             )
      *         )
      *     ),
@@ -54,8 +54,9 @@ class CreateSectionAction extends Action
      */
     protected function action(): Response
     {
+        $parsedBody = $this->request->getParsedBody();
 
-        $section = $this->sectionRepository->createNewSection($this->request);
+        $section = $this->sectionRepository->createNewSection($parsedBody);
 
         $message = "Section " . $section->getSubject() . " Created.";
 

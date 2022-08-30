@@ -49,16 +49,11 @@ class CreateItemAction extends Action
      *                 @OA\Property(
      *                     property="ticketId",
      *                     type="int"
-     *                 ),
-     *                 @OA\Property(
-     *                     property="date",
-     *                     type="date"
      *                 ),@OA\Property(
      *                     property="sectionId",
      *                     type="int"
      *                 ),
-     *                 example={"name": "ItemName", "statusId": 1, "ticketId" : 1,
-     *                 "date": "0000-00-00 00:00:00", "sectionId": 1}
+     *                 example={"name": "ItemName", "ownerId" : 1,"statusId": 1, "ticketId" : 1, "sectionId": 1}
      *             )
      *         )
      *     ),
@@ -75,7 +70,9 @@ class CreateItemAction extends Action
      */
     protected function action(): Response
     {
-        $item = $this->itemRepository->createNewItem($this->request);
+        $parsedBody = $this->request->getParsedBody();
+
+        $item = $this->itemRepository->createNewItem($parsedBody);
 
         $message = "Item " . $item->getName() . " Created.";
 

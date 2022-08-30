@@ -65,6 +65,7 @@ class UpdateItemAction extends Action
     protected function action(): Response
     {
         $currentName = $this->resolveArg('name');
+        $newName = $this->request->getParsedBody()['name'];
 
         $itemDTO = new ItemDTO($currentName);
 
@@ -72,11 +73,13 @@ class UpdateItemAction extends Action
             return $this->respondWithNotFound($itemDTO->getName());
         }
 
-        $item = $this->itemRepository->updateItemName($this->request, $itemDTO);
+        if ($currentName === $newName) {
+            return $this->respondWithSameResources();
+        }
 
-        $updatedName =$item->jsonSerialize()['name'];
+        $this->itemRepository->updateItemName($newName, $itemDTO);
 
-        $message = "Item Name " . $currentName . " updated to " . $updatedName;
+        $message = "Item Name " . $currentName . " updated to " . $newName;
 
         $this->logger->info($message);
 

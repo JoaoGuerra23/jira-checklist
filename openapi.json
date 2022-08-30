@@ -57,10 +57,6 @@
                                     "ticketId": {
                                         "type": "integer"
                                     },
-                                    "date": {
-                                        "type": "string",
-                                        "format": "date"
-                                    },
                                     "sectionId": {
                                         "type": "integer"
                                     }
@@ -68,9 +64,9 @@
                                 "type": "object",
                                 "example": {
                                     "name": "ItemName",
+                                    "ownerId": 1,
                                     "statusId": 1,
                                     "ticketId": 1,
-                                    "date": "0000-00-00 00:00:00",
                                     "sectionId": 1
                                 }
                             }
@@ -248,7 +244,7 @@
                                 "type": "object",
                                 "example": {
                                     "subject": "Subject",
-                                    "tabsId": 1
+                                    "tabs_id": 1
                                 }
                             }
                         }

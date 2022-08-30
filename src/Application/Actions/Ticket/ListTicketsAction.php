@@ -11,8 +11,6 @@ use Psr\Log\LoggerInterface;
 
 class ListTicketsAction extends Action
 {
-
-
     /**
      * @var TicketRepository
      */
@@ -37,7 +35,7 @@ class ListTicketsAction extends Action
      *          type="array",
      *          @OA\Items(ref="#/components/schemas/Ticket")
      *      )
-     *     )
+     *    )
      * )
      */
     protected function action(): Response

@@ -6,6 +6,9 @@ use App\Domain\DTOs\StatusDTO;
 use App\Domain\Entities\Status;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
+use Exception;
 use Slim\Psr7\Request;
 
 class StatusRepository
@@ -54,21 +57,25 @@ class StatusRepository
      * Find Status by ID
      *
      * @param StatusDTO $statusDTO
-     * @return array
+     * @return Status[]|null
      */
-    public function findStatusByName(StatusDTO $statusDTO): array
+    public function findStatusByName(StatusDTO $statusDTO): ?array
     {
         $statusDTOName = $statusDTO->getName();
 
-        return $this->entityManager
-            ->createQueryBuilder()
-            ->select('s.id', 's.name')
-            ->from(Status::class, 's')
-            ->where('s.name = :name')
-            ->setParameter(':name', $statusDTOName)
-            ->andWhere('s.deleted_at IS NULL')
-            ->getQuery()
-            ->execute();
+        try {
+            return $this->entityManager
+                ->createQueryBuilder()
+                ->select('s.id', 's.name')
+                ->from(Status::class, 's')
+                ->where('s.name = :name')
+                ->setParameter(':name', $statusDTOName)
+                ->andWhere('s.deleted_at IS NULL')
+                ->getQuery()
+                ->getSingleResult();
+        } catch (Exception $e) {
+            return null;
+        }
     }
 
 
@@ -97,27 +104,25 @@ class StatusRepository
     /**
      * Update Status Name
      *
-     * @param Request $request
+     * @param string $parsedBodyName
      * @param StatusDTO $statusDTO
      * @return Status
      */
-    public function updateStatusName(Request $request, StatusDTO $statusDTO): Status
+    public function updateStatusName(string $parsedBodyName, StatusDTO $statusDTO): Status
     {
         $statusDTOName = $statusDTO->getName();
-
-        $name = $request->getParsedBody()['name'];
 
         $this->entityManager
             ->createQueryBuilder()
             ->update(Status::class, 's')
             ->set('s.name', ':value')
-            ->setParameter(':value', $name)
+            ->setParameter(':value', $parsedBodyName)
             ->where('s.name = :name')
             ->setParameter(':name', $statusDTOName)
             ->getQuery()
             ->getResult();
 
-        $this->status->setName($name);
+        $this->status->setName($parsedBodyName);
 
         return $this->status;
     }
@@ -125,15 +130,13 @@ class StatusRepository
 
     /**
      *
-     * @param Request $request
+     * @param string $parsedBodyName
      * @return Status
      */
-    public function createNewStatus(Request $request): Status
+    public function createNewStatus(string $parsedBodyName): Status
     {
-        $name = $request->getParsedBody()['name'];
-
         $this->status = new Status();
-        $this->status->setName($name);
+        $this->status->setName($parsedBodyName);
 
         $this->entityManager->persist($this->status);
         $this->entityManager->flush();

@@ -92,7 +92,7 @@ abstract class Action
 
     protected function respondWithSameResources(): Response
     {
-        return $this->respondWithData("Http body supposed to be different from the attribute", 401);
+        return $this->respondWithData("Http body supposed to be different from the attribute", 400);
     }
 
     protected function respond(ActionPayload $payload): Response

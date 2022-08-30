@@ -51,7 +51,9 @@ class CreateStatusAction extends Action
      */
     protected function action(): Response
     {
-        $status = $this->statusRepository->createNewStatus($this->request);
+        $name = $this->request->getParsedBody()['name'];
+
+        $status = $this->statusRepository->createNewStatus($name);
 
         $message = 'Status ' . $status->getName() . ' Created';
 

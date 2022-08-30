@@ -63,6 +63,7 @@ class UpdateSectionAction extends Action
     protected function action(): Response
     {
         $currentSubject = $this->resolveArg('subject');
+        $newSubject = $this->request->getParsedBody()['subject'];
 
         $sectionDTO = new SectionDTO($currentSubject);
 
@@ -70,15 +71,13 @@ class UpdateSectionAction extends Action
             return $this->respondWithNotFound($sectionDTO->getSubject());
         }
 
-        $section = $this->sectionRepository->updateSectionSubject($this->request, $sectionDTO);
-
-        $updatedSubject = $section->jsonSerialize()['subject'];
-
-        $message = "Section Subject " . $currentSubject . " updated to " . $updatedSubject;
-
-        if ($currentSubject == $updatedSubject) {
+        if ($currentSubject === $newSubject) {
             return $this->respondWithSameResources();
         }
+
+        $this->sectionRepository->updateSectionSubject($newSubject, $sectionDTO);
+
+        $message = "Section Subject " . $currentSubject . " updated to " . $newSubject;
 
         $this->logger->info($message);
 

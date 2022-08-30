@@ -63,6 +63,7 @@ class UpdateStatusAction extends Action
     protected function action(): Response
     {
         $currentName = $this->resolveArg('name');
+        $newName = $this->request->getParsedBody()['name'];
 
         $statusDTO = new StatusDTO($currentName);
 
@@ -70,15 +71,13 @@ class UpdateStatusAction extends Action
             return $this->respondWithNotFound($statusDTO->getName());
         }
 
-        $status = $this->statusRepository->updateStatusName($this->request, $statusDTO);
-
-        $updatedName = $status->jsonSerialize()['name'];
-
-        $message = "Status " . $currentName . " updated to " . $updatedName;
-
-        if ($currentName == $updatedName) {
+        if ($currentName === $newName) {
             return $this->respondWithSameResources();
         }
+
+        $this->statusRepository->updateStatusName($newName, $statusDTO);
+
+        $message = "Status " . $currentName . " updated to " . $newName;
 
         $this->logger->info($message);
 

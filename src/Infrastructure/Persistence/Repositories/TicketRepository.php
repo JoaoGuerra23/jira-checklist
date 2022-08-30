@@ -2,12 +2,11 @@
 
 namespace App\Infrastructure\Persistence\Repositories;
 
-use App\Application\Actions\Action;
 use App\Domain\DTOs\TicketDTO;
 use App\Domain\Entities\Ticket;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
-use Slim\Psr7\Request;
+use Exception;
 
 class TicketRepository
 {
@@ -31,7 +30,6 @@ class TicketRepository
         $this->ticket = $ticket;
     }
 
-
     /**
      * Find All tickets
      *
@@ -53,25 +51,28 @@ class TicketRepository
 
 
     /**
-     *
      * Find Ticket by Code
      *
      * @param TicketDTO $ticketDTO
-     * @return Ticket[]
+     * @return Ticket[]|null
      */
-    public function findTicketByCode(TicketDTO $ticketDTO): array
+    public function findTicketByCode(TicketDTO $ticketDTO): ?array
     {
         $ticketDTOCode = $ticketDTO->getCode();
 
-        return $this->entityManager
-            ->createQueryBuilder()
-            ->select('t.id', 't.code')
-            ->from(Ticket::class, 't')
-            ->where('t.code = :code')
-            ->setParameter(':code', $ticketDTOCode)
-            ->andWhere('t.deleted_at IS NULL')
-            ->getQuery()
-            ->execute();
+        try {
+            return $this->entityManager
+                ->createQueryBuilder()
+                ->select('t.id', 't.code')
+                ->from(Ticket::class, 't')
+                ->where('t.code = :code')
+                ->setParameter(':code', $ticketDTOCode)
+                ->andWhere('t.deleted_at IS NULL')
+                ->getQuery()
+                ->getSingleResult();
+        } catch (Exception $e) {
+            return null;
+        }
     }
 
 
@@ -98,42 +99,39 @@ class TicketRepository
     /**
      * Update Ticket Code
      *
-     * @param Request $request
+     * @param string $parsedBodyCode
      * @param TicketDTO $ticketDTO
      * @return Ticket
      */
-    public function updateTicketCode(Request $request, TicketDTO $ticketDTO): Ticket
+    public function updateTicketCode(string $parsedBodyCode, TicketDTO $ticketDTO): Ticket
     {
         $ticketDTOCode = $ticketDTO->getCode();
-
-        $code = $request->getParsedBody()['code'];
 
         $this->entityManager
             ->createQueryBuilder()
             ->update(Ticket::class, 't')
             ->set('t.code', ':value')
-            ->setParameter(':value', $code)
+            ->setParameter(':value', $parsedBodyCode)
             ->where('t.code = :code')
             ->setParameter(':code', $ticketDTOCode)
             ->getQuery()
             ->getResult();
 
-        $this->ticket->setCode($code);
+        $this->ticket->setCode($parsedBodyCode);
 
         return $this->ticket;
     }
 
     /**
+     * Create a new Ticket
      *
-     * @param Request $request
+     * @param string $parsedBodyCode
      * @return Ticket
      */
-    public function createNewTicket(Request $request): Ticket
+    public function createNewTicket(string $parsedBodyCode): Ticket
     {
-        $code = $request->getParsedBody()['code'];
-
         $this->ticket = new Ticket();
-        $this->ticket->setCode($code);
+        $this->ticket->setCode($parsedBodyCode);
 
         $this->entityManager->persist($this->ticket);
         $this->entityManager->flush();

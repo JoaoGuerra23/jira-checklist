@@ -4,8 +4,12 @@ namespace App\Infrastructure\Persistence\Repositories;
 
 use App\Domain\DTOs\ItemDTO;
 use App\Domain\Entities\Item;
+use App\Domain\Entities\Ticket;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
+use Exception;
 use Slim\Psr7\Request;
 
 class ItemRepository
@@ -52,24 +56,28 @@ class ItemRepository
 
     /**
      *
-     * Find Item by ID
+     * Find Item by Name
      *
      * @param ItemDTO $itemDTO
-     * @return array
+     * @return Item[]|null
      */
-    public function findItemByName(ItemDTO $itemDTO): array
+    public function findItemByName(ItemDTO $itemDTO): ?array
     {
         $itemDTOName = $itemDTO->getName();
 
-        return $this->entityManager
-            ->createQueryBuilder()
-            ->select('i.id, i.name, i.statusId, i.ownerId, i.ticketId, i.date, i.sectionId')
-            ->from(Item::class, 'i')
-            ->where('i.name = :name')
-            ->setParameter(':name', $itemDTOName)
-            ->andWhere('i.deleted_at IS NULL')
-            ->getQuery()
-            ->execute();
+        try {
+            return $this->entityManager
+                ->createQueryBuilder()
+                ->select('i.id, i.name, i.statusId, i.ownerId, i.ticketId, i.date, i.sectionId')
+                ->from(Item::class, 'i')
+                ->where('i.name = :name')
+                ->setParameter(':name', $itemDTOName)
+                ->andWhere('i.deleted_at IS NULL')
+                ->getQuery()
+                ->getSingleResult();
+        } catch (Exception $e) {
+            return null;
+        }
     }
 
 
@@ -98,27 +106,25 @@ class ItemRepository
     /**
      * Update Ticket Code
      *
-     * @param Request $request
+     * @param string $parsedBodyName
      * @param ItemDTO $itemDTO
      * @return Item
      */
-    public function updateItemName(Request $request, ItemDTO $itemDTO): Item
+    public function updateItemName(string $parsedBodyName, ItemDTO $itemDTO): Item
     {
         $itemDTOName = $itemDTO->getName();
-
-        $name = $request->getParsedBody()['name'];
 
         $this->entityManager
             ->createQueryBuilder()
             ->update(Item::class, 'i')
             ->set('i.name', ':value')
-            ->setParameter(':value', $name)
+            ->setParameter(':value', $parsedBodyName)
             ->where('i.name = :name')
             ->setParameter(':name', $itemDTOName)
             ->getQuery()
             ->getResult();
 
-        $this->item->setName($name);
+        $this->item->setName($parsedBodyName);
 
         return $this->item;
     }
@@ -126,20 +132,18 @@ class ItemRepository
 
     /**
      *
-     * @param Request $request
+     * @param array $parsedBody
      * @return Item
      */
-    public function createNewItem(Request $request): Item
+    public function createNewItem(array $parsedBody): Item
     {
-        $body = $request->getParsedBody();
-
         $this->item = new Item();
-        $this->item->setName($body['name']);
+        $this->item->setName($parsedBody['name']);
         $this->item->setDate(new DateTime("now"));
-        $this->item->setStatusId($body['statusId']);
-        $this->item->setOwnerId($body['ownerId']);
-        $this->item->setSectionId($body['sectionId']);
-        $this->item->setTicketId($body['ticketId']);
+        $this->item->setStatusId($parsedBody['statusId']);
+        $this->item->setOwnerId($parsedBody['ownerId']);
+        $this->item->setSectionId($parsedBody['sectionId']);
+        $this->item->setTicketId($parsedBody['ticketId']);
 
         $this->entityManager->persist($this->item);
         $this->entityManager->flush();

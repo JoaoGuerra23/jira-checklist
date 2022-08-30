@@ -10,7 +10,6 @@ use Psr\Log\LoggerInterface;
 
 class CreateTicketAction extends Action
 {
-
     private $ticketRepository;
 
     public function __construct(LoggerInterface $logger, TicketRepository $ticketRepository)
@@ -50,10 +49,11 @@ class CreateTicketAction extends Action
      */
     protected function action(): Response
     {
+        $code = $this->request->getParsedBody()['code'];
 
-        $ticket = $this->ticketRepository->createNewTicket($this->request);
+        $ticket = $this->ticketRepository->createNewTicket($code);
 
-        $message = 'Ticket ' . $ticket->getCode() . ' Created.';
+        $message = "Ticket " . $ticket->getCode() . " Created.";
 
         $this->logger->info($message);
 

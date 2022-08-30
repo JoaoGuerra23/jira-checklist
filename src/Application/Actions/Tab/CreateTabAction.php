@@ -51,7 +51,9 @@ class CreateTabAction extends Action
      */
     protected function action(): Response
     {
-        $tab = $this->tabRepository->createNewTab($this->request);
+        $name = $this->request->getParsedBody()['name'];
+
+        $tab = $this->tabRepository->createNewTab($name);
 
         $message = 'Tab ' . $tab->getName() . ' Created.';
 

@@ -63,6 +63,7 @@ class UpdateTicketAction extends Action
     protected function action(): Response
     {
         $currentCode = $this->resolveArg('code');
+        $newCode = $this->request->getParsedBody()['code'];
 
         $ticketDTO = new TicketDTO($currentCode);
 
@@ -70,15 +71,13 @@ class UpdateTicketAction extends Action
             return $this->respondWithNotFound($ticketDTO->getCode());
         }
 
-        $ticket = $this->ticketRepository->updateTicketCode($this->request, $ticketDTO);
-
-        $updatedCode = $ticket->jsonSerialize()['code'];
-
-        $message = "Ticket code " . $currentCode . " updated to " . $updatedCode;
-
-        if ($currentCode == $updatedCode) {
+        if ($currentCode === $newCode) {
             return $this->respondWithSameResources();
         }
+
+        $this->ticketRepository->updateTicketCode($newCode, $ticketDTO);
+
+        $message = "Ticket code " . $currentCode . " updated to " . $newCode;
 
         $this->logger->info($message);
 

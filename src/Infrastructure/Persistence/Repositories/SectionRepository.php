@@ -6,6 +6,7 @@ use App\Domain\DTOs\SectionDTO;
 use App\Domain\Entities\Section;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 use Slim\Psr7\Request;
 
 class SectionRepository
@@ -55,21 +56,25 @@ class SectionRepository
      * Find Section by ID
      *
      * @param SectionDTO $sectionDTO
-     * @return array
+     * @return Section[]|null
      */
-    public function findSectionBySubject(SectionDTO $sectionDTO): array
+    public function findSectionBySubject(SectionDTO $sectionDTO): ?array
     {
         $sectionDTOSubject = $sectionDTO->getSubject();
 
-        return $this->entityManager
-            ->createQueryBuilder()
-            ->select('s.id', 's.subject, s.tabsId')
-            ->from(Section::class, 's')
-            ->where('s.subject = :subject')
-            ->setParameter(':subject', $sectionDTOSubject)
-            ->andWhere('s.deleted_at IS NULL')
-            ->getQuery()
-            ->execute();
+        try {
+            return $this->entityManager
+                ->createQueryBuilder()
+                ->select('s.id', 's.subject, s.tabsId')
+                ->from(Section::class, 's')
+                ->where('s.subject = :subject')
+                ->setParameter(':subject', $sectionDTOSubject)
+                ->andWhere('s.deleted_at IS NULL')
+                ->getQuery()
+                ->getSingleResult();
+        } catch (Exception $e) {
+            return null;
+        }
     }
 
 
@@ -98,27 +103,25 @@ class SectionRepository
     /**
      * Update Section Subject
      *
-     * @param Request $request
+     * @param string $parsedBodySubject
      * @param SectionDTO $sectionDTO
      * @return Section
      */
-    public function updateSectionSubject(Request $request, SectionDTO $sectionDTO): Section
+    public function updateSectionSubject(string $parsedBodySubject, SectionDTO $sectionDTO): Section
     {
         $sectionDTOSubject = $sectionDTO->getSubject();
-
-        $subject = $request->getParsedBody()['subject'];
 
         $this->entityManager
             ->createQueryBuilder()
             ->update(Section::class, 's')
             ->set('s.subject', ':value')
-            ->setParameter(':value', $subject)
+            ->setParameter(':value', $parsedBodySubject)
             ->where('s.subject = :subject')
             ->setParameter(':subject', $sectionDTOSubject)
             ->getQuery()
             ->getResult();
 
-        $this->section->setSubject($subject);
+        $this->section->setSubject($parsedBodySubject);
 
         return $this->section;
     }
@@ -126,17 +129,15 @@ class SectionRepository
 
     /**
      *
-     * @param Request $request
+     * @param array $parsedBody
      * @return Section
      */
-    public function createNewSection(Request $request): Section
+    public function createNewSection(array $parsedBody): Section
     {
-        $body = $request->getParsedBody();
-
         $this->section = new Section();
 
-        $this->section->setSubject($body['subject']);
-        $this->section->setTabsId($body['tabs_id']);
+        $this->section->setSubject($parsedBody['subject']);
+        $this->section->setTabsId($parsedBody['tabs_id']);
 
         $this->entityManager->persist($this->section);
         $this->entityManager->flush();

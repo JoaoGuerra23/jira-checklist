@@ -41,6 +41,7 @@ class UpdateTabAction extends Action
      *              type="string"
      *          )
      *   ),
+     *
      *         @OA\RequestBody(
      *         @OA\MediaType(
      *             mediaType="application/json",
@@ -64,6 +65,7 @@ class UpdateTabAction extends Action
     protected function action(): Response
     {
         $currentName = $this->resolveArg('name');
+        $newName = $this->request->getParsedBody()['name'];
 
         $tabDTO = new TabDTO($currentName);
 
@@ -71,15 +73,13 @@ class UpdateTabAction extends Action
             return $this->respondWithNotFound($tabDTO->getName());
         }
 
-        $tab = $this->tabRepository->updateTabName($this->request, $tabDTO);
-
-        $updatedName = $tab->jsonSerialize()['name'];
-
-        $message = "Tab name " . $currentName . " updated to " . $updatedName;
-
-        if ($currentName == $updatedName) {
+        if ($currentName === $newName) {
             return $this->respondWithSameResources();
         }
+
+        $this->tabRepository->updateTabName($newName, $tabDTO);
+
+        $message = "Tab name " . $currentName . " updated to " . $newName;
 
         $this->logger->info($message);
 

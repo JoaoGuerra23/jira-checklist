@@ -6,7 +6,7 @@ use App\Domain\DTOs\TabDTO;
 use App\Domain\Entities\Tab;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
-use Slim\Psr7\Request;
+use Exception;
 
 class TabRepository
 {
@@ -55,21 +55,25 @@ class TabRepository
      * Find Tab by Name
      *
      * @param TabDTO $tabDTO
-     * @return array
+     * @return Tab[]|null
      */
-    public function findTabByName(TabDTO $tabDTO): array
+    public function findTabByName(TabDTO $tabDTO): ?array
     {
         $tabDTOName = $tabDTO->getName();
 
-        return $this->entityManager
-            ->createQueryBuilder()
-            ->select('t.id', 't.name')
-            ->from(Tab::class, 't')
-            ->where('t.name = :name')
-            ->setParameter(':name', $tabDTOName)
-            ->andWhere('t.deleted_at IS NULL')
-            ->getQuery()
-            ->execute();
+        try {
+            return $this->entityManager
+                ->createQueryBuilder()
+                ->select('t.id', 't.name')
+                ->from(Tab::class, 't')
+                ->where('t.name = :name')
+                ->setParameter(':name', $tabDTOName)
+                ->andWhere('t.deleted_at IS NULL')
+                ->getQuery()
+                ->getSingleResult();
+        } catch (Exception $e) {
+            return null;
+        }
     }
 
 
@@ -98,45 +102,40 @@ class TabRepository
     /**
      * Update Tab Name
      *
-     * @param Request $request
+     * @param string $parsedBodyName
      * @param TabDTO $tabDTO
      * @return Tab
      */
-    public function updateTabName(Request $request, TabDTO $tabDTO): Tab
+    public function updateTabName(string $parsedBodyName, TabDTO $tabDTO): Tab
     {
         $tabDTOName = $tabDTO->getName();
-
-        $name = $request->getParsedBody()['name'];
 
         $this->entityManager
             ->createQueryBuilder()
             ->update(Tab::class, 't')
             ->set('t.name', ':value')
-            ->setParameter(':value', $name)
+            ->setParameter(':value', $parsedBodyName)
             ->where('t.name = :name')
             ->setParameter(':name', $tabDTOName)
             ->getQuery()
             ->getResult();
 
-        $this->tab->setName($name);
+        $this->tab->setName($parsedBodyName);
 
         return $this->tab;
     }
-
 
     /**
      *
      * Create new Tab
      *
-     * @param Request $request
+     * @param string $parsedBodyName
      * @return Tab
      */
-    public function createNewTab(Request $request): Tab
+    public function createNewTab(string $parsedBodyName): Tab
     {
-        $name = $request->getParsedBody()['name'];
-
         $this->tab = new Tab();
-        $this->tab->setName($name);
+        $this->tab->setName($parsedBodyName);
 
         $this->entityManager->persist($this->tab);
         $this->entityManager->flush();
