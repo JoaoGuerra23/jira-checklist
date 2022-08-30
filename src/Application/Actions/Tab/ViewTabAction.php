@@ -29,16 +29,16 @@ class ViewTabAction extends Action
     /**
      * @OA\Get(
      *   tags={"tab"},
-     *   path="/tabs/{id}",
+     *   path="/tabs/{name}",
      *   operationId="getTab",
-     *   summary="Get Tab by ID",
+     *   summary="Get Tab by Name",
      *   @OA\Parameter(
-     *          name="id",
+     *          name="name",
      *          in="path",
      *          required=true,
-     *          description="Tab id",
+     *          description="Tab Name",
      *          @OA\Schema(
-     *              type="integer"
+     *              type="string"
      *   )
      * ),
      *   @OA\Response(

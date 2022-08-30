@@ -618,6 +618,36 @@
             }
         },
         "/tabs/{name}": {
+            "get": {
+                "tags": [
+                    "tab"
+                ],
+                "summary": "Get Tab by Name",
+                "operationId": "getTab",
+                "parameters": [
+                    {
+                        "name": "name",
+                        "in": "path",
+                        "description": "Tab Name",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A single tab",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Tab"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
             "delete": {
                 "tags": [
                     "tab"
@@ -685,38 +715,6 @@
                 "responses": {
                     "200": {
                         "description": "OK",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/Tab"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/tabs/{id}": {
-            "get": {
-                "tags": [
-                    "tab"
-                ],
-                "summary": "Get Tab by ID",
-                "operationId": "getTab",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "Tab id",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "A single tab",
                         "content": {
                             "application/json": {
                                 "schema": {
