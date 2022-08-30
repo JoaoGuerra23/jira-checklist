@@ -31,6 +31,15 @@ class UpdateStatusAction extends Action
      *   path="/status/{name}",
      *   operationId="editStatus",
      *   summary="Edit Status Name",
+     *   @OA\Parameter(
+     *          name="name",
+     *          in="path",
+     *          required=true,
+     *          description="Status Name",
+     *          @OA\Schema(
+     *              type="string"
+     *          )
+     *   ),
      *         @OA\RequestBody(
      *         @OA\MediaType(
      *             mediaType="application/json",

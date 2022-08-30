@@ -31,6 +31,15 @@ class UpdateSectionAction extends Action
      *   path="/sections/{subject}",
      *   operationId="editSection",
      *   summary="Edit Section Subject",
+     *   @OA\Parameter(
+     *          name="subject",
+     *          in="path",
+     *          required=true,
+     *          description="Section Subject",
+     *          @OA\Schema(
+     *              type="string"
+     *          )
+     *   ),
      *         @OA\RequestBody(
      *         @OA\MediaType(
      *             mediaType="application/json",

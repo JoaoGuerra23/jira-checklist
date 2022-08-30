@@ -31,7 +31,16 @@ class UpdateTicketAction extends Action
      *   path="/tickets/{code}",
      *   operationId="editTicket",
      *   summary="Edit Ticket Code",
-     *         @OA\RequestBody(
+     *   @OA\Parameter(
+     *          name="code",
+     *          in="path",
+     *          required=true,
+     *          description="Ticket Code",
+     *          @OA\Schema(
+     *              type="string"
+     *          )
+     *   ),
+     *    @OA\RequestBody(
      *         @OA\MediaType(
      *             mediaType="application/json",
      *             @OA\Schema(

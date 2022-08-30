@@ -94,38 +94,6 @@
                 }
             }
         },
-        "/items/{id}": {
-            "delete": {
-                "tags": [
-                    "item"
-                ],
-                "summary": "Delete Item by ID",
-                "operationId": "deleteItem",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "Item id",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/Item"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
         "/items/{name}": {
             "get": {
                 "tags": [
@@ -157,12 +125,53 @@
                     }
                 }
             },
+            "delete": {
+                "tags": [
+                    "item"
+                ],
+                "summary": "Delete Item by Name",
+                "operationId": "deleteItem",
+                "parameters": [
+                    {
+                        "name": "name",
+                        "in": "path",
+                        "description": "Item Name",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Item"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
             "patch": {
                 "tags": [
                     "item"
                 ],
                 "summary": "Edit Item Name",
                 "operationId": "editItem",
+                "parameters": [
+                    {
+                        "name": "name",
+                        "in": "path",
+                        "description": "Item Name",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
                 "requestBody": {
                     "content": {
                         "application/json": {
@@ -329,6 +338,17 @@
                 ],
                 "summary": "Edit Section Subject",
                 "operationId": "editSection",
+                "parameters": [
+                    {
+                        "name": "subject",
+                        "in": "path",
+                        "description": "Section Subject",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
                 "requestBody": {
                     "content": {
                         "application/json": {
@@ -491,6 +511,17 @@
                 ],
                 "summary": "Edit Status Name",
                 "operationId": "editStatus",
+                "parameters": [
+                    {
+                        "name": "name",
+                        "in": "path",
+                        "description": "Status Name",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
                 "requestBody": {
                     "content": {
                         "application/json": {
@@ -623,6 +654,17 @@
                 ],
                 "summary": "Edit Tab Name",
                 "operationId": "editTab",
+                "parameters": [
+                    {
+                        "name": "name",
+                        "in": "path",
+                        "description": "Tab name",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
                 "requestBody": {
                     "content": {
                         "application/json": {
@@ -817,6 +859,17 @@
                 ],
                 "summary": "Edit Ticket Code",
                 "operationId": "editTicket",
+                "parameters": [
+                    {
+                        "name": "code",
+                        "in": "path",
+                        "description": "Ticket Code",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
                 "requestBody": {
                     "content": {
                         "application/json": {

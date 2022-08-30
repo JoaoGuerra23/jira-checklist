@@ -32,6 +32,15 @@ class UpdateTabAction extends Action
      *   path="/tabs/{name}",
      *   operationId="editTab",
      *   summary="Edit Tab Name",
+     *   @OA\Parameter(
+     *          name="name",
+     *          in="path",
+     *          required=true,
+     *          description="Tab name",
+     *          @OA\Schema(
+     *              type="string"
+     *          )
+     *   ),
      *         @OA\RequestBody(
      *         @OA\MediaType(
      *             mediaType="application/json",

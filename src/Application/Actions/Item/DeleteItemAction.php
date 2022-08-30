@@ -26,16 +26,16 @@ class DeleteItemAction extends Action
     /**
      * @OA\Delete(
      *   tags={"item"},
-     *   path="/items/{id}",
+     *   path="/items/{name}",
      *   operationId="deleteItem",
-     *   summary="Delete Item by ID",
+     *   summary="Delete Item by Name",
      *   @OA\Parameter(
-     *          name="id",
+     *          name="name",
      *          in="path",
      *          required=true,
-     *          description="Item id",
+     *          description="Item Name",
      *          @OA\Schema(
-     *              type="integer"
+     *              type="string"
      *          )
      *   ),
      *   @OA\Response(

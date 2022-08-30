@@ -33,6 +33,15 @@ class UpdateItemAction extends Action
      *   path="/items/{name}",
      *   operationId="editItem",
      *   summary="Edit Item Name",
+     *   @OA\Parameter(
+     *          name="name",
+     *          in="path",
+     *          required=true,
+     *          description="Item Name",
+     *          @OA\Schema(
+     *              type="string"
+     *          )
+     *   ),
      *         @OA\RequestBody(
      *         @OA\MediaType(
      *             mediaType="application/json",
