@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace App\Application\Actions\Tab;
 
 use App\Application\Actions\Action;
-use App\Domain\DTOs\TabDTO;
+use App\Domain\Tab\TabDTO;
 use App\Infrastructure\Persistence\Repositories\TabRepository;
 use App\Infrastructure\Persistence\Repositories\TicketRepository;
 use OpenApi\Annotations as OA;

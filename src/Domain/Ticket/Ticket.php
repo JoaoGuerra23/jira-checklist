@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Domain\Entities;
+namespace App\Domain\Ticket;
 
 use Doctrine\ORM\Mapping as ORM;
 use JsonSerializable;

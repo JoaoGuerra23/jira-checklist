@@ -2,8 +2,8 @@
 
 namespace App\Infrastructure\Persistence\Repositories;
 
-use App\Domain\DTOs\TicketDTO;
-use App\Domain\Entities\Ticket;
+use App\Domain\Ticket\TicketDTO;
+use App\Domain\Ticket\Ticket;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
@@ -39,10 +39,10 @@ class TicketRepository
     {
         $builder = $this->entityManager
             ->createQueryBuilder()
-            ->select('t.id', 't.code')
+            ->select('t.code')
             ->from(Ticket::class, 't')
             ->where('t.deleted_at IS NULL')
-            ->orderBy('t.id', 'ASC');
+            ->orderBy('t.code', 'ASC');
 
         //Good practice to limit the result
 

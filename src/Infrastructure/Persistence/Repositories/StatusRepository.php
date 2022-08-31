@@ -2,8 +2,8 @@
 
 namespace App\Infrastructure\Persistence\Repositories;
 
-use App\Domain\DTOs\StatusDTO;
-use App\Domain\Entities\Status;
+use App\Domain\Status\StatusDTO;
+use App\Domain\Status\Status;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;

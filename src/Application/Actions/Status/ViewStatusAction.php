@@ -3,14 +3,12 @@
 namespace App\Application\Actions\Status;
 
 use App\Application\Actions\Action;
-use App\Domain\DTOs\StatusDTO;
+use App\Domain\Status\StatusDTO;
 use App\Infrastructure\Persistence\Repositories\StatusRepository;
-use App\Infrastructure\Persistence\Repositories\TicketRepository;
 use OpenApi\Annotations as OA;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Log\LoggerInterface;
 use Slim\Exception\HttpBadRequestException;
-use function Symfony\Component\String\s;
 
 class ViewStatusAction extends Action
 {

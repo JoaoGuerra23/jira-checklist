@@ -3,7 +3,7 @@
 namespace App\Application\Actions\Status;
 
 use App\Application\Actions\Action;
-use App\Domain\DTOs\StatusDTO;
+use App\Domain\Status\StatusDTO;
 use App\Infrastructure\Persistence\Repositories\StatusRepository;
 use OpenApi\Annotations as OA;
 use phpDocumentor\Reflection\Types\This;

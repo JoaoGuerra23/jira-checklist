@@ -2,15 +2,11 @@
 
 namespace App\Infrastructure\Persistence\Repositories;
 
-use App\Domain\DTOs\ItemDTO;
-use App\Domain\Entities\Item;
-use App\Domain\Entities\Ticket;
+use App\Domain\Item\ItemDTO;
+use App\Domain\Item\Item;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\NonUniqueResultException;
-use Doctrine\ORM\NoResultException;
 use Exception;
-use Slim\Psr7\Request;
 
 class ItemRepository
 {
@@ -135,8 +131,23 @@ class ItemRepository
      * @param array $parsedBody
      * @return Item
      */
-    public function createNewItem(array $parsedBody): Item
+    public function createNewItem(array $parsedBody): ?Item
     {
+        // TODO Check if ticketId is deleted_at - if yes return an error - if not create a new item
+
+        /*$builder = $this->entityManager
+            ->createQueryBuilder()
+            ->select('t')
+            ->from(Ticket::class, 't')
+            ->where('t.deleted_at IS NOT NULL');
+        $deletedTicket = $builder->getQuery()->getArrayResult();
+
+        $ticketId = "EX-01";
+
+        if (in_array($ticketId, $deletedTicket)){
+            return null;
+        } */
+
         $this->item = new Item();
         $this->item->setName($parsedBody['name']);
         $this->item->setDate(new DateTime("now"));

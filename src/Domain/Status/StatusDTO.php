@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Domain\DTOs;
+namespace App\Domain\Status;
 
-class TabDTO
+class StatusDTO
 {
 
     /**

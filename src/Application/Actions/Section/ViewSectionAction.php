@@ -3,9 +3,8 @@
 namespace App\Application\Actions\Section;
 
 use App\Application\Actions\Action;
-use App\Domain\DTOs\SectionDTO;
+use App\Domain\Section\SectionDTO;
 use App\Infrastructure\Persistence\Repositories\SectionRepository;
-use App\Infrastructure\Persistence\Repositories\TicketRepository;
 use OpenApi\Annotations as OA;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Log\LoggerInterface;

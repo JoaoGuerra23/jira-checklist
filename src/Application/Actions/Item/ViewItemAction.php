@@ -3,7 +3,7 @@
 namespace App\Application\Actions\Item;
 
 use App\Application\Actions\Action;
-use App\Domain\DTOs\ItemDTO;
+use App\Domain\Item\ItemDTO;
 use App\Infrastructure\Persistence\Repositories\ItemRepository;
 use App\Infrastructure\Persistence\Repositories\SectionRepository;
 use App\Infrastructure\Persistence\Repositories\TicketRepository;

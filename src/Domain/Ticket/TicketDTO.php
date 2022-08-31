@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Domain\DTOs;
+namespace App\Domain\Ticket;
 
 class TicketDTO
 {

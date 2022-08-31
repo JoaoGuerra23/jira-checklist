@@ -3,10 +3,9 @@
 namespace App\Application\Actions\Tab;
 
 use App\Application\Actions\Action;
-use App\Domain\DTOs\TabDTO;
+use App\Domain\Tab\TabDTO;
 use App\Infrastructure\Persistence\Repositories\TabRepository;
 use OpenApi\Annotations as OA;
-use phpDocumentor\Reflection\Types\This;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Log\LoggerInterface;
 use Slim\Exception\HttpBadRequestException;

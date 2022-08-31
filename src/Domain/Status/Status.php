@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Domain\Entities;
+namespace App\Domain\Status;
 
 use Doctrine\ORM\Mapping as ORM;
 use JsonSerializable;
@@ -8,23 +8,23 @@ use OpenApi\Annotations as OA;
 
 /**
  *
- * @ORM\Table(name="tabs")
- * @ORM\Entity(repositoryClass="App\Infrastructure\Persistence\Repositories\TabRepository")
+ * @ORM\Table(name="status")
+ * @ORM\Entity(repositoryClass="App\Infrastructure\Persistence\Repositories\StatusRepository")
  *
  * @OA\Schema(
- *     description="Tab Model",
- *     title="Tab"
+ *     description="Status Model",
+ *     title="Status"
  * )
  *
  */
-class Tab implements JsonSerializable
+class Status implements JsonSerializable
 {
 
     /**
      * @ORM\Id
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue
-     * @ORM\OneToMany(targetEntity="Section", mappedBy="id")
+     * @ORM\OneToMany(targetEntity="Item", mappedBy="id")
      *
      * @OA\Property(type="integer", format="int64", description="ID", title="ID")
      *
@@ -36,7 +36,7 @@ class Tab implements JsonSerializable
     /**
      * @ORM\Column(type="string")
      *
-     * @OA\Property(type="string", description="Tab Name", title="Tab Name")
+     * @OA\Property(type="string", description="Status Name", title="Status Name")
      *
      * @var string
      */

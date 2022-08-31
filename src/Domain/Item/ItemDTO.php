@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Domain\DTOs;
+namespace App\Domain\Item;
 
-class StatusDTO
+class ItemDTO
 {
 
     /**
@@ -11,9 +11,9 @@ class StatusDTO
     private $name;
 
     /**
-     * @param $name
+     * @param string $name
      */
-    public function __construct($name)
+    public function __construct(string $name)
     {
         $this->name = $name;
     }

@@ -2,8 +2,8 @@
 
 namespace App\Infrastructure\Persistence\Repositories;
 
-use App\Domain\DTOs\TabDTO;
-use App\Domain\Entities\Tab;
+use App\Domain\Tab\TabDTO;
+use App\Domain\Tab\Tab;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;

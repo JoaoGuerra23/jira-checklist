@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace App\Application\Actions\Ticket;
 
 use App\Application\Actions\Action;
-use App\Domain\DTOs\TicketDTO;
+use App\Domain\Ticket\TicketDTO;
 use App\Infrastructure\Persistence\Repositories\TicketRepository;
 use OpenApi\Annotations as OA;
 use Psr\Http\Message\ResponseInterface as Response;

@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Domain\DTOs;
+namespace App\Domain\Tab;
 
-class ItemDTO
+class TabDTO
 {
 
     /**
@@ -11,9 +11,9 @@ class ItemDTO
     private $name;
 
     /**
-     * @param string $name
+     * @param $name
      */
-    public function __construct(string $name)
+    public function __construct($name)
     {
         $this->name = $name;
     }
