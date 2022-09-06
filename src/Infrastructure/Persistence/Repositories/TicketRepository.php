@@ -2,9 +2,11 @@
 
 namespace App\Infrastructure\Persistence\Repositories;
 
+use App\Domain\Ticket\TicketBadRequestException;
 use App\Domain\Ticket\TicketDTO;
 use App\Domain\Ticket\Ticket;
-use App\Domain\Ticket\TicketException;
+use App\Domain\Ticket\TicketNotAllowedException;
+use App\Domain\Ticket\TicketNotFoundException;
 use App\Domain\Ticket\TicketRepositoryInterface;
 use App\Domain\Ticket\TicketValidator;
 use DateTime;
@@ -91,7 +93,7 @@ class TicketRepository extends TicketValidator implements TicketRepositoryInterf
             $result = $builder->getQuery()->getSingleResult();
 
             if (empty($result)) {
-                throw new TicketException('Ticket not Found', 404);
+                throw new TicketNotFoundException('Ticket Not Found');
             }
 
         } catch (Exception $e) {
@@ -129,42 +131,55 @@ class TicketRepository extends TicketValidator implements TicketRepositoryInterf
      * @param string $parsedBodyCode
      * @param TicketDTO $ticketDTO
      * @return Ticket
+     *
+     * @throws TicketNotAllowedException
+     * @throws TicketBadRequestException
      */
     public function updateTicket(string $parsedBodyCode, TicketDTO $ticketDTO): Ticket
     {
         $ticketDTOCode = $ticketDTO->getCode();
 
-        $this->entityManager
-            ->createQueryBuilder()
-            ->update(Ticket::class, 't')
-            ->set('t.code', ':value')
-            ->setParameter(':value', $parsedBodyCode)
-            ->where('t.code = :code')
-            ->setParameter(':code', $ticketDTOCode)
-            ->getQuery()
-            ->getResult();
+        $tickets = $this->findAll();
+        $findAllResult = self::searchForCode($parsedBodyCode, $tickets);
 
-        $this->ticket->setCode($parsedBodyCode);
+        if ($findAllResult === null) {
 
-        return $this->ticket;
+            $this->entityManager
+                ->createQueryBuilder()
+                ->update(Ticket::class, 't')
+                ->set('t.code', ':value')
+                ->setParameter(':value', $parsedBodyCode)
+                ->where('t.code = :code')
+                ->setParameter(':code', $ticketDTOCode)
+                ->getQuery()
+                ->getResult();
+
+            $this->ticket->setCode(self::validateTicketCodeLength($parsedBodyCode));
+
+            return $this->ticket;
+        }
+
+        throw new TicketBadRequestException('Ticket Already Exists');
     }
 
     /**
      * Create a new Ticket
      *
-     * @param string $parsedBodyCode
+     * @param string $code
      * @return Ticket
      *
-     * @throws TicketException
+     * @throws TicketNotAllowedException
+     * @throws TicketBadRequestException
      */
-    public function createNewTicket(string $parsedBodyCode): Ticket
+    public function createNewTicket(string $code): Ticket
     {
-        $result = $this->findTicketByCode($parsedBodyCode);
+        $tickets = $this->findAll();
+        $findAllResult = self::searchForCode($code, $tickets);
 
-        if (empty($result)) {
+        if ($findAllResult === null) {
 
             $this->ticket = new Ticket();
-            $this->ticket->setCode(self::validateTicketCode($parsedBodyCode));
+            $this->ticket->setCode(self::validateTicketCodeLength($code));
 
             $this->entityManager->persist($this->ticket);
             $this->entityManager->flush();
@@ -172,8 +187,28 @@ class TicketRepository extends TicketValidator implements TicketRepositoryInterf
             return $this->ticket;
         }
 
-        throw new TicketException('Resource already exists', 409);
+        $undeletedTickets = $this->findAllTickets();
+        $findUndeletedTicketsResult = self::searchForCode($code, $undeletedTickets);
 
+        if ($findUndeletedTicketsResult === null) {
+
+            $builder = $this->entityManager
+                ->createQueryBuilder()
+                ->update(Ticket::class, 't')
+                ->set('t.deleted_at', ':value')
+                ->setParameter(':value', null)
+                ->where('t.code = :code')
+                ->setParameter(':code', $code);
+
+            $builder->getQuery()->execute();
+
+            $this->ticket->setCode($code);
+
+            return $this->ticket;
+
+        }
+
+        throw new TicketBadRequestException('Ticket Already Exists');
     }
 
 }

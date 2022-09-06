@@ -46,9 +46,9 @@ interface TicketRepositoryInterface
     /**
      * Create a new ticket
      *
-     * @param string $parsedBodyCode
+     * @param string $code
      * @return Ticket
      */
-    public function createNewTicket(string $parsedBodyCode): Ticket;
+    public function createNewTicket(string $code): Ticket;
 
 }

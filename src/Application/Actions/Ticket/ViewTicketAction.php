@@ -5,7 +5,7 @@ namespace App\Application\Actions\Ticket;
 
 use App\Application\Actions\Action;
 use App\Domain\Ticket\TicketDTO;
-use App\Domain\Ticket\TicketException;
+use App\Domain\Ticket\TicketNotFoundException;
 use App\Infrastructure\Persistence\Repositories\TicketRepository;
 use OpenApi\Annotations as OA;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -50,7 +50,7 @@ class ViewTicketAction extends Action
      *
      *
      * @throws HttpBadRequestException
-     * @throws TicketException
+     * @throws TicketNotFoundException
      */
     protected function action(): Response
     {
