@@ -51,17 +51,17 @@ class ViewItemAction extends Action
      */
     protected function action(): Response
     {
-        $itemName = $this->resolveArg('name');
+        $itemId = (int)$this->resolveArg('id');
 
-        $itemDTO = new ItemDTO($itemName);
+        $itemDTO = new ItemDTO($itemId);
 
-        $item = $this->itemRepository->findItemByName($itemDTO);
+        $item = $this->itemRepository->findItemById($itemDTO);
 
         if (empty($item)) {
-            return $this->respondWithNotFound($itemName);
+            return $this->respondWithNotFound($itemId);
         }
 
-        $this->logger->info("Item " . $itemName . " was viewed.");
+        $this->logger->info("Item " . $itemId . " was viewed.");
 
         return $this->respondWithData($item);
     }

@@ -64,22 +64,24 @@ class UpdateItemAction extends Action
      */
     protected function action(): Response
     {
-        $currentName = $this->resolveArg('name');
-        $newName = $this->request->getParsedBody()['name'];
+        $currentName = $this->resolveArg('id');
+        //$newName = $this->request->getParsedBody()['name'];
+
+        $parsedBody = $this->getFormData();
 
         $itemDTO = new ItemDTO($currentName);
 
-        if (empty($this->itemRepository->findItemByName($itemDTO))) {
-            return $this->respondWithNotFound($itemDTO->getName());
+        if (empty($this->itemRepository->findItemById($itemDTO))) {
+            return $this->respondWithNotFound($itemDTO->getId());
         }
 
-        if ($currentName === $newName) {
+        /*if ($currentName === $newName) {
             return $this->respondWithSameResources();
-        }
+        }*/
 
-        $this->itemRepository->updateItemName($newName, $itemDTO);
+        $this->itemRepository->updateItem($parsedBody, $itemDTO);
 
-        $message = "Item Name " . $currentName . " updated to " . $newName;
+        $message = "Item with ID " . $currentName . " was updated";
 
         $this->logger->info($message);
 

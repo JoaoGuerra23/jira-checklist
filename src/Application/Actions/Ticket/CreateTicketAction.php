@@ -3,6 +3,8 @@
 namespace App\Application\Actions\Ticket;
 
 use App\Application\Actions\Action;
+use App\Domain\Ticket\TicketException;
+use App\Domain\Ticket\TicketValidator;
 use App\Infrastructure\Persistence\Repositories\TicketRepository;
 use OpenApi\Annotations as OA;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -46,10 +48,22 @@ class CreateTicketAction extends Action
      *      )
      *     )
      * )
+     * @throws TicketException
      */
     protected function action(): Response
     {
-        $code = $this->request->getParsedBody()['code'];
+        $parsedBody = $this->request->getParsedBody();
+
+        $code = reset($parsedBody);
+
+        // TODO validation for a new even if is deleted_at
+
+        $ticketArr = $this->ticketRepository->findAll();
+
+        $key = array_search($code, array_column($ticketArr, 'code'));
+
+        dd($key);
+
 
         $ticket = $this->ticketRepository->createNewTicket($code);
 
@@ -58,5 +72,6 @@ class CreateTicketAction extends Action
         $this->logger->info($message);
 
         return $this->respondWithData($message, 201);
+
     }
 }

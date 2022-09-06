@@ -4,11 +4,14 @@ namespace App\Infrastructure\Persistence\Repositories;
 
 use App\Domain\Ticket\TicketDTO;
 use App\Domain\Ticket\Ticket;
+use App\Domain\Ticket\TicketException;
+use App\Domain\Ticket\TicketRepositoryInterface;
+use App\Domain\Ticket\TicketValidator;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 
-class TicketRepository
+class TicketRepository extends TicketValidator implements TicketRepositoryInterface
 {
     /**
      * @var EntityManagerInterface
@@ -35,6 +38,21 @@ class TicketRepository
      *
      * @return Ticket[]
      */
+    public function findAll(): array
+    {
+        return $this->entityManager
+            ->createQueryBuilder()
+            ->select('t.code')
+            ->from(Ticket::class, 't')
+            ->getQuery()
+            ->execute();
+    }
+
+    /**
+     * Find All tickets - hiding deleted tickets
+     *
+     * @return Ticket[]
+     */
     public function findAllTickets(): array
     {
         $builder = $this->entityManager
@@ -42,9 +60,11 @@ class TicketRepository
             ->select('t.code')
             ->from(Ticket::class, 't')
             ->where('t.deleted_at IS NULL')
-            ->orderBy('t.code', 'ASC');
+            ->orderBy('t.code', 'ASC')
+            ->setFirstResult(0)
+            ->setMaxResults(100);
 
-        //Good practice to limit the result
+        //TODO pagination
 
         return $builder->getQuery()->execute();
     }
@@ -53,26 +73,32 @@ class TicketRepository
     /**
      * Find Ticket by Code
      *
-     * @param TicketDTO $ticketDTO
+     * @param string $ticketCode
      * @return Ticket[]|null
      */
-    public function findTicketByCode(TicketDTO $ticketDTO): ?array
+    public function findTicketByCode(string $ticketCode): ?array
     {
-        $ticketDTOCode = $ticketDTO->getCode();
+
+        $builder = $this->entityManager
+            ->createQueryBuilder()
+            ->select('t.code')
+            ->from(Ticket::class, 't')
+            ->where('t.code = :code')
+            ->setParameter(':code', $ticketCode)
+            ->andWhere('t.deleted_at IS NULL');
 
         try {
-            return $this->entityManager
-                ->createQueryBuilder()
-                ->select('t.id', 't.code')
-                ->from(Ticket::class, 't')
-                ->where('t.code = :code')
-                ->setParameter(':code', $ticketDTOCode)
-                ->andWhere('t.deleted_at IS NULL')
-                ->getQuery()
-                ->getSingleResult();
+            $result = $builder->getQuery()->getSingleResult();
+
+            if (empty($result)) {
+                throw new TicketException('Ticket not Found', 404);
+            }
+
         } catch (Exception $e) {
             return null;
         }
+
+        return $result;
     }
 
 
@@ -80,6 +106,7 @@ class TicketRepository
      * Delete ticket by Code
      *
      * @param TicketDTO $ticketDTO
+     * @return void
      */
     public function deleteTicketByCode(TicketDTO $ticketDTO): void
     {
@@ -103,7 +130,7 @@ class TicketRepository
      * @param TicketDTO $ticketDTO
      * @return Ticket
      */
-    public function updateTicketCode(string $parsedBodyCode, TicketDTO $ticketDTO): Ticket
+    public function updateTicket(string $parsedBodyCode, TicketDTO $ticketDTO): Ticket
     {
         $ticketDTOCode = $ticketDTO->getCode();
 
@@ -127,15 +154,26 @@ class TicketRepository
      *
      * @param string $parsedBodyCode
      * @return Ticket
+     *
+     * @throws TicketException
      */
     public function createNewTicket(string $parsedBodyCode): Ticket
     {
-        $this->ticket = new Ticket();
-        $this->ticket->setCode($parsedBodyCode);
+        $result = $this->findTicketByCode($parsedBodyCode);
 
-        $this->entityManager->persist($this->ticket);
-        $this->entityManager->flush();
+        if (empty($result)) {
 
-        return $this->ticket;
+            $this->ticket = new Ticket();
+            $this->ticket->setCode(self::validateTicketCode($parsedBodyCode));
+
+            $this->entityManager->persist($this->ticket);
+            $this->entityManager->flush();
+
+            return $this->ticket;
+        }
+
+        throw new TicketException('Resource already exists', 409);
+
     }
+
 }

@@ -4,7 +4,7 @@ namespace App\Domain\Tab;
 
 class TabDTO
 {
-
+    //TODO status name is not unique - replace by ID
     /**
      * @var string
      */

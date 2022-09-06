@@ -8,7 +8,7 @@ use OpenApi\Annotations as OA;
 
 /**
  * @ORM\Table(name="tickets")
- * @ORM\Entity(repositoryClass="App\Infrastructure\Persistence\Repositories\TicketRepository")
+ * @ORM\Entity(repositoryClass="TicketRepositoryInterface")
  *
  * @OA\Schema(
  *     description="Ticket Model",

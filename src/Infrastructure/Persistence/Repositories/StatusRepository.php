@@ -4,14 +4,12 @@ namespace App\Infrastructure\Persistence\Repositories;
 
 use App\Domain\Status\StatusDTO;
 use App\Domain\Status\Status;
+use App\Domain\Status\StatusRepositoryInterface;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\NonUniqueResultException;
-use Doctrine\ORM\NoResultException;
 use Exception;
-use Slim\Psr7\Request;
 
-class StatusRepository
+class StatusRepository implements StatusRepositoryInterface
 {
     /**
      * @var EntityManagerInterface

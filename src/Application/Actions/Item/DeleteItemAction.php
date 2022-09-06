@@ -48,17 +48,17 @@ class DeleteItemAction extends Action
      */
     protected function action(): Response
     {
-        $itemName = $this->resolveArg('name');
+        $itemId = $this->resolveArg('id');
 
-        $itemDTO = new ItemDTO($itemName);
+        $itemDTO = new ItemDTO($itemId);
 
-        if (empty($this->itemRepository->findItemByName($itemDTO))) {
-            return $this->respondWithNotFound($itemName);
+        if (empty($this->itemRepository->findItemById($itemDTO))) {
+            return $this->respondWithNotFound($itemId);
         }
 
-        $this->itemRepository->deleteItemByName($itemDTO);
+        $this->itemRepository->deleteItemById($itemDTO);
 
-        $message = "Item " . $itemName . " Deleted.";
+        $message = "Item " . $itemId . " Deleted.";
 
         $this->logger->info($message);
 

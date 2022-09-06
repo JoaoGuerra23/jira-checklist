@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace App\Infrastructure\Persistence\User;
 
-use App\Domain\User\Ticket;
 use App\Domain\User\User;
 use App\Domain\User\UserNotFoundException;
 use App\Domain\User\UserRepository;

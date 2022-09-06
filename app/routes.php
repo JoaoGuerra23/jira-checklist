@@ -84,9 +84,9 @@ return function (App $app) {
     $app->group('/items', function (Group $group) {
         $group->post('', CreateItemAction::class);
         $group->get('', ListItemAction::class);
-        $group->get('/{name}', ViewItemAction::class);
-        $group->patch('/{name}', UpdateItemAction::class);
-        $group->delete('/{name}', DeleteItemAction::class);
+        $group->get('/{id}', ViewItemAction::class);
+        $group->patch('/{id}', UpdateItemAction::class);
+        $group->delete('/{id}', DeleteItemAction::class);
     });
 
 };

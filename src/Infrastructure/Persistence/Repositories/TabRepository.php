@@ -4,11 +4,12 @@ namespace App\Infrastructure\Persistence\Repositories;
 
 use App\Domain\Tab\TabDTO;
 use App\Domain\Tab\Tab;
+use App\Domain\Tab\TabRepositoryInterface;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 
-class TabRepository
+class TabRepository implements TabRepositoryInterface
 {
 
     /**

@@ -6,23 +6,23 @@ class ItemDTO
 {
 
     /**
-     * @var string
+     * @var int
      */
-    private $name;
+    private $id;
 
     /**
-     * @param string $name
+     * @param int $id
      */
-    public function __construct(string $name)
+    public function __construct(int $id)
     {
-        $this->name = $name;
+        $this->id = $id;
     }
 
     /**
-     * @return string
+     * @return int
      */
-    public function getName(): string
+    public function getId(): int
     {
-        return $this->name;
+        return $this->id;
     }
 }

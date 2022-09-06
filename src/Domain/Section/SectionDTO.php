@@ -4,7 +4,7 @@ namespace App\Domain\Section;
 
 class SectionDTO
 {
-
+    //TODO section subject is not unique - replace by ID
     /**
      * @var string
      */

@@ -54,7 +54,7 @@ class DeleteTicketAction extends Action
 
         $ticketDTO = new TicketDTO($code);
 
-        if (empty($this->ticketRepository->findTicketByCode($ticketDTO))) {
+        if (empty($this->ticketRepository->findTicketByCode($code))) {
             return $this->respondWithNotFound($code);
         }
 

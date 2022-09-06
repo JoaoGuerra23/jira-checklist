@@ -4,11 +4,12 @@ namespace App\Infrastructure\Persistence\Repositories;
 
 use App\Domain\Section\SectionDTO;
 use App\Domain\Section\Section;
+use App\Domain\Section\SectionRepositoryInterface;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 
-class SectionRepository
+class SectionRepository implements SectionRepositoryInterface
 {
     /**
      * @var EntityManagerInterface
