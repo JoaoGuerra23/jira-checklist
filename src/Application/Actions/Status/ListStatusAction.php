@@ -17,10 +17,10 @@ class ListStatusAction extends Action
      */
     private $statusRepository;
 
-    public function __construct(LoggerInterface $logger, StatusRepository $statusRepository)
+    public function __construct(LoggerInterface $logger, StatusRepository $statusAuthRepository)
     {
         parent::__construct($logger);
-        $this->statusRepository = $statusRepository;
+        $this->statusRepository = $statusAuthRepository;
     }
 
     /**

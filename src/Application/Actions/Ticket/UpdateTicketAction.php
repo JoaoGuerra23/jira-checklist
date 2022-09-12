@@ -3,6 +3,8 @@
 namespace App\Application\Actions\Ticket;
 
 use App\Application\Actions\Action;
+use App\Domain\Exceptions\BadRequestException;
+use App\Domain\Exceptions\NotAllowedException;
 use App\Domain\Ticket\TicketDTO;
 use App\Infrastructure\Persistence\Repositories\TicketRepository;
 use OpenApi\Annotations as OA;
@@ -18,10 +20,10 @@ class UpdateTicketAction extends Action
      */
     private $ticketRepository;
 
-    public function __construct(LoggerInterface $logger, TicketRepository $ticketRepository)
+    public function __construct(LoggerInterface $logger, TicketRepository $ticketAuthRepository)
     {
         parent::__construct($logger);
-        $this->ticketRepository = $ticketRepository;
+        $this->ticketRepository = $ticketAuthRepository;
     }
 
     /**
@@ -58,21 +60,18 @@ class UpdateTicketAction extends Action
      *     @OA\JsonContent(ref="#/components/schemas/Ticket")
      *   )
      * )
+     * @return Response
      * @throws HttpBadRequestException
+     * @throws BadRequestException
+     * @throws NotAllowedException
      */
     protected function action(): Response
     {
         $currentCode = $this->resolveArg('code');
 
-        $parsedBody = $this->getFormData();
-        //reset() - return the first value from array
-        $newCode = reset($parsedBody);
+        $newCode = $this->body('code', 'Key does not exist!');
 
         $ticketDTO = new TicketDTO($currentCode);
-
-        if (empty($parsedBody)){
-            return $this->respondWithData('Empty body - please insert the Ticket Code');
-        }
 
         if (empty($this->ticketRepository->findTicketByCode($currentCode))) {
             return $this->respondWithNotFound($ticketDTO->getCode());
@@ -89,5 +88,10 @@ class UpdateTicketAction extends Action
         $this->logger->info($message);
 
         return $this->respondWithData($message);
+    }
+
+    public function body(string $key, $default = null): ?string
+    {
+        return $this->request->getParsedBody()[$key] ?? $default;
     }
 }

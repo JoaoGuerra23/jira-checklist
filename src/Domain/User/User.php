@@ -48,6 +48,8 @@ class User implements JsonSerializable
         return $this->lastName;
     }
 
+    // TODO format or toArray - Class format
+
     #[\ReturnTypeWillChange]
     public function jsonSerialize(): array
     {

@@ -16,10 +16,10 @@ class ListTicketsAction extends Action
      */
     private $ticketRepository;
 
-    public function __construct(LoggerInterface $logger, TicketRepository $ticketRepository)
+    public function __construct(LoggerInterface $logger, TicketRepository $ticketAuthRepository)
     {
         parent::__construct($logger);
-        $this->ticketRepository = $ticketRepository;
+        $this->ticketRepository = $ticketAuthRepository;
     }
 
     /**

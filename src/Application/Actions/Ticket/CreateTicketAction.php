@@ -3,8 +3,10 @@
 namespace App\Application\Actions\Ticket;
 
 use App\Application\Actions\Action;
-use App\Domain\Ticket\TicketNotFoundException;
+use App\Domain\Exceptions\BadRequestException;
+use App\Domain\Exceptions\NotAllowedException;
 use App\Infrastructure\Persistence\Repositories\TicketRepository;
+use App\Validation\Validator;
 use OpenApi\Annotations as OA;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Log\LoggerInterface;
@@ -13,10 +15,10 @@ class CreateTicketAction extends Action
 {
     private $ticketRepository;
 
-    public function __construct(LoggerInterface $logger, TicketRepository $ticketRepository)
+    public function __construct(LoggerInterface $logger, TicketRepository $ticketAuthRepository)
     {
         parent::__construct($logger);
-        $this->ticketRepository = $ticketRepository;
+        $this->ticketRepository = $ticketAuthRepository;
     }
 
     /**
@@ -47,13 +49,17 @@ class CreateTicketAction extends Action
      *      )
      *     )
      * )
-     * @throws TicketNotFoundException
+     * @return Response
+     * @throws BadRequestException
+     * @throws NotAllowedException
      */
     protected function action(): Response
     {
-        $parsedBody = $this->request->getParsedBody();
+        $code = Validator::getParam($this->request, 'code');
 
-        $code = reset($parsedBody);
+        if ($code === null){
+            throw new NotAllowedException('Ticket code must be of the type string, null given');
+        }
 
         $ticket = $this->ticketRepository->createNewTicket($code);
 

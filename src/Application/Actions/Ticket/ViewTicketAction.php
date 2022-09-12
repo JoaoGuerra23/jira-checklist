@@ -4,8 +4,7 @@ declare(strict_types=1);
 namespace App\Application\Actions\Ticket;
 
 use App\Application\Actions\Action;
-use App\Domain\Ticket\TicketDTO;
-use App\Domain\Ticket\TicketNotFoundException;
+use App\Application\ResponseEmitter\ResponseEmitter;
 use App\Infrastructure\Persistence\Repositories\TicketRepository;
 use OpenApi\Annotations as OA;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -20,10 +19,10 @@ class ViewTicketAction extends Action
      */
     private $ticketRepository;
 
-    public function __construct(LoggerInterface $logger, TicketRepository $ticketRepository)
+    public function __construct(LoggerInterface $logger, TicketRepository $ticketAuthRepository)
     {
         parent::__construct($logger);
-        $this->ticketRepository = $ticketRepository;
+        $this->ticketRepository = $ticketAuthRepository;
     }
 
     /**
@@ -48,13 +47,10 @@ class ViewTicketAction extends Action
      *   )
      * )
      *
-     *
      * @throws HttpBadRequestException
-     * @throws TicketNotFoundException
      */
     protected function action(): Response
     {
-
         $ticketCode = $this->resolveArg('code');
 
         $ticket = $this->ticketRepository->findTicketByCode($ticketCode);

@@ -19,10 +19,10 @@ class UpdateTabAction extends Action
      */
     private $tabRepository;
 
-    public function __construct(LoggerInterface $logger, TabRepository $tabRepository)
+    public function __construct(LoggerInterface $logger, TabRepository $tabAuthRepository)
     {
         parent::__construct($logger);
-        $this->tabRepository = $tabRepository;
+        $this->tabRepository = $tabAuthRepository;
     }
 
     /**
@@ -68,8 +68,6 @@ class UpdateTabAction extends Action
         $newName = $this->request->getParsedBody()['name'];
 
         $tabDTO = new TabDTO($currentName);
-
-        // TODO update the name by ID because ID is unique
 
         if (empty($this->tabRepository->findTabByName($tabDTO))) {
             return $this->respondWithNotFound($tabDTO->getName());

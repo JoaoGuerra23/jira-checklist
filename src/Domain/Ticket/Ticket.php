@@ -78,7 +78,6 @@ class Ticket implements JsonSerializable
         $this->code = $code;
     }
 
-
     /**
      * @return array
      */

@@ -17,10 +17,10 @@ class DeleteItemAction extends Action
      */
     private $itemRepository;
 
-    public function __construct(LoggerInterface $logger, ItemRepository $itemRepository)
+    public function __construct(LoggerInterface $logger, ItemRepository $itemAuthRepository)
     {
         parent::__construct($logger);
-        $this->itemRepository = $itemRepository;
+        $this->itemRepository = $itemAuthRepository;
     }
 
     /**

@@ -4,6 +4,7 @@ namespace App\Application\Actions\Section;
 
 use App\Application\Actions\Action;
 use App\Infrastructure\Persistence\Repositories\SectionRepository;
+use App\Validation\Validator;
 use OpenApi\Annotations as OA;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Log\LoggerInterface;
@@ -13,10 +14,10 @@ class CreateSectionAction extends Action
 
     private $sectionRepository;
 
-    public function __construct(LoggerInterface $logger, SectionRepository $sectionRepository)
+    public function __construct(LoggerInterface $logger, SectionRepository $sectionAuthRepository)
     {
         parent::__construct($logger);
-        $this->sectionRepository = $sectionRepository;
+        $this->sectionRepository = $sectionAuthRepository;
     }
 
     /**
@@ -54,6 +55,7 @@ class CreateSectionAction extends Action
      */
     protected function action(): Response
     {
+
         $parsedBody = $this->request->getParsedBody();
 
         $section = $this->sectionRepository->createNewSection($parsedBody);

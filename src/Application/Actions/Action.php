@@ -3,19 +3,17 @@ declare(strict_types=1);
 
 namespace App\Application\Actions;
 
-use App\Domain\DomainException\DomainRecordNotFoundException;
-use App\Domain\Ticket\TicketBadRequestException;
-use App\Domain\Ticket\TicketNotAllowedException;
-use App\Domain\Ticket\TicketNotFoundException;
+use App\Domain\Exceptions\DomainRecordNotFoundException;
+use App\Domain\Exceptions\BadRequestException;
+use App\Domain\Exceptions\NotAllowedException;
+use App\Domain\Exceptions\NotFoundException;
 use OpenApi\Annotations as OA;
-use phpDocumentor\Reflection\Types\This;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Log\LoggerInterface;
 use Slim\Exception\HttpBadRequestException;
 use Slim\Exception\HttpMethodNotAllowedException;
 use Slim\Exception\HttpNotFoundException;
-use Slim\Exception\HttpUnauthorizedException;
 
 /**
  * @OA\Server(url="https://sandbox.exads.rocks")
@@ -51,11 +49,11 @@ abstract class Action
 
         try {
             return $this->action();
-        } catch (TicketNotFoundException $e) {
+        } catch (NotFoundException $e) {
             throw new HttpNotFoundException($this->request, $e->getMessage());
-        } catch (TicketBadRequestException $e){
+        } catch (BadRequestException $e){
             throw new HttpBadRequestException($this->request, $e->getMessage());
-        } catch (TicketNotAllowedException $e){
+        } catch (NotAllowedException $e){
             throw new HttpMethodNotAllowedException($this->request, $e->getMessage());
         }
     }

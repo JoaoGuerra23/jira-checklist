@@ -5,6 +5,7 @@ namespace App\Infrastructure\Persistence\Repositories;
 use App\Domain\Section\SectionDTO;
 use App\Domain\Section\Section;
 use App\Domain\Section\SectionRepositoryInterface;
+use App\Validation\Validator;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
@@ -134,9 +135,6 @@ class SectionRepository implements SectionRepositoryInterface
      */
     public function createNewSection(array $parsedBody): Section
     {
-
-        //TODO verification if tab exists and if deleted
-
         $this->section = new Section();
 
         $this->section->setSubject($parsedBody['subject']);

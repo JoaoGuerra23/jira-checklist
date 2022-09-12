@@ -10,7 +10,7 @@ use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 
-class ItemRepository implements ItemRepositoryInterface
+class ItemRepository extends AbstractRepository implements ItemRepositoryInterface
 {
 
     /**

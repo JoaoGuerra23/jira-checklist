@@ -10,7 +10,7 @@ use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
 
 class SessionMiddleware implements Middleware
 {
-    /**
+     /**
      * {@inheritdoc}
      */
     public function process(Request $request, RequestHandler $handler): Response
@@ -22,4 +22,5 @@ class SessionMiddleware implements Middleware
 
         return $handler->handle($request);
     }
+
 }

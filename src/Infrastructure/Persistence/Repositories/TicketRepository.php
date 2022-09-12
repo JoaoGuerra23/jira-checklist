@@ -2,18 +2,20 @@
 
 namespace App\Infrastructure\Persistence\Repositories;
 
-use App\Domain\Ticket\TicketBadRequestException;
+use App\Domain\Exceptions\BadRequestException;
+use App\Domain\Exceptions\NotAllowedException;
+use App\Domain\Exceptions\NotFoundException;
 use App\Domain\Ticket\TicketDTO;
 use App\Domain\Ticket\Ticket;
-use App\Domain\Ticket\TicketNotAllowedException;
-use App\Domain\Ticket\TicketNotFoundException;
 use App\Domain\Ticket\TicketRepositoryInterface;
-use App\Domain\Ticket\TicketValidator;
+use App\Validation\Validator;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
+use Respect\Validation\Validator as v;
 
-class TicketRepository extends TicketValidator implements TicketRepositoryInterface
+
+class TicketRepository implements TicketRepositoryInterface
 {
     /**
      * @var EntityManagerInterface
@@ -76,7 +78,7 @@ class TicketRepository extends TicketValidator implements TicketRepositoryInterf
      * Find Ticket by Code
      *
      * @param string $ticketCode
-     * @return Ticket[]|null
+     * @return Ticket|null
      */
     public function findTicketByCode(string $ticketCode): ?array
     {
@@ -92,8 +94,10 @@ class TicketRepository extends TicketValidator implements TicketRepositoryInterf
         try {
             $result = $builder->getQuery()->getSingleResult();
 
+            // TODO code don't go inside this condition;
+
             if (empty($result)) {
-                throw new TicketNotFoundException('Ticket Not Found');
+                throw new NotFoundException('Ticket Not Found', 404);
             }
 
         } catch (Exception $e) {
@@ -109,10 +113,17 @@ class TicketRepository extends TicketValidator implements TicketRepositoryInterf
      *
      * @param TicketDTO $ticketDTO
      * @return void
+     * @throws NotFoundException
      */
     public function deleteTicketByCode(TicketDTO $ticketDTO): void
     {
         $ticketDTOCode = $ticketDTO->getCode();
+
+        $result = $this->findTicketByCode($ticketDTOCode);
+
+        if (empty($result)){
+            throw new NotFoundException("Ticket not found",404);
+        }
 
         $this->entityManager
             ->createQueryBuilder()
@@ -132,15 +143,15 @@ class TicketRepository extends TicketValidator implements TicketRepositoryInterf
      * @param TicketDTO $ticketDTO
      * @return Ticket
      *
-     * @throws TicketNotAllowedException
-     * @throws TicketBadRequestException
+     * @throws BadRequestException
+     * @throws NotAllowedException
      */
     public function updateTicket(string $parsedBodyCode, TicketDTO $ticketDTO): Ticket
     {
         $ticketDTOCode = $ticketDTO->getCode();
 
         $tickets = $this->findAll();
-        $findAllResult = self::searchForCode($parsedBodyCode, $tickets);
+        $findAllResult = Validator::validateValue('code', $parsedBodyCode, $tickets);
 
         if ($findAllResult === null) {
 
@@ -154,32 +165,32 @@ class TicketRepository extends TicketValidator implements TicketRepositoryInterf
                 ->getQuery()
                 ->getResult();
 
-            $this->ticket->setCode(self::validateTicketCodeLength($parsedBodyCode));
+            $this->ticket->setCode(Validator::validateLength($parsedBodyCode));
 
             return $this->ticket;
         }
 
-        throw new TicketBadRequestException('Ticket Already Exists');
+        throw new BadRequestException('Ticket Already Exists');
     }
+
 
     /**
      * Create a new Ticket
      *
      * @param string $code
      * @return Ticket
-     *
-     * @throws TicketNotAllowedException
-     * @throws TicketBadRequestException
+     * @throws BadRequestException
+     * @throws NotAllowedException
      */
     public function createNewTicket(string $code): Ticket
     {
-        $tickets = $this->findAll();
-        $findAllResult = self::searchForCode($code, $tickets);
+        $ticketsArray = $this->findAll();
+        $validation = Validator::validateValue('code',$code, $ticketsArray);
 
-        if ($findAllResult === null) {
+        if ($validation === null) {
 
             $this->ticket = new Ticket();
-            $this->ticket->setCode(self::validateTicketCodeLength($code));
+            $this->ticket->setCode(Validator::validateLength($code));
 
             $this->entityManager->persist($this->ticket);
             $this->entityManager->flush();
@@ -187,28 +198,9 @@ class TicketRepository extends TicketValidator implements TicketRepositoryInterf
             return $this->ticket;
         }
 
-        $undeletedTickets = $this->findAllTickets();
-        $findUndeletedTicketsResult = self::searchForCode($code, $undeletedTickets);
+        // TODO restore() method
 
-        if ($findUndeletedTicketsResult === null) {
-
-            $builder = $this->entityManager
-                ->createQueryBuilder()
-                ->update(Ticket::class, 't')
-                ->set('t.deleted_at', ':value')
-                ->setParameter(':value', null)
-                ->where('t.code = :code')
-                ->setParameter(':code', $code);
-
-            $builder->getQuery()->execute();
-
-            $this->ticket->setCode($code);
-
-            return $this->ticket;
-
-        }
-
-        throw new TicketBadRequestException('Ticket Already Exists');
+        throw new BadRequestException('Ticket Already Exists');
     }
 
 }

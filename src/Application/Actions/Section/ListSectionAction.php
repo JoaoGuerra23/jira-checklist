@@ -16,10 +16,10 @@ class ListSectionAction extends Action
      */
     private $sectionRepository;
 
-    public function __construct(LoggerInterface $logger, SectionRepository $sectionRepository)
+    public function __construct(LoggerInterface $logger, SectionRepository $sectionAuthRepository)
     {
         parent::__construct($logger);
-        $this->sectionRepository = $sectionRepository;
+        $this->sectionRepository = $sectionAuthRepository;
     }
 
     /**

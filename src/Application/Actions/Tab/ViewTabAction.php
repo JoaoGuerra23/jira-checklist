@@ -20,10 +20,10 @@ class ViewTabAction extends Action
      */
     private $tabRepository;
 
-    public function __construct(LoggerInterface $logger, TabRepository $tabRepository)
+    public function __construct(LoggerInterface $logger, TabRepository $tabAuthRepository)
     {
         parent::__construct($logger);
-        $this->tabRepository = $tabRepository;
+        $this->tabRepository = $tabAuthRepository;
     }
 
     /**

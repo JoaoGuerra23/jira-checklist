@@ -3,6 +3,7 @@
 namespace App\Application\Actions\Ticket;
 
 use App\Application\Actions\Action;
+use App\Domain\Exceptions\NotFoundException;
 use App\Domain\Ticket\TicketDTO;
 use App\Infrastructure\Persistence\Repositories\TicketRepository;
 use OpenApi\Annotations as OA;
@@ -18,10 +19,10 @@ class DeleteTicketAction extends Action
      */
     private $ticketRepository;
 
-    public function __construct(LoggerInterface $logger, TicketRepository $ticketRepository)
+    public function __construct(LoggerInterface $logger, TicketRepository $ticketAuthRepository)
     {
         parent::__construct($logger);
-        $this->ticketRepository = $ticketRepository;
+        $this->ticketRepository = $ticketAuthRepository;
     }
 
     /**
@@ -46,17 +47,13 @@ class DeleteTicketAction extends Action
      *   )
      * )
      * @throws HttpBadRequestException
+     * @throws NotFoundException
      */
     protected function action(): Response
     {
-
         $code = $this->resolveArg('code');
 
         $ticketDTO = new TicketDTO($code);
-
-        if (empty($this->ticketRepository->findTicketByCode($code))) {
-            return $this->respondWithNotFound($code);
-        }
 
         $this->ticketRepository->deleteTicketByCode($ticketDTO);
 

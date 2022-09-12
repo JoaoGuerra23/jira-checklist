@@ -1,6 +1,8 @@
 <?php
 declare(strict_types=1);
 
+use App\Application\Actions\Auth\AuthLoginAction;
+use App\Application\Actions\Auth\AuthRegisterAction;
 use App\Application\Actions\Item\CreateItemAction;
 use App\Application\Actions\Item\DeleteItemAction;
 use App\Application\Actions\Item\ListItemAction;
@@ -33,14 +35,16 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\App;
 use Slim\Interfaces\RouteCollectorProxyInterface as Group;
 
+
 return function (App $app) {
-    $app->options('/{routes:.*}', function (Request $request, Response $response) {
+
+     $app->options('/{routes:.*}', function (Request $request, Response $response) {
         // CORS Pre-Flight OPTIONS Request Handler
         return $response;
     });
 
     $app->get('/', function (Request $request, Response $response) {
-        $response->getBody()->write(json_encode(['hello' => 'world']));
+        $response->getBody()->write('Hello World');
         return $response;
     });
 
@@ -87,6 +91,12 @@ return function (App $app) {
         $group->get('/{id}', ViewItemAction::class);
         $group->patch('/{id}', UpdateItemAction::class);
         $group->delete('/{id}', DeleteItemAction::class);
+    });
+
+    $app->group("/auth",function(Group $group){
+
+        $group->post("/login",AuthLoginAction::class);
+        $group->post("/register",AuthRegisterAction::class);
     });
 
 };
