@@ -43,5 +43,4 @@ interface StatusRepositoryInterface
      * @return Status
      */
     public function createNewStatus(string $parsedBodyName): Status;
-
 }

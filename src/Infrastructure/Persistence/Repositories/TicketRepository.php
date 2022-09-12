@@ -14,7 +14,6 @@ use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Respect\Validation\Validator as v;
 
-
 class TicketRepository implements TicketRepositoryInterface
 {
     /**
@@ -99,7 +98,6 @@ class TicketRepository implements TicketRepositoryInterface
             if (empty($result)) {
                 throw new NotFoundException('Ticket Not Found', 404);
             }
-
         } catch (Exception $e) {
             return null;
         }
@@ -121,8 +119,8 @@ class TicketRepository implements TicketRepositoryInterface
 
         $result = $this->findTicketByCode($ticketDTOCode);
 
-        if (empty($result)){
-            throw new NotFoundException("Ticket not found",404);
+        if (empty($result)) {
+            throw new NotFoundException("Ticket not found", 404);
         }
 
         $this->entityManager
@@ -154,7 +152,6 @@ class TicketRepository implements TicketRepositoryInterface
         $findAllResult = Validator::validateValue('code', $parsedBodyCode, $tickets);
 
         if ($findAllResult === null) {
-
             $this->entityManager
                 ->createQueryBuilder()
                 ->update(Ticket::class, 't')
@@ -185,10 +182,9 @@ class TicketRepository implements TicketRepositoryInterface
     public function createNewTicket(string $code): Ticket
     {
         $ticketsArray = $this->findAll();
-        $validation = Validator::validateValue('code',$code, $ticketsArray);
+        $validation = Validator::validateValue('code', $code, $ticketsArray);
 
         if ($validation === null) {
-
             $this->ticket = new Ticket();
             $this->ticket->setCode(Validator::validateLength($code));
 
@@ -202,5 +198,4 @@ class TicketRepository implements TicketRepositoryInterface
 
         throw new BadRequestException('Ticket Already Exists');
     }
-
 }

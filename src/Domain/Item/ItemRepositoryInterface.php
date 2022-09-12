@@ -43,5 +43,4 @@ interface ItemRepositoryInterface
      * @return Item
      */
     public function createNewItem(array $parsedBody): ?Item;
-
 }

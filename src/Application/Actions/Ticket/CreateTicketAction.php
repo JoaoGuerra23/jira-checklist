@@ -57,7 +57,7 @@ class CreateTicketAction extends Action
     {
         $code = Validator::getParam($this->request, 'code');
 
-        if ($code === null){
+        if ($code === null) {
             throw new NotAllowedException('Ticket code must be of the type string, null given');
         }
 
@@ -68,8 +68,5 @@ class CreateTicketAction extends Action
         $this->logger->info($message);
 
         return $this->respondWithData($message, 201);
-
     }
-
-
 }

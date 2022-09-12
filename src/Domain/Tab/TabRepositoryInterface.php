@@ -45,5 +45,4 @@ interface TabRepositoryInterface
      * @return Tab
      */
     public function createNewTab(string $parsedBodyName): Tab;
-
 }

@@ -43,5 +43,4 @@ interface SectionRepositoryInterface
      * @return Section
      */
     public function createNewSection(array $parsedBody): Section;
-
 }

@@ -8,7 +8,6 @@ use App\Validation\Validator;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Log\LoggerInterface;
 
-
 class AuthLoginAction extends Action
 {
     private $userRepository;
@@ -26,8 +25,7 @@ class AuthLoginAction extends Action
 
         $verifyAccount = $this->userRepository->verifyUser($email, $password);
 
-        if($verifyAccount === false)
-        {
+        if ($verifyAccount === false) {
             $responseMessage ="Invalid username or password";
 
             return $this->respondWithData($responseMessage, 400);
@@ -36,7 +34,5 @@ class AuthLoginAction extends Action
         $token = GenerateTokenAction::generateToken($email);
 
         return $this->respondWithData($token);
-
-
     }
 }

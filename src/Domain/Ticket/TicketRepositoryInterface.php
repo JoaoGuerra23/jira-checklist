@@ -50,5 +50,4 @@ interface TicketRepositoryInterface
      * @return Ticket
      */
     public function createNewTicket(string $code): Ticket;
-
 }

@@ -21,9 +21,9 @@ class AuthRegisterAction extends Action
 
     protected function action(): Response
     {
-        $name = Validator::getParam($this->request,'name');
-        $email = Validator::getParam($this->request,'email');
-        $password = Validator::getParam($this->request,'password');
+        $name = Validator::getParam($this->request, 'name');
+        $email = Validator::getParam($this->request, 'email');
+        $password = Validator::getParam($this->request, 'password');
         $hashedPassword = $this->hashPassword($password);
 
         $user = $this->userAuthRepository->createUser($name, $email, $hashedPassword);
@@ -40,6 +40,6 @@ class AuthRegisterAction extends Action
 
     public function hashPassword($password)
     {
-        return password_hash($password,PASSWORD_DEFAULT);
+        return password_hash($password, PASSWORD_DEFAULT);
     }
 }

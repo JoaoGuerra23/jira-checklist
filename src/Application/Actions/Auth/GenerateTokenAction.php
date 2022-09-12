@@ -21,5 +21,4 @@ class GenerateTokenAction implements SecretKeyInterface
 
         return JWT::encode($payload, $secret, "HS256");
     }
-
 }

@@ -126,13 +126,12 @@ class ItemRepository extends AbstractRepository implements ItemRepositoryInterfa
         $this->entityManager
             ->createQueryBuilder()
             ->update(Item::class, 'i')
-            ->set($propertyToUpdate , ':value')
+            ->set($propertyToUpdate, ':value')
             ->setParameter(':value', $finalValue)
             ->where('i.id = :id')
             ->setParameter(':id', $itemDTOId)
             ->getQuery()
             ->getResult();
-
     }
 
 
@@ -167,9 +166,9 @@ class ItemRepository extends AbstractRepository implements ItemRepositoryInterfa
         $this->item->setSectionId($parsedBody['sectionId']);
 
         //If ticketId != null exit();
-        if (!in_array(null, $deletedAtQuery)){
-          echo 'This ticketId does not exists';
-          exit();
+        if (!in_array(null, $deletedAtQuery)) {
+            echo 'This ticketId does not exists';
+            exit();
         }
 
         $this->item->setTicketId($parsedBody['ticketId']);

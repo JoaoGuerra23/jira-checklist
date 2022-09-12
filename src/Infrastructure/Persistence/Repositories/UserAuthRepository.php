@@ -2,12 +2,10 @@
 
 namespace App\Infrastructure\Persistence\Repositories;
 
-
 use App\Domain\UserAuth\User;
 use App\Validation\Validator;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
-
 
 class UserAuthRepository
 {
@@ -77,7 +75,6 @@ class UserAuthRepository
         $this->entityManager->flush();
 
         return $this->user;
-
     }
 
 
@@ -92,19 +89,18 @@ class UserAuthRepository
 
         $userPass = $this->findAllUsersPassword();
 
-        foreach ($userPass as $pass){
+        foreach ($userPass as $pass) {
             $hashPassword = $pass;
         }
 
-        $verify = password_verify($password,$hashPassword);
+        $verify = password_verify($password, $hashPassword);
 
         $email = Validator::validateValue('email', $email, $allUsers);
 
-        if ($email === null || $verify === false){
+        if ($email === null || $verify === false) {
             return false;
         }
 
         return true;
     }
-
 }

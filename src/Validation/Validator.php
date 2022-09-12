@@ -9,14 +9,12 @@ class Validator
 {
     public $errors = [];
 
-    public function validate($request , array $rules): Validator
+    public function validate($request, array $rules): Validator
     {
-        foreach ($rules as $field =>$rule)
-        {
-            try{
+        foreach ($rules as $field => $rule) {
+            try {
                 $rule->setName($field)->assert(self::getParam($request, $field));
-            }catch(NestedValidationException $ex)
-            {
+            } catch (NestedValidationException $ex) {
                 $this->errors[$field] = $ex->getMessages();
             }
         }
@@ -36,30 +34,23 @@ class Validator
      * @param $default
      * @return mixed|null
      */
-    public static function getParam($request, $key, $default=null)
+    public static function getParam($request, $key, $default = null)
     {
         $postParams = $request->getParsedBody();
 
         $getParams = $request->getQueryParams();
 
-        $getBody = json_decode($request->getBody(),true);
+        $getBody = json_decode($request->getBody(), true);
 
         $result = $default;
 
-        if(is_array($postParams) && isset($postParams[$key]))
-        {
+        if (is_array($postParams) && isset($postParams[$key])) {
             $result = $postParams[$key];
-
-        }else if(is_object($postParams) && property_exists($postParams, $key))
-        {
+        } elseif (is_object($postParams) && property_exists($postParams, $key)) {
             $result = $postParams->$key;
-        }
-        else if(is_array($getBody) && isset($getBody[$key]))
-        {
+        } elseif (is_array($getBody) && isset($getBody[$key])) {
             $result = $getBody[$key];
-
-        }else if(isset($getParams[$key]))
-        {
+        } elseif (isset($getParams[$key])) {
             $result = $getParams[$key];
         }
         return $result;
