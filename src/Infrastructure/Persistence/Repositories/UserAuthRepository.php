@@ -89,6 +89,8 @@ class UserAuthRepository
 
         $userPass = $this->findAllUsersPassword();
 
+        $hashPassword ="";
+
         foreach ($userPass as $pass) {
             $hashPassword = $pass;
         }

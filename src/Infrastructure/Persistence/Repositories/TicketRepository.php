@@ -77,7 +77,7 @@ class TicketRepository implements TicketRepositoryInterface
      * Find Ticket by Code
      *
      * @param string $ticketCode
-     * @return Ticket|null
+     * @return array|null
      */
     public function findTicketByCode(string $ticketCode): ?array
     {
