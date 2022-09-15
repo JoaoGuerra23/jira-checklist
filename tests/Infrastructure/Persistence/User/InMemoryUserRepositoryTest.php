@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace Tests\Infrastructure\Persistence\User;
 
-use App\Domain\User\User;
-use App\Domain\User\UserNotFoundException;
+use App\Domain\Entities\User\User;
+use App\Domain\Entities\User\UserNotFoundException;
 use App\Infrastructure\Persistence\User\InMemoryUserRepository;
 use Tests\TestCase;
 

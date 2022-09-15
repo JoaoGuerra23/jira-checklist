@@ -58,12 +58,12 @@ abstract class Action
 
         try {
             return $this->action();
-        } catch (NotFoundException $e) {
-            throw new HttpNotFoundException($this->request, $e->getMessage());
         } catch (BadRequestException $e) {
             throw new HttpBadRequestException($this->request, $e->getMessage());
         } catch (NotAllowedException $e) {
             throw new HttpMethodNotAllowedException($this->request, $e->getMessage());
+        } catch (NotFoundException|DomainRecordNotFoundException $e) {
+            throw new HttpNotFoundException($this->request, $e->getMessage());
         }
     }
 

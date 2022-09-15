@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace App\Domain\Entities\User;
 
 use JsonSerializable;
-use OpenApi\Annotations as OA;
 
 class User implements JsonSerializable
 {

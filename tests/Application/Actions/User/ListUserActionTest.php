@@ -4,8 +4,8 @@ declare(strict_types=1);
 namespace Tests\Application\Actions\User;
 
 use App\Application\Actions\ActionPayload;
-use App\Domain\User\UserRepository;
-use App\Domain\User\User;
+use App\Domain\Entities\User\UserRepository;
+use App\Domain\Entities\User\User;
 use DI\Container;
 use Tests\TestCase;
 
