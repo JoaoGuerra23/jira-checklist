@@ -2,10 +2,11 @@
 
 namespace App\Infrastructure\Persistence\Repositories;
 
-use App\Domain\Item\ItemDTO;
-use App\Domain\Item\Item;
-use App\Domain\Item\ItemRepositoryInterface;
-use App\Domain\Ticket\Ticket;
+use App\Domain\Exceptions\NotFoundException;
+use App\Domain\Entities\Item\ItemDTO;
+use App\Domain\Entities\Item\Item;
+use App\Domain\Entities\Item\ItemRepositoryInterface;
+use App\Domain\Entities\Ticket\Ticket;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
@@ -22,7 +23,6 @@ class ItemRepository implements ItemRepositoryInterface
      * @var Item
      */
     private $item;
-
 
     /**
      * @param EntityManagerInterface $entityManager
@@ -58,13 +58,11 @@ class ItemRepository implements ItemRepositoryInterface
      *
      * Find Item by Name
      *
-     * @param ItemDTO $itemDTO
-     * @return Item[]|null
+     * @param string $id
+     * @return array|null
      */
-    public function findItemById(ItemDTO $itemDTO): ?array
+    public function findItemById(string $id): ?array
     {
-        $itemDTOId = $itemDTO->getId();
-
         try {
             return $this->entityManager
                 ->createQueryBuilder()
@@ -72,7 +70,7 @@ class ItemRepository implements ItemRepositoryInterface
                 ->from(Item::class, 'i')
                 ->join(Ticket::class, 't')
                 ->where('i.id = :id')
-                ->setParameter(':id', $itemDTOId)
+                ->setParameter(':id', $id)
                 ->andWhere('i.deleted_at IS NULL')
                 ->andWhere('i.ticketId = t.id')
                 ->getQuery()
@@ -86,20 +84,18 @@ class ItemRepository implements ItemRepositoryInterface
     /**
      * Delete Item by id
      *
-     * @param ItemDTO $itemDTO
+     * @param string $id
      * @return void
      */
-    public function deleteItemById(ItemDTO $itemDTO): void
+    public function deleteItemById(string $id): void
     {
-        $itemDTOId = $itemDTO->getId();
-
         $this->entityManager
             ->createQueryBuilder()
             ->update(Item::class, 'i')
             ->set('i.deleted_at', ':value')
             ->setParameter(':value', new DateTime())
             ->where('i.id = :id')
-            ->setParameter(':id', $itemDTOId)
+            ->setParameter(':id', $id)
             ->getQuery()
             ->execute();
     }
@@ -128,6 +124,7 @@ class ItemRepository implements ItemRepositoryInterface
             ->update(Item::class, 'i')
             ->set($propertyToUpdate, ':value')
             ->setParameter(':value', $finalValue)
+            ->join(Ticket::class, 't')
             ->where('i.id = :id')
             ->setParameter(':id', $itemDTOId)
             ->getQuery()
@@ -136,28 +133,36 @@ class ItemRepository implements ItemRepositoryInterface
 
 
     /**
-     *
-     * @param array $parsedBody
-     * @return Item
+     * @param $itemId
+     * @return bool
      */
-    public function createNewItem(array $parsedBody): ?Item
+    public function isDeletedAt($itemId): bool
     {
-        // TODO Check if ticketId is deleted_at - if yes return an error - if not create a new item
-        // OK -
+        $builder = $this->entityManager
+            ->createQueryBuilder()
+            ->select('t.deleted_at')
+            ->from(Ticket::class, 't')
+            ->where('t.id = :id')
+            ->setParameter(':id', $itemId)
+            ->andWhere('t.deleted_at IS NOT NULL')
+            ->getQuery()
+            ->execute();
 
-        try {
-            $deletedAtQuery = $this->entityManager
-                ->createQueryBuilder()
-                ->select('t.deleted_at')
-                ->from(Ticket::class, 't')
-                ->where('t.id = :id')
-                ->setParameter(':id', $parsedBody['ticketId'])
-                ->getQuery()
-                ->getSingleResult();
-        } catch (Exception $e) {
-            return null;
+        if (empty($builder)) {
+            return false;
         }
 
+        return true;
+    }
+
+
+    /**
+     * @param array $parsedBody
+     * @return Item
+     * @throws NotFoundException
+     */
+    public function createNewItem(array $parsedBody): Item
+    {
         $this->item = new Item();
         $this->item->setName($parsedBody['name']);
         $this->item->setDate(new DateTime("now"));
@@ -165,13 +170,13 @@ class ItemRepository implements ItemRepositoryInterface
         $this->item->setOwnerId($parsedBody['ownerId']);
         $this->item->setSectionId($parsedBody['sectionId']);
 
-        //If ticketId != null exit();
-        if (!in_array(null, $deletedAtQuery)) {
-            echo 'This ticketId does not exists';
-            exit();
+        $ticketId = $parsedBody['ticketId'];
+
+        if ($this->isDeletedAt($ticketId)) {
+            throw new NotFoundException('Ticket ID not found when creating a Item');
         }
 
-        $this->item->setTicketId($parsedBody['ticketId']);
+        $this->item->setTicketId($ticketId);
 
         $this->entityManager->persist($this->item);
         $this->entityManager->flush();

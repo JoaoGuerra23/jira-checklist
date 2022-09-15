@@ -2,9 +2,9 @@
 
 namespace App\Infrastructure\Persistence\Repositories;
 
-use App\Domain\Tab\TabDTO;
-use App\Domain\Tab\Tab;
-use App\Domain\Tab\TabRepositoryInterface;
+use App\Domain\Entities\Tab\TabDTO;
+use App\Domain\Entities\Tab\Tab;
+use App\Domain\Entities\Tab\TabRepositoryInterface;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
@@ -55,20 +55,18 @@ class TabRepository implements TabRepositoryInterface
     /**
      * Find Tab by Name
      *
-     * @param TabDTO $tabDTO
+     * @param string $id
      * @return Tab[]|null
      */
-    public function findTabByName(TabDTO $tabDTO): ?array
+    public function findTabById(string $id): ?array
     {
-        $tabDTOName = $tabDTO->getName();
-
         try {
             return $this->entityManager
                 ->createQueryBuilder()
                 ->select('t.id', 't.name')
                 ->from(Tab::class, 't')
-                ->where('t.name = :name')
-                ->setParameter(':name', $tabDTOName)
+                ->where('t.id = :id')
+                ->setParameter(':id', $id)
                 ->andWhere('t.deleted_at IS NULL')
                 ->getQuery()
                 ->getSingleResult();
@@ -81,20 +79,18 @@ class TabRepository implements TabRepositoryInterface
     /**
      * Delete Tab by ID
      *
-     * @param TabDTO $tabDTO
+     * @param string $id
      * @return void
      */
-    public function deleteTabByName(TabDTO $tabDTO): void
+    public function deleteTabById(string $id): void
     {
-        $tabDTOName = $tabDTO->getName();
-
         $this->entityManager
             ->createQueryBuilder()
             ->update(Tab::class, 't')
             ->set('t.deleted_at', ':value')
             ->setParameter(':value', new DateTime())
             ->where('t.name = :name')
-            ->setParameter(':name', $tabDTOName)
+            ->setParameter(':name', $id)
             ->getQuery()
             ->execute();
     }
@@ -107,17 +103,18 @@ class TabRepository implements TabRepositoryInterface
      * @param TabDTO $tabDTO
      * @return Tab
      */
-    public function updateTabName(string $parsedBodyName, TabDTO $tabDTO): Tab
+    public function updateTab(string $parsedBodyName, TabDTO $tabDTO): Tab
     {
-        $tabDTOName = $tabDTO->getName();
+
+        $tabDTOId = $tabDTO->getId();
 
         $this->entityManager
             ->createQueryBuilder()
             ->update(Tab::class, 't')
             ->set('t.name', ':value')
             ->setParameter(':value', $parsedBodyName)
-            ->where('t.name = :name')
-            ->setParameter(':name', $tabDTOName)
+            ->where('t.id = :id')
+            ->setParameter(':id', $tabDTOId)
             ->getQuery()
             ->getResult();
 

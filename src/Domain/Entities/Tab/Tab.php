@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Domain\Tab;
+namespace App\Domain\Entities\Tab;
 
 use Doctrine\ORM\Mapping as ORM;
 use JsonSerializable;

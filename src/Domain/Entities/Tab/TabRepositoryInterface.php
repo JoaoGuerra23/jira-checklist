@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Domain\Tab;
+namespace App\Domain\Entities\Tab;
 
 interface TabRepositoryInterface
 {
@@ -15,18 +15,18 @@ interface TabRepositoryInterface
     /**
      * Find Tab by Name
      *
-     * @param TabDTO $tabDTO
+     * @param string $id
      * @return Tab[]|null
      */
-    public function findTabByName(TabDTO $tabDTO): ?array;
+    public function findTabById(string $id): ?array;
 
     /**
      * Delete Tab by ID
      *
-     * @param TabDTO $tabDTO
+     * @param string $id
      * @return void
      */
-    public function deleteTabByName(TabDTO $tabDTO): void;
+    public function deleteTabById(string $id): void;
 
     /**
      * Update Tab Name
@@ -35,7 +35,7 @@ interface TabRepositoryInterface
      * @param TabDTO $tabDTO
      * @return Tab
      */
-    public function updateTabName(string $parsedBodyName, TabDTO $tabDTO): Tab;
+    public function updateTab(string $parsedBodyName, TabDTO $tabDTO): Tab;
 
     /**
      *

@@ -2,9 +2,9 @@
 
 namespace App\Infrastructure\Persistence\Repositories;
 
-use App\Domain\Status\StatusDTO;
-use App\Domain\Status\Status;
-use App\Domain\Status\StatusRepositoryInterface;
+use App\Domain\Entities\Status\StatusDTO;
+use App\Domain\Entities\Status\Status;
+use App\Domain\Entities\Status\StatusRepositoryInterface;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;

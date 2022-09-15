@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Domain\Section;
+namespace App\Domain\Entities\Section;
 
 use Doctrine\ORM\Mapping as ORM;
 use JsonSerializable;

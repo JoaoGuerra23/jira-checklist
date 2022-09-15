@@ -3,7 +3,7 @@
 namespace App\Application\Actions\Section;
 
 use App\Application\Actions\Action;
-use App\Domain\Section\SectionDTO;
+use App\Domain\Entities\Section\SectionDTO;
 use App\Infrastructure\Persistence\Repositories\SectionRepository;
 use OpenApi\Annotations as OA;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -26,40 +26,41 @@ class DeleteSectionAction extends Action
     /**
      * @OA\Delete(
      *   tags={"section"},
-     *   path="/sections/{subject}",
+     *   path="/sections/{id}",
      *   operationId="deleteSection",
-     *   summary="Delete Section by Subject",
+     *   summary="Delete Section by Id",
      *   @OA\Parameter(
-     *          name="subject",
+     *          name="id",
      *          in="path",
      *          required=true,
-     *          description="Section Subject",
+     *          description="Section Id",
      *          @OA\Schema(
-     *              type="string"
+     *              type="integer"
      *          )
      *   ),
      *   @OA\Response(
      *     response=200,
      *     description="OK",
      *     @OA\JsonContent(ref="#/components/schemas/Section")
-     *   )
+     *   ),
+     *     security={{"bearerAuth":{}}}
      * )
      * @throws HttpBadRequestException
      */
     protected function action(): Response
     {
 
-        $sectionSubject = $this->resolveArg('subject');
+        $id = $this->resolveArg('id');
 
-        $sectionDTO = new SectionDTO($sectionSubject);
+        $sectionDTO = new SectionDTO($id);
 
-        if (empty($this->sectionRepository->findSectionBySubject($sectionDTO))) {
-            return $this->respondWithNotFound($sectionSubject);
+        if (empty($this->sectionRepository->findSectionById($sectionDTO))) {
+            return $this->respondWithNotFound($id);
         }
 
-        $this->sectionRepository->deleteSectionBySubject($sectionDTO);
+        $this->sectionRepository->deleteSectionById($sectionDTO);
 
-        $message = "Subject " . $sectionSubject . " Deleted.";
+        $message = "Subject " . $id . " Deleted.";
 
         $this->logger->info($message);
 

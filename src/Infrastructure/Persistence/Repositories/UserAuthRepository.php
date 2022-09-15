@@ -2,10 +2,11 @@
 
 namespace App\Infrastructure\Persistence\Repositories;
 
-use App\Domain\UserAuth\User;
-use App\Validation\Validator;
+use App\Domain\Entities\UserAuth\User;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
 
 class UserAuthRepository
 {
@@ -30,31 +31,23 @@ class UserAuthRepository
     }
 
     /**
-     * @return array
+     * @return User[]
+     *
+     * @throws NoResultException|NonUniqueResultException
      */
-    public function findAllUsers(): array
+    public function getUserByEmailAndPassword(string $email, string $password): array
     {
         return $this->entityManager
             ->createQueryBuilder()
-            ->select('u.email')
+            ->select('u.email, u.password')
             ->from(User::class, 'u')
+            ->where('u.email = :email')
+            ->setParameter(':email', $email)
+            ->andWhere('u.password = :password')
+            ->setParameter(':password', $password)
             ->getQuery()
-            ->execute();
+            ->getSingleResult();
     }
-
-    /**
-     * @return array
-     */
-    public function findAllUsersPassword(): array
-    {
-        return $this->entityManager
-            ->createQueryBuilder()
-            ->select('u.password')
-            ->from(User::class, 'u')
-            ->getQuery()
-            ->getSingleColumnResult();
-    }
-
 
     /**
      * @param string $name
@@ -75,34 +68,5 @@ class UserAuthRepository
         $this->entityManager->flush();
 
         return $this->user;
-    }
-
-
-    /**
-     * @param string $email
-     * @param string $password
-     * @return bool
-     */
-    public function verifyUser(string $email, string $password): bool
-    {
-        $allUsers = $this->findAllUsers();
-
-        $userPass = $this->findAllUsersPassword();
-
-        $hashPassword ="";
-
-        foreach ($userPass as $pass) {
-            $hashPassword = $pass;
-        }
-
-        $verify = password_verify($password, $hashPassword);
-
-        $email = Validator::validateValue('email', $email, $allUsers);
-
-        if ($email === null || $verify === false) {
-            return false;
-        }
-
-        return true;
     }
 }

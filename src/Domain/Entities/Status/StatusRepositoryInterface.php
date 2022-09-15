@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Domain\Status;
+namespace App\Domain\Entities\Status;
 
 interface StatusRepositoryInterface
 {

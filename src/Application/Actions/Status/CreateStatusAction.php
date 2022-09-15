@@ -46,7 +46,8 @@ class CreateStatusAction extends Action
      *          type="array",
      *          @OA\Items(ref="#/components/schemas/Status")
      *      )
-     *     )
+     *     ),
+     *     security={{"bearerAuth":{}}}
      * )
      */
     protected function action(): Response

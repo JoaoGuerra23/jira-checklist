@@ -5,14 +5,16 @@ namespace App\Infrastructure\Persistence\Repositories;
 use App\Domain\Exceptions\BadRequestException;
 use App\Domain\Exceptions\NotAllowedException;
 use App\Domain\Exceptions\NotFoundException;
-use App\Domain\Ticket\TicketDTO;
-use App\Domain\Ticket\Ticket;
-use App\Domain\Ticket\TicketRepositoryInterface;
-use App\Validation\Validator;
+use App\Domain\Entities\Ticket\TicketDTO;
+use App\Domain\Entities\Ticket\Ticket;
+use App\Domain\Entities\Ticket\TicketRepositoryInterface;
+use App\Domain\Validation\Validator;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
+use Doctrine\ORM\QueryBuilder;
 use Exception;
-use Respect\Validation\Validator as v;
 
 class TicketRepository implements TicketRepositoryInterface
 {
@@ -63,43 +65,45 @@ class TicketRepository implements TicketRepositoryInterface
             ->select('t.code')
             ->from(Ticket::class, 't')
             ->where('t.deleted_at IS NULL')
-            ->orderBy('t.code', 'ASC')
-            ->setFirstResult(0)
-            ->setMaxResults(100);
-
-        //TODO pagination
+            ->orderBy('t.code', 'ASC');
 
         return $builder->getQuery()->execute();
     }
 
+    public function findTicketsPerPage(): QueryBuilder
+    {
+        return $this->entityManager
+            ->createQueryBuilder()
+            ->select('t.code')
+            ->distinct()
+            ->from(Ticket::class, 't')
+            ->where('t.deleted_at IS NULL')
+            ->orderBy('t.code', 'ASC');
+    }
 
     /**
      * Find Ticket by Code
      *
      * @param string $ticketCode
-     * @return array|null
+     * @return Ticket[]|null
+     * @throws NotFoundException
+     * @throws NoResultException
+     * @throws NonUniqueResultException
      */
     public function findTicketByCode(string $ticketCode): ?array
     {
+            $builder = $this->entityManager
+                ->createQueryBuilder()
+                ->select('t.code')
+                ->from(Ticket::class, 't')
+                ->where('t.code = :code')
+                ->setParameter(':code', $ticketCode)
+                ->andWhere('t.deleted_at IS NULL');
 
-        $builder = $this->entityManager
-            ->createQueryBuilder()
-            ->select('t.code')
-            ->from(Ticket::class, 't')
-            ->where('t.code = :code')
-            ->setParameter(':code', $ticketCode)
-            ->andWhere('t.deleted_at IS NULL');
-
-        try {
             $result = $builder->getQuery()->getSingleResult();
 
-            // TODO code don't go inside this condition;
-
-            if (empty($result)) {
-                throw new NotFoundException('Ticket Not Found', 404);
-            }
-        } catch (Exception $e) {
-            return null;
+        if (empty($result)) {
+            throw new NotFoundException('Ticket Not Found', 404);
         }
 
         return $result;
@@ -109,15 +113,13 @@ class TicketRepository implements TicketRepositoryInterface
     /**
      * Delete ticket by Code
      *
-     * @param TicketDTO $ticketDTO
+     * @param string $code
      * @return void
      * @throws NotFoundException
      */
-    public function deleteTicketByCode(TicketDTO $ticketDTO): void
+    public function deleteTicketByCode(string $code): void
     {
-        $ticketDTOCode = $ticketDTO->getCode();
-
-        $result = $this->findTicketByCode($ticketDTOCode);
+        $result = $this->findTicketByCode($code);
 
         if (empty($result)) {
             throw new NotFoundException("Ticket not found", 404);
@@ -129,7 +131,7 @@ class TicketRepository implements TicketRepositoryInterface
             ->set('t.deleted_at', ':value')
             ->setParameter(':value', new DateTime())
             ->where('t.code = :code')
-            ->setParameter(':code', $ticketDTOCode)
+            ->setParameter(':code', $code)
             ->getQuery()
             ->execute();
     }
@@ -137,32 +139,29 @@ class TicketRepository implements TicketRepositoryInterface
     /**
      * Update Ticket Code
      *
-     * @param string $parsedBodyCode
-     * @param TicketDTO $ticketDTO
+     * @param string $newCode
+     * @param string $currentCode
      * @return Ticket
-     *
      * @throws BadRequestException
      * @throws NotAllowedException
      */
-    public function updateTicket(string $parsedBodyCode, TicketDTO $ticketDTO): Ticket
+    public function updateTicket(string $newCode, string $currentCode): Ticket
     {
-        $ticketDTOCode = $ticketDTO->getCode();
-
         $tickets = $this->findAll();
-        $findAllResult = Validator::validateValue('code', $parsedBodyCode, $tickets);
+        $findAllResult = Validator::validateValue('code', $newCode, $tickets);
 
         if ($findAllResult === null) {
             $this->entityManager
                 ->createQueryBuilder()
                 ->update(Ticket::class, 't')
                 ->set('t.code', ':value')
-                ->setParameter(':value', $parsedBodyCode)
+                ->setParameter(':value', $newCode)
                 ->where('t.code = :code')
-                ->setParameter(':code', $ticketDTOCode)
+                ->setParameter(':code', $currentCode)
                 ->getQuery()
                 ->getResult();
 
-            $this->ticket->setCode(Validator::validateLength($parsedBodyCode));
+            $this->ticket->setCode(Validator::validateLength($newCode));
 
             return $this->ticket;
         }
@@ -194,8 +193,12 @@ class TicketRepository implements TicketRepositoryInterface
             return $this->ticket;
         }
 
-        // TODO restore() method
-
         throw new BadRequestException('Ticket Already Exists');
+    }
+
+    // TODO restore() method
+    public function restoreTicket(): Ticket
+    {
+        return new Ticket();
     }
 }

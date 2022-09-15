@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Domain\User;
+namespace App\Domain\Entities\User;
 
 use JsonSerializable;
 use OpenApi\Annotations as OA;
@@ -47,8 +47,6 @@ class User implements JsonSerializable
     {
         return $this->lastName;
     }
-
-    // TODO format or toArray - Class format
 
     #[\ReturnTypeWillChange]
     public function jsonSerialize(): array

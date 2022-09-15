@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Domain\Tab;
+namespace App\Domain\Entities\Status;
 
-class TabDTO
+class StatusDTO
 {
-    //TODO status name is not unique - replace by ID
+
     /**
      * @var string
      */

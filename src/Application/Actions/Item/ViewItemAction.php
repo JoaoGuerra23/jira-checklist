@@ -3,7 +3,7 @@
 namespace App\Application\Actions\Item;
 
 use App\Application\Actions\Action;
-use App\Domain\Item\ItemDTO;
+use App\Domain\Entities\Item\ItemDTO;
 use App\Infrastructure\Persistence\Repositories\ItemRepository;
 use App\Infrastructure\Persistence\Repositories\SectionRepository;
 use App\Infrastructure\Persistence\Repositories\TicketRepository;
@@ -29,23 +29,24 @@ class ViewItemAction extends Action
     /**
      * @OA\Get(
      *   tags={"item"},
-     *   path="/items/{name}",
+     *   path="/items/{id}",
      *   operationId="getItem",
-     *   summary="Get Item by Name",
+     *   summary="Get Item by ID",
      *   @OA\Parameter(
-     *          name="name",
+     *          name="id",
      *          in="path",
      *          required=true,
-     *          description="Item Name",
+     *          description="Item ID",
      *          @OA\Schema(
-     *              type="string"
+     *              type="integer"
      *   )
      * ),
      *   @OA\Response(
      *     response=200,
      *     description="OK",
      *     @OA\JsonContent(ref="#/components/schemas/Item")
-     *   )
+     *   ),
+     *     security={{"bearerAuth":{}}}
      * )
      * @throws HttpBadRequestException
      */

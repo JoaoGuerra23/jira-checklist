@@ -3,7 +3,7 @@
 namespace App\Application\Actions\Status;
 
 use App\Application\Actions\Action;
-use App\Domain\Status\StatusDTO;
+use App\Domain\Entities\Status\StatusDTO;
 use App\Infrastructure\Persistence\Repositories\StatusRepository;
 use OpenApi\Annotations as OA;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -42,7 +42,8 @@ class ViewStatusAction extends Action
      *     response=200,
      *     description="OK",
      *     @OA\JsonContent(ref="#/components/schemas/Status")
-     *   )
+     *   ),
+     *     security={{"bearerAuth":{}}}
      * )
      * @throws HttpBadRequestException
      */

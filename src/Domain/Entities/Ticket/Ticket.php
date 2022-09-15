@@ -1,46 +1,43 @@
 <?php
 
-namespace App\Domain\Status;
+namespace App\Domain\Entities\Ticket;
 
 use Doctrine\ORM\Mapping as ORM;
 use JsonSerializable;
 use OpenApi\Annotations as OA;
 
 /**
- *
- * @ORM\Table(name="status")
- * @ORM\Entity(repositoryClass="App\Infrastructure\Persistence\Repositories\StatusRepository")
+ * @ORM\Table(name="tickets")
+ * @ORM\Entity(repositoryClass="TicketRepositoryInterface")
  *
  * @OA\Schema(
- *     description="Status Model",
- *     title="Status"
+ *     description="Ticket Model",
+ *     title="Ticket"
  * )
- *
  */
-class Status implements JsonSerializable
+class Ticket implements JsonSerializable
 {
-
     /**
      * @ORM\Id
-     * @ORM\Column(type="integer")
-     * @ORM\GeneratedValue
-     * @ORM\OneToMany(targetEntity="Item", mappedBy="id")
+     * @ORM\Column(type="integer", name="id")
+     * @ORM\GeneratedValue(strategy="AUTO")
+     * @ORM\OneToMany(targetEntity="Item", mappedBy="tickets_id")
      *
      * @OA\Property(type="integer", format="int64", description="ID", title="ID")
      *
      * @var int
-     *
      */
     private $id;
 
     /**
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="string", name="code")
      *
-     * @OA\Property(type="string", description="Status Name", title="Status Name")
+     * @OA\Property(type="string", description="Ticket Code", title="Ticket Code")
      *
      * @var string
      */
-    private $name;
+    private $code;
+
 
     /**
      * @ORM\Column(type="datetime", nullable=true, name="deleted_at")
@@ -58,27 +55,27 @@ class Status implements JsonSerializable
     }
 
     /**
-     * @param int $id
+     * @return string
      */
-    public function setId(int $id): void
+    public function getCode(): string
+    {
+        return $this->code;
+    }
+
+    /**
+     * @param mixed $id
+     */
+    public function setId($id): void
     {
         $this->id = $id;
     }
 
     /**
-     * @return string
+     * @param mixed $code
      */
-    public function getName(): string
+    public function setCode($code): void
     {
-        return $this->name;
-    }
-
-    /**
-     * @param string $name
-     */
-    public function setName(string $name): void
-    {
-        $this->name = $name;
+        $this->code = $code;
     }
 
     /**
@@ -88,7 +85,7 @@ class Status implements JsonSerializable
     {
         return [
             'id' => $this->id,
-            'name' => $this->name
+            'code' => $this->code
         ];
     }
 }

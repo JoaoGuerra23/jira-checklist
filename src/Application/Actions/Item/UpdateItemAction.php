@@ -3,11 +3,9 @@
 namespace App\Application\Actions\Item;
 
 use App\Application\Actions\Action;
-use App\Domain\Item\ItemDTO;
+use App\Domain\Entities\Item\ItemDTO;
 use App\Infrastructure\Persistence\Repositories\ItemRepository;
-use App\Infrastructure\Persistence\Repositories\TicketRepository;
 use OpenApi\Annotations as OA;
-use phpDocumentor\Reflection\Types\This;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Log\LoggerInterface;
 use Slim\Exception\HttpBadRequestException;
@@ -28,18 +26,18 @@ class UpdateItemAction extends Action
 
     /**
      * @OA\Patch(
-     *   path="/items/{name}",
+     *   path="/items/{id}",
      *   tags={"item"},
-     *   path="/items/{name}",
+     *   path="/items/{id}",
      *   operationId="editItem",
-     *   summary="Edit Item Name",
+     *   summary="Edit Item",
      *   @OA\Parameter(
-     *          name="name",
+     *          name="id",
      *          in="path",
      *          required=true,
-     *          description="Item Name",
+     *          description="Item ID",
      *          @OA\Schema(
-     *              type="string"
+     *              type="integer"
      *          )
      *   ),
      *         @OA\RequestBody(
@@ -58,30 +56,26 @@ class UpdateItemAction extends Action
      *     response=200,
      *     description="OK",
      *     @OA\JsonContent(ref="#/components/schemas/Item")
-     *   )
+     *   ),
+     *     security={{"bearerAuth":{}}}
      * )
      * @throws HttpBadRequestException
      */
     protected function action(): Response
     {
-        $currentName = $this->resolveArg('id');
-        //$newName = $this->request->getParsedBody()['name'];
+        (int)$id = $this->resolveArg('id');
 
-        $parsedBody = $this->getFormData();
+        $parsedBody = $this->request->getParsedBody();
 
-        $itemDTO = new ItemDTO($currentName);
+        $itemDTO = new ItemDTO($id);
 
-        if (empty($this->itemRepository->findItemById($itemDTO))) {
+        if (empty($this->itemRepository->findItemById($id))) {
             return $this->respondWithNotFound($itemDTO->getId());
         }
 
-        /*if ($currentName === $newName) {
-            return $this->respondWithSameResources();
-        }*/
-
         $this->itemRepository->updateItem($parsedBody, $itemDTO);
 
-        $message = "Item with ID " . $currentName . " was updated";
+        $message = "Item with ID " . $id . " was updated";
 
         $this->logger->info($message);
 

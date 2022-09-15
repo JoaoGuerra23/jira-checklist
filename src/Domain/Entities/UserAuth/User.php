@@ -1,13 +1,18 @@
 <?php
 
-namespace App\Domain\UserAuth;
+namespace App\Domain\Entities\UserAuth;
 
 use Doctrine\ORM\Mapping as ORM;
+use OpenApi\Annotations as OA;
 
 /**
  * @ORM\Table(name="user")
  * @ORM\Entity(repositoryClass="User")
  *
+ * @OA\Schema(
+ *     description="User Auth Model",
+ *     title="User Auth Model"
+ * )
  */
 class User
 {
@@ -17,12 +22,15 @@ class User
      * @ORM\GeneratedValue(strategy="AUTO")
      * @ORM\Column(type="integer")
      *
+     *
      * @var int
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", name="name")
+     *
+     * @OA\Property(type="string", description="User name", title="User name")
      *
      * @var string
      */
@@ -31,12 +39,16 @@ class User
     /**
      * @ORM\Column(type="string", name="email")
      *
+     * @OA\Property(type="string", description="User email", title="User email")
+     *
      * @var string
      */
     private $email;
 
     /**
      * @ORM\Column(type="string", name="password")
+     *
+     * @OA\Property(type="string", description="User password", title="User password")
      *
      * @var string
      */
@@ -45,14 +57,14 @@ class User
     /**
      * @ORM\Column(type="datetime", nullable=true, name="created_at")
      *
-     * @phpstan-ignore-next-line
+     *
      */
     private $created_at;
 
     /**
      * @ORM\Column(type="datetime", nullable=true, name="updated_at")
      *
-     * @phpstan-ignore-next-line
+     *
      */
     private $updated_at;
 

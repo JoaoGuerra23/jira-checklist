@@ -18,6 +18,15 @@ use Slim\Exception\HttpNotFoundException;
 /**
  * @OA\Server(url="https://sandbox.exads.rocks")
  * @OA\Info(title="Jira-Checklist", version="0.1")
+ * @OA\SecurityScheme(
+ *     type="http",
+ *     description="use /auth/login to get the JWT Token",
+ *     name="Authorization",
+ *     in="header",
+ *     scheme="bearer",
+ *     bearerFormat="JWT",
+ *     securityScheme="bearerAuth",
+ * )
  */
 abstract class Action
 {

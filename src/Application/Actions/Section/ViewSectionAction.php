@@ -3,7 +3,7 @@
 namespace App\Application\Actions\Section;
 
 use App\Application\Actions\Action;
-use App\Domain\Section\SectionDTO;
+use App\Domain\Entities\Section\SectionDTO;
 use App\Infrastructure\Persistence\Repositories\SectionRepository;
 use OpenApi\Annotations as OA;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -27,39 +27,40 @@ class ViewSectionAction extends Action
     /**
      * @OA\Get(
      *   tags={"section"},
-     *   path="/sections/{subject}",
+     *   path="/sections/{id}",
      *   operationId="getSection",
-     *   summary="Get Section by Subject",
+     *   summary="Get Section by Id",
      *   @OA\Parameter(
-     *          name="subject",
+     *          name="id",
      *          in="path",
      *          required=true,
-     *          description="Section subject",
+     *          description="Section Id",
      *          @OA\Schema(
-     *              type="string"
+     *              type="integer"
      *   )
      * ),
      *   @OA\Response(
      *     response=200,
      *     description="OK",
      *     @OA\JsonContent(ref="#/components/schemas/Section")
-     *   )
+     *   ),
+     *     security={{"bearerAuth":{}}}
      * )
      * @throws HttpBadRequestException
      */
     protected function action(): Response
     {
-        $sectionSubject = $this->resolveArg('subject');
+        $id = $this->resolveArg('id');
 
-        $sectionDTO = new SectionDTO($sectionSubject);
+        $sectionDTO = new SectionDTO($id);
 
-        $section = $this->sectionRepository->findSectionBySubject($sectionDTO);
+        $section = $this->sectionRepository->findSectionById($sectionDTO);
 
         if (empty($section)) {
-            return $this->respondWithNotFound($sectionSubject);
+            return $this->respondWithNotFound($id);
         }
 
-        $this->logger->info("Section " . $sectionSubject . " was viewed.");
+        $this->logger->info("Section " . $id . " was viewed.");
 
         return $this->respondWithData($section);
     }

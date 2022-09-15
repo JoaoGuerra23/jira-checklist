@@ -3,7 +3,10 @@
 namespace App\Application\Actions\Item;
 
 use App\Application\Actions\Action;
+use App\Domain\Exceptions\NotFoundException;
 use App\Infrastructure\Persistence\Repositories\ItemRepository;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
 use OpenApi\Annotations as OA;
 use phpDocumentor\Reflection\Types\This;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -64,9 +67,11 @@ class CreateItemAction extends Action
      *          type="array",
      *          @OA\Items(ref="#/components/schemas/Item")
      *      )
-     *     )
+     *     ),
+     *     security={{"bearerAuth":{}}}
      * )
      *
+     * @throws NotFoundException
      */
     protected function action(): Response
     {

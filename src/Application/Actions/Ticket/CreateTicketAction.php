@@ -6,7 +6,7 @@ use App\Application\Actions\Action;
 use App\Domain\Exceptions\BadRequestException;
 use App\Domain\Exceptions\NotAllowedException;
 use App\Infrastructure\Persistence\Repositories\TicketRepository;
-use App\Validation\Validator;
+use App\Domain\Validation\Validator;
 use OpenApi\Annotations as OA;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Log\LoggerInterface;
@@ -47,7 +47,8 @@ class CreateTicketAction extends Action
      *          type="array",
      *          @OA\Items(ref="#/components/schemas/Ticket")
      *      )
-     *     )
+     *     ),
+     *     security={{"bearerAuth":{}}}
      * )
      * @return Response
      * @throws BadRequestException

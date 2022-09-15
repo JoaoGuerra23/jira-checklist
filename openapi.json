@@ -10,6 +10,102 @@
         }
     ],
     "paths": {
+        "/auth/login": {
+            "post": {
+                "tags": [
+                    "user"
+                ],
+                "summary": "Login User",
+                "description": "Login User",
+                "operationId": "Login",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "email": {
+                                        "type": "string"
+                                    },
+                                    "password": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object",
+                                "example": {
+                                    "email": "example@gmail.com",
+                                    "password": "example"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/User"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/register": {
+            "post": {
+                "tags": [
+                    "user"
+                ],
+                "summary": "User Register",
+                "description": "User Register",
+                "operationId": "Register",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "email": {
+                                        "type": "string"
+                                    },
+                                    "password": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object",
+                                "example": {
+                                    "name": "name",
+                                    "email": "example@gmail.com",
+                                    "password": "example"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/User"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/items": {
             "get": {
                 "tags": [
@@ -31,7 +127,12 @@
                             }
                         }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             },
             "post": {
                 "tags": [
@@ -87,24 +188,29 @@
                             }
                         }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             }
         },
-        "/items/{name}": {
+        "/items/{id}": {
             "get": {
                 "tags": [
                     "item"
                 ],
-                "summary": "Get Item by Name",
+                "summary": "Get Item by ID",
                 "operationId": "getItem",
                 "parameters": [
                     {
-                        "name": "name",
+                        "name": "id",
                         "in": "path",
-                        "description": "Item Name",
+                        "description": "Item ID",
                         "required": true,
                         "schema": {
-                            "type": "string"
+                            "type": "integer"
                         }
                     }
                 ],
@@ -119,22 +225,27 @@
                             }
                         }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             },
             "delete": {
                 "tags": [
                     "item"
                 ],
-                "summary": "Delete Item by Name",
+                "summary": "Delete Item by Id",
                 "operationId": "deleteItem",
                 "parameters": [
                     {
-                        "name": "name",
+                        "name": "id",
                         "in": "path",
-                        "description": "Item Name",
+                        "description": "Item Id",
                         "required": true,
                         "schema": {
-                            "type": "string"
+                            "type": "integer"
                         }
                     }
                 ],
@@ -149,22 +260,27 @@
                             }
                         }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             },
             "patch": {
                 "tags": [
                     "item"
                 ],
-                "summary": "Edit Item Name",
+                "summary": "Edit Item",
                 "operationId": "editItem",
                 "parameters": [
                     {
-                        "name": "name",
+                        "name": "id",
                         "in": "path",
-                        "description": "Item Name",
+                        "description": "Item ID",
                         "required": true,
                         "schema": {
-                            "type": "string"
+                            "type": "integer"
                         }
                     }
                 ],
@@ -196,7 +312,12 @@
                             }
                         }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             }
         },
         "/sections": {
@@ -220,7 +341,12 @@
                             }
                         }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             },
             "post": {
                 "tags": [
@@ -264,24 +390,29 @@
                             }
                         }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             }
         },
-        "/sections/{subject}": {
+        "/sections/{id}": {
             "get": {
                 "tags": [
                     "section"
                 ],
-                "summary": "Get Section by Subject",
+                "summary": "Get Section by Id",
                 "operationId": "getSection",
                 "parameters": [
                     {
-                        "name": "subject",
+                        "name": "id",
                         "in": "path",
-                        "description": "Section subject",
+                        "description": "Section Id",
                         "required": true,
                         "schema": {
-                            "type": "string"
+                            "type": "integer"
                         }
                     }
                 ],
@@ -296,22 +427,27 @@
                             }
                         }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             },
             "delete": {
                 "tags": [
                     "section"
                 ],
-                "summary": "Delete Section by Subject",
+                "summary": "Delete Section by Id",
                 "operationId": "deleteSection",
                 "parameters": [
                     {
-                        "name": "subject",
+                        "name": "id",
                         "in": "path",
-                        "description": "Section Subject",
+                        "description": "Section Id",
                         "required": true,
                         "schema": {
-                            "type": "string"
+                            "type": "integer"
                         }
                     }
                 ],
@@ -326,22 +462,27 @@
                             }
                         }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             },
             "patch": {
                 "tags": [
                     "section"
                 ],
-                "summary": "Edit Section Subject",
+                "summary": "Edit Section Id",
                 "operationId": "editSection",
                 "parameters": [
                     {
-                        "name": "subject",
+                        "name": "id",
                         "in": "path",
-                        "description": "Section Subject",
+                        "description": "Section Id",
                         "required": true,
                         "schema": {
-                            "type": "string"
+                            "type": "integer"
                         }
                     }
                 ],
@@ -373,7 +514,12 @@
                             }
                         }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             }
         },
         "/status": {
@@ -397,7 +543,12 @@
                             }
                         }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             },
             "post": {
                 "tags": [
@@ -437,7 +588,12 @@
                             }
                         }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             }
         },
         "/status/{name}": {
@@ -469,7 +625,12 @@
                             }
                         }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             },
             "delete": {
                 "tags": [
@@ -499,7 +660,12 @@
                             }
                         }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             },
             "patch": {
                 "tags": [
@@ -546,7 +712,12 @@
                             }
                         }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             }
         },
         "/tabs": {
@@ -570,7 +741,12 @@
                             }
                         }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             },
             "post": {
                 "tags": [
@@ -610,7 +786,12 @@
                             }
                         }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             }
         },
         "/tabs/{name}": {
@@ -642,7 +823,12 @@
                             }
                         }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             },
             "delete": {
                 "tags": [
@@ -672,7 +858,12 @@
                             }
                         }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             },
             "patch": {
                 "tags": [
@@ -719,7 +910,12 @@
                             }
                         }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             }
         },
         "/tickets": {
@@ -743,7 +939,12 @@
                             }
                         }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             },
             "post": {
                 "tags": [
@@ -783,7 +984,12 @@
                             }
                         }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             }
         },
         "/tickets/{code}": {
@@ -814,8 +1020,22 @@
                                 }
                             }
                         }
+                    },
+                    "404": {
+                        "description": "Ticket not Found"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "405": {
+                        "description": "Not Allowed"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             },
             "delete": {
                 "tags": [
@@ -845,7 +1065,12 @@
                             }
                         }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             },
             "patch": {
                 "tags": [
@@ -892,7 +1117,42 @@
                             }
                         }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/tickets/page/{page}": {
+            "get": {
+                "tags": [
+                    "ticket"
+                ],
+                "summary": "Get Tickets by Page",
+                "operationId": "getTicketsByPage",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "path",
+                        "description": "Tickets Page",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             }
         }
     },
@@ -1023,6 +1283,38 @@
                     }
                 },
                 "type": "object"
+            },
+            "User": {
+                "title": "User Auth Model",
+                "description": "User Auth Model",
+                "properties": {
+                    "name": {
+                        "title": "User name",
+                        "description": "User name",
+                        "type": "string"
+                    },
+                    "email": {
+                        "title": "User email",
+                        "description": "User email",
+                        "type": "string"
+                    },
+                    "password": {
+                        "title": "User password",
+                        "description": "User password",
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            }
+        },
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "description": "use /auth/login to get the JWT Token",
+                "name": "Authorization",
+                "in": "header",
+                "bearerFormat": "JWT",
+                "scheme": "bearer"
             }
         }
     }

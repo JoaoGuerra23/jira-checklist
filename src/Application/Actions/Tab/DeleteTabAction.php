@@ -3,7 +3,7 @@
 namespace App\Application\Actions\Tab;
 
 use App\Application\Actions\Action;
-use App\Domain\Tab\TabDTO;
+use App\Domain\Entities\Tab\TabDTO;
 use App\Infrastructure\Persistence\Repositories\TabRepository;
 use OpenApi\Annotations as OA;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -43,23 +43,22 @@ class DeleteTabAction extends Action
      *     response=200,
      *     description="OK",
      *     @OA\JsonContent(ref="#/components/schemas/Tab")
-     *   )
+     *   ),
+     *     security={{"bearerAuth":{}}}
      * )
      * @throws HttpBadRequestException
      */
     protected function action(): Response
     {
-        $name = $this->resolveArg('name');
+        $id = $this->resolveArg('id');
 
-        $tabDTO = new TabDTO($name);
-
-        if (empty($this->tabRepository->findTabByName($tabDTO))) {
-            return $this->respondWithNotFound($name);
+        if (empty($this->tabRepository->findTabById($id))) {
+            return $this->respondWithNotFound($id);
         }
 
-        $this->tabRepository->deleteTabByName($tabDTO);
+        $this->tabRepository->deleteTabById($id);
 
-        $message = "Tab " . $name . " Deleted.";
+        $message = "Tab " . $id . " Deleted.";
 
         $this->logger->info($message);
 

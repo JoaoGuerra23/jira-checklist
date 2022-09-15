@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Domain\Item;
+namespace App\Domain\Entities\Item;
 
 interface ItemRepositoryInterface
 {
@@ -15,18 +15,18 @@ interface ItemRepositoryInterface
      *
      * Find Item by Name
      *
-     * @param ItemDTO $itemDTO
+     * @param string $id
      * @return Item[]|null
      */
-    public function findItemById(ItemDTO $itemDTO): ?array;
+    public function findItemById(string $id): ?array;
 
     /**
      * Delete Item by id
      *
-     * @param ItemDTO $itemDTO
+     * @param string $id
      * @return void
      */
-    public function deleteItemById(ItemDTO $itemDTO): void;
+    public function deleteItemById(string $id): void;
 
     /**
      * Update Ticket Code
@@ -42,5 +42,5 @@ interface ItemRepositoryInterface
      * @param array $parsedBody
      * @return Item
      */
-    public function createNewItem(array $parsedBody): ?Item;
+    public function createNewItem(array $parsedBody): Item;
 }

@@ -5,8 +5,12 @@ namespace App\Application\Actions\Ticket;
 use App\Application\Actions\Action;
 use App\Domain\Exceptions\BadRequestException;
 use App\Domain\Exceptions\NotAllowedException;
-use App\Domain\Ticket\TicketDTO;
+use App\Domain\Exceptions\NotFoundException;
 use App\Infrastructure\Persistence\Repositories\TicketRepository;
+use App\Domain\Validation\Validator;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
+use Exception;
 use OpenApi\Annotations as OA;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Log\LoggerInterface;
@@ -58,7 +62,8 @@ class UpdateTicketAction extends Action
      *     response=200,
      *     description="OK",
      *     @OA\JsonContent(ref="#/components/schemas/Ticket")
-     *   )
+     *   ),
+     *     security={{"bearerAuth":{}}}
      * )
      * @return Response
      * @throws HttpBadRequestException
@@ -68,30 +73,26 @@ class UpdateTicketAction extends Action
     protected function action(): Response
     {
         $currentCode = $this->resolveArg('code');
+        $newCode = Validator::getParam($this->request, 'code');
 
-        $newCode = $this->body('code', 'Key does not exist!');
 
-        $ticketDTO = new TicketDTO($currentCode);
-
-        if (empty($this->ticketRepository->findTicketByCode($currentCode))) {
-            return $this->respondWithNotFound($ticketDTO->getCode());
+        try {
+            if (empty($this->ticketRepository->findTicketByCode($currentCode))) {
+                return $this->respondWithNotFound($currentCode);
+            }
+        } catch (Exception $e) {
         }
 
         if ($currentCode === $newCode) {
             return $this->respondWithSameResources();
         }
 
-        $this->ticketRepository->updateTicket($newCode, $ticketDTO);
+        $this->ticketRepository->updateTicket($newCode, $currentCode);
 
         $message = "Ticket code " . $currentCode . " updated to " . $newCode;
 
         $this->logger->info($message);
 
         return $this->respondWithData($message);
-    }
-
-    public function body(string $key, $default = null): ?string
-    {
-        return $this->request->getParsedBody()[$key] ?? $default;
     }
 }

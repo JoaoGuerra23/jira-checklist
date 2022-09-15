@@ -36,7 +36,8 @@ class ListItemAction extends Action
      *          type="array",
      *          @OA\Items(ref="#/components/schemas/Item")
      *      )
-     *     )
+     *     ),
+     *     security={{"bearerAuth":{}}}
      * )
      */
     protected function action(): Response

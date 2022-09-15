@@ -44,7 +44,8 @@ class DeleteTicketAction extends Action
      *     response=200,
      *     description="OK",
      *     @OA\JsonContent(ref="#/components/schemas/Ticket")
-     *   )
+     *   ),
+     *     security={{"bearerAuth":{}}}
      * )
      * @throws HttpBadRequestException
      * @throws NotFoundException
@@ -53,9 +54,7 @@ class DeleteTicketAction extends Action
     {
         $code = $this->resolveArg('code');
 
-        $ticketDTO = new TicketDTO($code);
-
-        $this->ticketRepository->deleteTicketByCode($ticketDTO);
+        $this->ticketRepository->deleteTicketByCode($code);
 
         $message = "Ticket " . $code . " Deleted.";
 

@@ -35,7 +35,8 @@ class ListSectionAction extends Action
      *          type="array",
      *          @OA\Items(ref="#/components/schemas/Section")
      *      )
-     *     )
+     *     ),
+     *     security={{"bearerAuth":{}}}
      * )
      */
     protected function action(): Response

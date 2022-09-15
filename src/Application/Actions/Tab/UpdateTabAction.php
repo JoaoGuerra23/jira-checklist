@@ -3,7 +3,7 @@
 namespace App\Application\Actions\Tab;
 
 use App\Application\Actions\Action;
-use App\Domain\Tab\TabDTO;
+use App\Domain\Entities\Tab\TabDTO;
 use App\Infrastructure\Persistence\Repositories\TabRepository;
 use OpenApi\Annotations as OA;
 use phpDocumentor\Reflection\Types\This;
@@ -58,28 +58,29 @@ class UpdateTabAction extends Action
      *     response=200,
      *     description="OK",
      *     @OA\JsonContent(ref="#/components/schemas/Tab")
-     *   )
+     *   ),
+     *     security={{"bearerAuth":{}}}
      * )
      * @throws HttpBadRequestException
      */
     protected function action(): Response
     {
-        $currentName = $this->resolveArg('name');
-        $newName = $this->request->getParsedBody()['name'];
+        $currentId = $this->resolveArg('id');
+        $newId = $this->request->getParsedBody()['id'];
 
-        $tabDTO = new TabDTO($currentName);
+        $tabDTO = new TabDTO($currentId);
 
-        if (empty($this->tabRepository->findTabByName($tabDTO))) {
-            return $this->respondWithNotFound($tabDTO->getName());
+        if (empty($this->tabRepository->findTabById($currentId))) {
+            return $this->respondWithNotFound($tabDTO->getId());
         }
 
-        if ($currentName === $newName) {
+        if ($currentId === $newId) {
             return $this->respondWithSameResources();
         }
 
-        $this->tabRepository->updateTabName($newName, $tabDTO);
+        $this->tabRepository->updateTab($newId, $tabDTO);
 
-        $message = "Tab name " . $currentName . " updated to " . $newName;
+        $message = "Tab name " . $currentId . " updated to " . $newId;
 
         $this->logger->info($message);
 

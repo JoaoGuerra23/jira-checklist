@@ -26,39 +26,38 @@ class DeleteItemAction extends Action
     /**
      * @OA\Delete(
      *   tags={"item"},
-     *   path="/items/{name}",
+     *   path="/items/{id}",
      *   operationId="deleteItem",
-     *   summary="Delete Item by Name",
+     *   summary="Delete Item by Id",
      *   @OA\Parameter(
-     *          name="name",
+     *          name="id",
      *          in="path",
      *          required=true,
-     *          description="Item Name",
+     *          description="Item Id",
      *          @OA\Schema(
-     *              type="string"
+     *              type="integer"
      *          )
      *   ),
      *   @OA\Response(
      *     response=200,
      *     description="OK",
      *     @OA\JsonContent(ref="#/components/schemas/Item")
-     *   )
+     *   ),
+     *     security={{"bearerAuth":{}}}
      * )
      * @throws HttpBadRequestException
      */
     protected function action(): Response
     {
-        $itemId = $this->resolveArg('id');
+        $id = $this->resolveArg('id');
 
-        $itemDTO = new ItemDTO($itemId);
-
-        if (empty($this->itemRepository->findItemById($itemDTO))) {
-            return $this->respondWithNotFound($itemId);
+        if (empty($this->itemRepository->findItemById($id))) {
+            return $this->respondWithNotFound($id);
         }
 
-        $this->itemRepository->deleteItemById($itemDTO);
+        $this->itemRepository->deleteItemById($id);
 
-        $message = "Item " . $itemId . " Deleted.";
+        $message = "Item " . $id . " Deleted.";
 
         $this->logger->info($message);
 

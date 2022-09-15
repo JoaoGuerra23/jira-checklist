@@ -35,7 +35,8 @@ class ListTicketsAction extends Action
      *          type="array",
      *          @OA\Items(ref="#/components/schemas/Ticket")
      *      )
-     *    )
+     *    ),
+     *     security={{"bearerAuth":{}}}
      * )
      */
     protected function action(): Response

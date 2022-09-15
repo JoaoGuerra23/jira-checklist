@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Domain\Section;
+namespace App\Domain\Entities\Section;
 
 interface SectionRepositoryInterface
 {
@@ -18,7 +18,7 @@ interface SectionRepositoryInterface
      * @param SectionDTO $sectionDTO
      * @return Section[]|null
      */
-    public function findSectionBySubject(SectionDTO $sectionDTO): ?array;
+    public function findSectionById(SectionDTO $sectionDTO): ?array;
 
     /**
      * Delete Section by ID
@@ -26,16 +26,16 @@ interface SectionRepositoryInterface
      * @param SectionDTO $sectionDTO
      * @return void
      */
-    public function deleteSectionBySubject(SectionDTO $sectionDTO): void;
+    public function deleteSectionById(SectionDTO $sectionDTO): void;
 
     /**
      * Update Section Subject
      *
-     * @param string $parsedBodySubject
+     * @param string $parsedBodyId
      * @param SectionDTO $sectionDTO
      * @return Section
      */
-    public function updateSectionSubject(string $parsedBodySubject, SectionDTO $sectionDTO): Section;
+    public function updateSectionId(string $parsedBodyId, SectionDTO $sectionDTO): Section;
 
     /**
      *

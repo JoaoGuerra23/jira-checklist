@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Domain\Ticket;
+namespace App\Domain\Entities\Ticket;
 
 interface TicketRepositoryInterface
 {
@@ -29,19 +29,19 @@ interface TicketRepositoryInterface
     /**
      * Delete Ticket By Code
      *
-     * @param TicketDTO $ticketDTO
+     * @param string $code
      * @return void
      */
-    public function deleteTicketByCode(TicketDTO $ticketDTO): void;
+    public function deleteTicketByCode(string $code): void;
 
     /**
      * Update Ticket
      *
-     * @param string $parsedBodyCode
-     * @param TicketDTO $ticketDTO
+     * @param string $newCode
+     * @param string $currentCode
      * @return Ticket
      */
-    public function updateTicket(string $parsedBodyCode, TicketDTO $ticketDTO): Ticket;
+    public function updateTicket(string $newCode, string $currentCode): Ticket;
 
     /**
      * Create a new ticket

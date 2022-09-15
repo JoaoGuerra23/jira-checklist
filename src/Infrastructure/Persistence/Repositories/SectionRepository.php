@@ -2,9 +2,9 @@
 
 namespace App\Infrastructure\Persistence\Repositories;
 
-use App\Domain\Section\SectionDTO;
-use App\Domain\Section\Section;
-use App\Domain\Section\SectionRepositoryInterface;
+use App\Domain\Entities\Section\SectionDTO;
+use App\Domain\Entities\Section\Section;
+use App\Domain\Entities\Section\SectionRepositoryInterface;
 use App\Validation\Validator;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
@@ -59,17 +59,17 @@ class SectionRepository implements SectionRepositoryInterface
      * @param SectionDTO $sectionDTO
      * @return Section[]|null
      */
-    public function findSectionBySubject(SectionDTO $sectionDTO): ?array
+    public function findSectionById(SectionDTO $sectionDTO): ?array
     {
-        $sectionDTOSubject = $sectionDTO->getSubject();
+        $id = $sectionDTO->getId();
 
         try {
             return $this->entityManager
                 ->createQueryBuilder()
                 ->select('s.id', 's.subject, s.tabsId')
                 ->from(Section::class, 's')
-                ->where('s.subject = :subject')
-                ->setParameter(':subject', $sectionDTOSubject)
+                ->where('s.id = :id')
+                ->setParameter(':id', $id)
                 ->andWhere('s.deleted_at IS NULL')
                 ->getQuery()
                 ->getSingleResult();
@@ -85,17 +85,17 @@ class SectionRepository implements SectionRepositoryInterface
      * @param SectionDTO $sectionDTO
      * @return void
      */
-    public function deleteSectionBySubject(SectionDTO $sectionDTO): void
+    public function deleteSectionById(SectionDTO $sectionDTO): void
     {
-        $sectionDTOSubject = $sectionDTO->getSubject();
+        $id = $sectionDTO->getId();
 
         $this->entityManager
             ->createQueryBuilder()
             ->update(Section::class, 's')
             ->set('s.deleted_at', ':value')
             ->setParameter(':value', new DateTime())
-            ->where('s.subject = :subject')
-            ->setParameter(':subject', $sectionDTOSubject)
+            ->where('s.id = :id')
+            ->setParameter(':id', $id)
             ->getQuery()
             ->execute();
     }
@@ -104,25 +104,25 @@ class SectionRepository implements SectionRepositoryInterface
     /**
      * Update Section Subject
      *
-     * @param string $parsedBodySubject
+     * @param string $parsedBodyId
      * @param SectionDTO $sectionDTO
      * @return Section
      */
-    public function updateSectionSubject(string $parsedBodySubject, SectionDTO $sectionDTO): Section
+    public function updateSectionId(string $parsedBodyId, SectionDTO $sectionDTO): Section
     {
-        $sectionDTOSubject = $sectionDTO->getSubject();
+        $id = $sectionDTO->getId();
 
         $this->entityManager
             ->createQueryBuilder()
             ->update(Section::class, 's')
             ->set('s.subject', ':value')
-            ->setParameter(':value', $parsedBodySubject)
-            ->where('s.subject = :subject')
-            ->setParameter(':subject', $sectionDTOSubject)
+            ->setParameter(':value', $parsedBodyId)
+            ->where('s.id = :id')
+            ->setParameter(':id', $id)
             ->getQuery()
             ->getResult();
 
-        $this->section->setSubject($parsedBodySubject);
+        $this->section->setSubject($parsedBodyId);
 
         return $this->section;
     }

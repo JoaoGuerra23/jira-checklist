@@ -25,6 +25,7 @@ use App\Application\Actions\Tab\ListTabAction as ListTabAction;
 use App\Application\Actions\Tab\ViewTabAction as ViewTabAction;
 use App\Application\Actions\Ticket\CreateTicketAction as CreateTicketAction;
 use App\Application\Actions\Ticket\DeleteTicketAction as DeleteTicketAction;
+use App\Application\Actions\Ticket\ListTicketsPerPageAction;
 use App\Application\Actions\Ticket\UpdateTicketAction as UpdateTicketAction;
 use App\Application\Actions\Ticket\ListTicketsAction as ListTicketsAction;
 use App\Application\Actions\Ticket\ViewTicketAction as ViewTicketAction;
@@ -59,14 +60,15 @@ return function (App $app) {
         $group->get('/{code}', ViewTicketAction::class);
         $group->patch('/{code}', UpdateTicketAction::class);
         $group->delete('/{code}', DeleteTicketAction::class);
+        $group->get('/[page/{page:\d+}]', ListTicketsPerPageAction::class);
     });
 
     $app->group('/tabs', function (Group $group) {
         $group->post('', CreateTabAction::class);
         $group->get('', ListTabAction::class);
-        $group->get('/{name}', ViewTabAction::class);
-        $group->patch('/{name}', UpdateTabAction::class);
-        $group->delete('/{name}', DeleteTabAction::class);
+        $group->get('/{id}', ViewTabAction::class);
+        $group->patch('/{id}', UpdateTabAction::class);
+        $group->delete('/{id}', DeleteTabAction::class);
     });
 
     $app->group('/status', function (Group $group) {
@@ -80,9 +82,9 @@ return function (App $app) {
     $app->group('/sections', function (Group $group) {
         $group->post('', CreateSectionAction::class);
         $group->get('', ListSectionAction::class);
-        $group->get('/{subject}', ViewSectionAction::class);
-        $group->patch('/{subject}', UpdateSectionAction::class);
-        $group->delete('/{subject}', DeleteSectionAction::class);
+        $group->get('/{id}', ViewSectionAction::class);
+        $group->patch('/{id}', UpdateSectionAction::class);
+        $group->delete('/{id}', DeleteSectionAction::class);
     });
 
     $app->group('/items', function (Group $group) {

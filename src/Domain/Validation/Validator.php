@@ -1,31 +1,11 @@
 <?php
 
-namespace App\Validation;
+namespace App\Domain\Validation;
 
 use App\Domain\Exceptions\NotAllowedException;
-use Respect\Validation\Exceptions\NestedValidationException;
 
 class Validator
 {
-    public $errors = [];
-
-    public function validate($request, array $rules): Validator
-    {
-        foreach ($rules as $field => $rule) {
-            try {
-                $rule->setName($field)->assert(self::getParam($request, $field));
-            } catch (NestedValidationException $ex) {
-                $this->errors[$field] = $ex->getMessages();
-            }
-        }
-        return $this;
-    }
-
-    public function failed(): bool
-    {
-        return !empty($this->errors);
-    }
-
     /**
      * Get Parameter from a request
      *
@@ -38,21 +18,14 @@ class Validator
     {
         $postParams = $request->getParsedBody();
 
-        $getParams = $request->getQueryParams();
-
-        $getBody = json_decode($request->getBody(), true);
-
         $result = $default;
 
         if (is_array($postParams) && isset($postParams[$key])) {
             $result = $postParams[$key];
         } elseif (is_object($postParams) && property_exists($postParams, $key)) {
             $result = $postParams->$key;
-        } elseif (is_array($getBody) && isset($getBody[$key])) {
-            $result = $getBody[$key];
-        } elseif (isset($getParams[$key])) {
-            $result = $getParams[$key];
         }
+
         return $result;
     }
 

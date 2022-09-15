@@ -3,7 +3,7 @@
 namespace App\Application\Actions\Section;
 
 use App\Application\Actions\Action;
-use App\Domain\Section\SectionDTO;
+use App\Domain\Entities\Section\SectionDTO;
 use App\Infrastructure\Persistence\Repositories\SectionRepository;
 use OpenApi\Annotations as OA;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -26,18 +26,18 @@ class UpdateSectionAction extends Action
 
     /**
      * @OA\Patch(
-     *   path="/sections/{subject}",
+     *   path="/sections/{id}",
      *   tags={"section"},
-     *   path="/sections/{subject}",
+     *   path="/sections/{id}",
      *   operationId="editSection",
-     *   summary="Edit Section Subject",
+     *   summary="Edit Section Id",
      *   @OA\Parameter(
-     *          name="subject",
+     *          name="id",
      *          in="path",
      *          required=true,
-     *          description="Section Subject",
+     *          description="Section Id",
      *          @OA\Schema(
-     *              type="string"
+     *              type="integer"
      *          )
      *   ),
      *         @OA\RequestBody(
@@ -56,28 +56,29 @@ class UpdateSectionAction extends Action
      *     response=200,
      *     description="OK",
      *     @OA\JsonContent(ref="#/components/schemas/Section")
-     *   )
+     *   ),
+     *     security={{"bearerAuth":{}}}
      * )
      * @throws HttpBadRequestException
      */
     protected function action(): Response
     {
-        $currentSubject = $this->resolveArg('subject');
-        $newSubject = $this->request->getParsedBody()['subject'];
+        $currentId = $this->resolveArg('id');
+        $newId = $this->request->getParsedBody()['id'];
 
-        $sectionDTO = new SectionDTO($currentSubject);
+        $sectionDTO = new SectionDTO($currentId);
 
-        if (empty($this->sectionRepository->findSectionBySubject($sectionDTO))) {
-            return $this->respondWithNotFound($sectionDTO->getSubject());
+        if (empty($this->sectionRepository->findSectionById($sectionDTO))) {
+            return $this->respondWithNotFound($sectionDTO->getId());
         }
 
-        if ($currentSubject === $newSubject) {
+        if ($currentId === $newId) {
             return $this->respondWithSameResources();
         }
 
-        $this->sectionRepository->updateSectionSubject($newSubject, $sectionDTO);
+        $this->sectionRepository->updateSectionId($newId, $sectionDTO);
 
-        $message = "Section Subject " . $currentSubject . " updated to " . $newSubject;
+        $message = "Section Subject " . $currentId . " updated to " . $newId;
 
         $this->logger->info($message);
 

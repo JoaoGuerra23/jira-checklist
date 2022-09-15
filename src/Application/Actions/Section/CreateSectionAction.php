@@ -4,7 +4,7 @@ namespace App\Application\Actions\Section;
 
 use App\Application\Actions\Action;
 use App\Infrastructure\Persistence\Repositories\SectionRepository;
-use App\Validation\Validator;
+use App\Domain\Validation\Validator;
 use OpenApi\Annotations as OA;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Log\LoggerInterface;
@@ -50,7 +50,8 @@ class CreateSectionAction extends Action
      *          type="array",
      *          @OA\Items(ref="#/components/schemas/Section")
      *      )
-     *     )
+     *     ),
+     *     security={{"bearerAuth":{}}}
      * )
      */
     protected function action(): Response

@@ -46,7 +46,8 @@ class CreateTabAction extends Action
      *          type="array",
      *          @OA\Items(ref="#/components/schemas/Tab")
      *      )
-     *     )
+     *     ),
+     *     security={{"bearerAuth":{}}}
      * )
      */
     protected function action(): Response
