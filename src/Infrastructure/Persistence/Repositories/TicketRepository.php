@@ -5,14 +5,15 @@ namespace App\Infrastructure\Persistence\Repositories;
 use App\Domain\Exceptions\BadRequestException;
 use App\Domain\Exceptions\NotAllowedException;
 use App\Domain\Exceptions\NotFoundException;
-use App\Domain\Entities\Ticket\TicketDTO;
 use App\Domain\Entities\Ticket\Ticket;
 use App\Domain\Entities\Ticket\TicketRepositoryInterface;
 use App\Domain\Validation\Validator;
 use DateTime;
+use Doctrine\ORM\AbstractQuery;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
+use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 use Exception;
 
@@ -70,6 +71,11 @@ class TicketRepository implements TicketRepositoryInterface
         return $builder->getQuery()->execute();
     }
 
+    // TODO public function findTicketsPerPage(int $page, int $limit = 10): QueryBuilder
+
+    /**
+     * @return QueryBuilder
+     */
     public function findTicketsPerPage(): QueryBuilder
     {
         return $this->entityManager
@@ -86,25 +92,30 @@ class TicketRepository implements TicketRepositoryInterface
      *
      * @param string $ticketCode
      * @return Ticket[]|null
+     *
      * @throws NotFoundException
-     * @throws NoResultException
-     * @throws NonUniqueResultException
      */
     public function findTicketByCode(string $ticketCode): ?array
     {
-            $builder = $this->entityManager
-                ->createQueryBuilder()
-                ->select('t.code')
-                ->from(Ticket::class, 't')
-                ->where('t.code = :code')
-                ->setParameter(':code', $ticketCode)
-                ->andWhere('t.deleted_at IS NULL');
+        $builder = $this->entityManager
+            ->createQueryBuilder()
+            ->select('t.code')
+            ->from(Ticket::class, 't')
+            ->where('t.code = :code')
+            ->setParameter(':code', $ticketCode)
+            ->andWhere('t.deleted_at IS NULL');
 
+        try {
             $result = $builder->getQuery()->getSingleResult();
 
-        if (empty($result)) {
-            throw new NotFoundException('Ticket Not Found', 404);
+        } catch (Exception $e) {
+
+            if (empty($result)) {
+                throw new NotFoundException('Ticket Not Found', 404);
+            }
         }
+
+
 
         return $result;
     }
@@ -115,6 +126,8 @@ class TicketRepository implements TicketRepositoryInterface
      *
      * @param string $code
      * @return void
+     * @throws NoResultException
+     * @throws NonUniqueResultException
      * @throws NotFoundException
      */
     public function deleteTicketByCode(string $code): void
@@ -196,9 +209,47 @@ class TicketRepository implements TicketRepositoryInterface
         throw new BadRequestException('Ticket Already Exists');
     }
 
-    // TODO restore() method
-    public function restoreTicket(): Ticket
+    /**
+     * Deleted Tickets Array
+     *
+     * @return array
+     */
+    public function deletedTickets(): array
     {
-        return new Ticket();
+        return $this->entityManager
+            ->createQueryBuilder()
+            ->select('t.code')
+            ->from(Ticket::class, 't')
+            ->where('t.deleted_at IS NOT NULL')
+            ->getQuery()
+            ->getResult(AbstractQuery::HYDRATE_SCALAR_COLUMN);
+    }
+
+    /**
+     * @param string $code
+     * @throws NoResultException
+     * @throws NonUniqueResultException
+     * @throws NotFoundException
+     */
+    public function restoreTicket(string $code): void
+    {
+        $deletedTickets = $this->deletedTickets();
+
+        if (!in_array($code, $deletedTickets)) {
+
+            throw new NotFoundException('Ticket to restore not found', 404);
+
+        }
+
+        $this->entityManager
+            ->createQueryBuilder()
+            ->update(Ticket::class, 't')
+            ->set('t.deleted_at', ':value')
+            ->setParameter(':value', null)
+            ->where('t.code = :code')
+            ->setParameter(':code', $code)
+            ->getQuery()
+            ->getSingleResult();
+
     }
 }

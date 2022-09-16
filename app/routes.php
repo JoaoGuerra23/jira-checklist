@@ -26,6 +26,7 @@ use App\Application\Actions\Tab\ViewTabAction as ViewTabAction;
 use App\Application\Actions\Ticket\CreateTicketAction as CreateTicketAction;
 use App\Application\Actions\Ticket\DeleteTicketAction as DeleteTicketAction;
 use App\Application\Actions\Ticket\ListTicketsPerPageAction;
+use App\Application\Actions\Ticket\RestoreTicketAction;
 use App\Application\Actions\Ticket\UpdateTicketAction as UpdateTicketAction;
 use App\Application\Actions\Ticket\ListTicketsAction as ListTicketsAction;
 use App\Application\Actions\Ticket\ViewTicketAction as ViewTicketAction;
@@ -61,6 +62,7 @@ return function (App $app) {
         $group->patch('/{code}', UpdateTicketAction::class);
         $group->delete('/{code}', DeleteTicketAction::class);
         $group->get('/[page/{page:\d+}]', ListTicketsPerPageAction::class);
+        $group->post('/restore/{code}', RestoreTicketAction::class);
     });
 
     $app->group('/tabs', function (Group $group) {

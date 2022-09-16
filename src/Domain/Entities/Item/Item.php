@@ -227,4 +227,5 @@ class Item implements JsonSerializable
             'name' => $this->name
         ];
     }
+
 }

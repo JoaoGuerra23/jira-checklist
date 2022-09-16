@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Application\Actions\Ticket;
 
 use App\Application\Actions\Action;
+use App\Domain\Exceptions\NotFoundException;
 use App\Infrastructure\Persistence\Repositories\TicketRepository;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use OpenApi\Annotations as OA;
@@ -45,19 +46,23 @@ class ListTicketsPerPageAction extends Action
      *     security={{"bearerAuth":{}}}
      * )
      *
+     * @throws NotFoundException
      */
     protected function action(): Response
     {
         $builder = $this->ticketRepository->findTicketsPerPage();
 
+        //Items per page
         $pageCount = 3;
 
         $paginator = new Paginator($builder);
 
-        //solve a problem with select on query
+        //Solve a problem with select on query
         $paginator->setUseOutputWalkers(false);
 
+        //Total tickets
         $totalItems = count($paginator);
+
         $currentPage = ($this->request->getAttribute('page')) ?: 1;
         $totalPageCount = ceil($totalItems / $pageCount);
         $nextPage = (($currentPage < $totalPageCount) ? $currentPage + 1 : $totalPageCount);
@@ -70,6 +75,10 @@ class ListTicketsPerPageAction extends Action
             ->getResult();
 
         $tickets['Tickets'] = $result;
+
+        if (empty($result)){
+            throw new NotFoundException('Page not found',404);
+        }
 
         $this->logger->info("Page " . $currentPage ." was viewed");
 

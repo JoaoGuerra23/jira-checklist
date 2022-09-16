@@ -1,10 +1,11 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Application\Actions\Ticket;
 
 use App\Application\Actions\Action;
 use App\Domain\Exceptions\NotFoundException;
-use App\Domain\Ticket\TicketDTO;
+use App\Domain\Validation\Validator;
 use App\Infrastructure\Persistence\Repositories\TicketRepository;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
@@ -13,9 +14,8 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Log\LoggerInterface;
 use Slim\Exception\HttpBadRequestException;
 
-class DeleteTicketAction extends Action
+class RestoreTicketAction extends Action
 {
-
     /**
      * @var TicketRepository
      */
@@ -28,40 +28,19 @@ class DeleteTicketAction extends Action
     }
 
     /**
-     * @OA\Delete(
-     *   tags={"ticket"},
-     *   path="/tickets/{code}",
-     *   operationId="deleteTicket",
-     *   summary="Delete Ticket by Code",
-     *   @OA\Parameter(
-     *          name="code",
-     *          in="path",
-     *          required=true,
-     *          description="Ticket Code",
-     *          @OA\Schema(
-     *              type="string"
-     *          )
-     *   ),
-     *   @OA\Response(
-     *     response=200,
-     *     description="OK",
-     *     @OA\JsonContent(ref="#/components/schemas/Ticket")
-     *   ),
-     *     security={{"bearerAuth":{}}}
-     * )
      * @return Response
-     * @throws HttpBadRequestException
      * @throws NotFoundException
      * @throws NoResultException
      * @throws NonUniqueResultException
+     * @throws HttpBadRequestException
      */
     protected function action(): Response
     {
         $code = $this->resolveArg('code');
 
-        $this->ticketRepository->deleteTicketByCode($code);
+        $this->ticketRepository->restoreTicket($code);
 
-        $message = "Ticket " . $code . " Deleted.";
+        $message = "Ticket " . $code . " restored";
 
         $this->logger->info($message);
 
